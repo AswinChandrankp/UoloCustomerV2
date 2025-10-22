@@ -44,17 +44,17 @@ class StoreRepository implements StoreRepositoryInterface {
     }else if(isRecommendedStoreList){
       return await _getRecommendedStoreList(source: source ?? DataSourceEnum.client);
     }else if(isTopOfferStoreList){
-      return await _getTopOfferStoreList(source: source ?? DataSourceEnum.client, filterBy: filterBy, sortBy: type);
+      return await _getTopOfferStoreList(source: source ?? DataSourceEnum.client);
     }
   }
 
   Future<StoreModel?> _getStoreList(int offset, String filterBy, String storeType, {required DataSourceEnum source}) async {
     StoreModel? storeModel;
-    String cacheId = '${AppConstants.storeUri}/$filterBy?store_type=$storeType&offset=$offset&limit=12-${Get.find<SplashController>().module!.id!}';
+    String cacheId = '${AppConstants.storeUri}/$filterBy?store_type=$storeType&offset=$offset&limit=50-${Get.find<SplashController>().module!.id!}';
 
     switch(source) {
       case DataSourceEnum.client:
-        Response response = await apiClient.getData('${AppConstants.storeUri}/$filterBy?store_type=$storeType&offset=$offset&limit=12');
+        Response response = await apiClient.getData('${AppConstants.storeUri}/$filterBy?store_type=$storeType&offset=$offset&limit=50');
         if(response.statusCode == 200){
           storeModel = StoreModel.fromJson(response.body);
           LocalClient.organize(DataSourceEnum.client, cacheId, jsonEncode(response.body), apiClient.getHeader());
@@ -118,13 +118,13 @@ class StoreRepository implements StoreRepositoryInterface {
     return latestStoreList;
   }
 
-  Future<List<Store>?> _getTopOfferStoreList({required DataSourceEnum source, String? filterBy, String? sortBy}) async {
+  Future<List<Store>?> _getTopOfferStoreList({required DataSourceEnum source}) async {
     List<Store>? topOfferStoreList;
     String cacheId = '${AppConstants.topOfferStoreUri}-${Get.find<SplashController>().module!.id!}';
 
     switch(source) {
       case DataSourceEnum.client:
-        Response response = await apiClient.getData('${AppConstants.topOfferStoreUri}?sort_by=$sortBy&${filterBy == '1' ? 'halal=1' : filterBy == 'veg' ? 'type=veg' : filterBy == 'non_veg' ? 'type=non_veg' : 'type='}');
+        Response response = await apiClient.getData(AppConstants.topOfferStoreUri);
         if (response.statusCode == 200) {
           topOfferStoreList = [];
           response.body['stores'].forEach((store) => topOfferStoreList!.add(Store.fromJson(store)));
@@ -217,11 +217,10 @@ class StoreRepository implements StoreRepositoryInterface {
   }
 
   @override
-  Future<ItemModel?> getStoreItemList({int? storeID, required int offset, int? categoryID, String? type, List<String>? filter, int? rating, double? lowerValue, double? upperValue}) async {
+  Future<ItemModel?> getStoreItemList(int? storeID, int offset, int? categoryID, String type) async {
     ItemModel? storeItemModel;
-    final filterString = filter != null ? jsonEncode(filter) : null;
     Response response = await apiClient.getData(
-      '${AppConstants.storeItemUri}?store_id=$storeID&category_id=$categoryID&offset=$offset&limit=13&type=$type&filter=$filterString&rating_count=${rating ?? ''}&min_price=${lowerValue ?? ''}&max_price=${upperValue ?? ''}');
+      '${AppConstants.storeItemUri}?store_id=$storeID&category_id=$categoryID&offset=$offset&limit=100&type=$type');
     if(response.statusCode == 200){
       storeItemModel = ItemModel.fromJson(response.body);
     }

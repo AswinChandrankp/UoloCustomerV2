@@ -21,7 +21,13 @@ class ZoneData {
   bool? cashOnDelivery;
   bool? digitalPayment;
   bool? offlinePayment;
+  double? increaseDeliveryFee;
+  int? increaseDeliveryFeeStatus;
+  String? increaseDeliveryFeeMessage;
   List<Modules>? modules;
+    String? payment_gateway_title;
+  String? payment_gateway_api_key;
+  String? payment_gateway_api_secret;
 
   ZoneData({
     this.id,
@@ -29,7 +35,13 @@ class ZoneData {
     this.cashOnDelivery,
     this.digitalPayment,
     this.offlinePayment,
+    this.increaseDeliveryFee,
+    this.increaseDeliveryFeeStatus,
+    this.increaseDeliveryFeeMessage,
     this.modules,
+        this.payment_gateway_title,
+    this.payment_gateway_api_key,
+    this.payment_gateway_api_secret,
   });
 
   ZoneData.fromJson(Map<String, dynamic> json) {
@@ -38,6 +50,12 @@ class ZoneData {
     cashOnDelivery = json['cash_on_delivery'];
     digitalPayment = json['digital_payment'];
     offlinePayment = json['offline_payment'];
+    increaseDeliveryFee = json['increased_delivery_fee']?.toDouble();
+    increaseDeliveryFeeStatus = json['increased_delivery_fee_status'];
+    increaseDeliveryFeeMessage = json['increase_delivery_charge_message'];
+    payment_gateway_title = json['payment_gateway_title'];
+        payment_gateway_api_key = json['payment_gateway_api_key'];
+    payment_gateway_api_secret = json['payment_gateway_api_secret'];
     if (json['modules'] != null) {
       modules = <Modules>[];
       json['modules'].forEach((v) {
@@ -53,6 +71,12 @@ class ZoneData {
     data['cash_on_delivery'] = cashOnDelivery;
     data['digital_payment'] = digitalPayment;
     data['offline_payment'] = offlinePayment;
+    data['increased_delivery_fee'] = increaseDeliveryFee;
+    data['increased_delivery_fee_status'] = increaseDeliveryFeeStatus;
+    data['increase_delivery_charge_message'] = increaseDeliveryFeeMessage;
+    data['payment_gateway_title'] = payment_gateway_title;
+    data['payment_gateway_api_key'] = payment_gateway_api_key;
+    data['payment_gateway_api_secret'] = payment_gateway_api_secret;
     if (modules != null) {
       data['modules'] = modules!.map((v) => v.toJson()).toList();
     }
@@ -135,8 +159,6 @@ class Pivot {
   double? minimumShippingCharge;
   double? maximumShippingCharge;
   double? maximumCodOrderAmount;
-  String? deliveryChargeType;
-  double? fixedShippingCharge;
 
   Pivot({
     this.zoneId,
@@ -145,8 +167,6 @@ class Pivot {
     this.minimumShippingCharge,
     this.maximumShippingCharge,
     this.maximumCodOrderAmount,
-    this.deliveryChargeType,
-    this.fixedShippingCharge,
   });
 
   Pivot.fromJson(Map<String, dynamic> json) {
@@ -154,10 +174,8 @@ class Pivot {
     moduleId = json['module_id'];
     perKmShippingCharge = json['per_km_shipping_charge']?.toDouble();
     minimumShippingCharge = json['minimum_shipping_charge']?.toDouble();
-    maximumShippingCharge =  json['maximum_shipping_charge']?.toDouble();
+    maximumShippingCharge =  /*(json['maximum_shipping_charge'] != null && json['maximum_shipping_charge'] == 0) ? null : */json['maximum_shipping_charge']?.toDouble();
     maximumCodOrderAmount = json['maximum_cod_order_amount']?.toDouble();
-    deliveryChargeType = json['delivery_charge_type'];
-    fixedShippingCharge = double.tryParse(json['fixed_shipping_charge'].toString()) ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -168,8 +186,6 @@ class Pivot {
     data['minimum_shipping_charge'] = minimumShippingCharge;
     data['maximum_shipping_charge'] = maximumShippingCharge;
     data['maximum_cod_order_amount'] = maximumCodOrderAmount;
-    data['delivery_charge_type'] = deliveryChargeType;
-    data['fixed_shipping_charge'] = fixedShippingCharge;
     return data;
   }
 }

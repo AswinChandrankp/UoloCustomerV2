@@ -41,6 +41,7 @@ class _SignInViewState extends State<SignInView> {
   final TextEditingController _passwordController = TextEditingController();
   String? _countryDialCode;
   GlobalKey<FormState>? _formKeyLogin;
+  bool _isOtpViewEnable = false;
 
   @override
   void initState() {
@@ -54,8 +55,8 @@ class _SignInViewState extends State<SignInView> {
     _passwordController.text = authController.getUserPassword();
 
     WidgetsBinding.instance.addPostFrameCallback((_){
-      bool isOtpActive = CentralizeLoginHelper.getPreferredLoginMethod(splashController.configModel!.centralizeLoginSetup!, authController.isOtpViewEnable).type == CentralizeLoginType.otp
-      || CentralizeLoginHelper.getPreferredLoginMethod(splashController.configModel!.centralizeLoginSetup!, authController.isOtpViewEnable).type == CentralizeLoginType.otpAndSocial ;
+      bool isOtpActive = CentralizeLoginHelper.getPreferredLoginMethod(splashController.configModel!.centralizeLoginSetup!, _isOtpViewEnable).type == CentralizeLoginType.otp
+      || CentralizeLoginHelper.getPreferredLoginMethod(splashController.configModel!.centralizeLoginSetup!, _isOtpViewEnable).type == CentralizeLoginType.otpAndSocial ;
 
       if(_countryDialCode != "" && _phoneController.text != "" && _phoneController.text.contains('@') && isOtpActive) {
         _phoneController.text = '';
@@ -77,16 +78,14 @@ class _SignInViewState extends State<SignInView> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AuthController>(builder: (authController) {
-      return Form(
-        key: _formKeyLogin,
-        child: activeCentralizeLogin(Get.find<SplashController>().configModel!.centralizeLoginSetup!, authController),
-      );
-    });
+    return Form(
+      key: _formKeyLogin,
+      child: activeCentralizeLogin(Get.find<SplashController>().configModel!.centralizeLoginSetup!),
+    );
   }
 
-  Widget activeCentralizeLogin(CentralizeLoginSetup centralizeLoginSetup, AuthController authController) {
-    CentralizeLoginType centralizeLogin = CentralizeLoginHelper.getPreferredLoginMethod(centralizeLoginSetup, authController.isOtpViewEnable).type;
+  Widget activeCentralizeLogin(CentralizeLoginSetup centralizeLoginSetup) {
+    CentralizeLoginType centralizeLogin = CentralizeLoginHelper.getPreferredLoginMethod(centralizeLoginSetup, _isOtpViewEnable).type;
     switch (centralizeLogin) {
       case CentralizeLoginType.otp:
         return OtpLoginWidget(
@@ -128,7 +127,7 @@ class _SignInViewState extends State<SignInView> {
               _phoneController.text = '';
             }
             setState(() {
-              authController.enableOtpView(enable: true);
+              _isOtpViewEnable = true;
             });
           },
           onWebSubmit: (){},
@@ -144,7 +143,7 @@ class _SignInViewState extends State<SignInView> {
             _phoneController.text = '';
           }
           setState(() {
-            authController.enableOtpView(enable: true);
+            _isOtpViewEnable = true;
           });
         });
 
@@ -161,12 +160,14 @@ class _SignInViewState extends State<SignInView> {
               _phoneController.text = '';
             }
             setState(() {
-              authController.enableOtpView(enable: true);
+              _isOtpViewEnable = true;
             });
           },
         );
 
-      }
+      default:
+        return const SizedBox();
+    }
   }
   
   void _otpLogin(AuthController authController, String countryDialCode, CentralizeLoginType loginType) async {

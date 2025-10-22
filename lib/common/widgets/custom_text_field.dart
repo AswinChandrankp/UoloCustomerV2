@@ -12,6 +12,7 @@ import 'package:sixam_mart/common/widgets/code_picker_widget.dart';
 class CustomTextField extends StatefulWidget {
   final String titleText;
   final String hintText;
+  final  radius;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final FocusNode? nextFocus;
@@ -46,6 +47,7 @@ class CustomTextField extends StatefulWidget {
   final Function()? suffixOnPressed;
   final bool divider;
   final bool fromUpdateProfile;
+  final Color? color;
 
   const CustomTextField({
     super.key,
@@ -84,7 +86,7 @@ class CustomTextField extends StatefulWidget {
     this.suffixOnPressed,
     this.suffixImage,
     this.divider = false,
-    this.fromUpdateProfile = false,
+    this.fromUpdateProfile = false, this.radius,  this.color,
   });
 
   @override
@@ -119,12 +121,14 @@ class CustomTextFieldState extends State<CustomTextField> {
             FocusScope.of(context).requestFocus(widget.focusNode);
           },
           child: TextFormField(
+            
+            showCursor: false,
             maxLines: widget.maxLines,
             controller: widget.controller,
             focusNode: widget.focusNode,
             textAlign: widget.textAlign,
             validator: widget.validator,
-            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+            style: robotoRegular.copyWith(fontSize: 13,color: widget.color ?? Colors.black54 ,fontWeight: FontWeight.w500),
             textInputAction: widget.inputAction,
             keyboardType: widget.isAmount ? TextInputType.number : widget.inputType,
             cursorColor: Theme.of(context).primaryColor,
@@ -136,36 +140,32 @@ class CustomTextFieldState extends State<CustomTextField> {
                 : widget.isAmount ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))] : widget.isNumber ? [FilteringTextInputFormatter.allow(RegExp(r'\d'))] : null,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                borderRadius: BorderRadius.circular (widget.radius ?? Dimensions.radiusDefault + 5),
                 borderSide: BorderSide(style: widget.showBorder ? BorderStyle.solid : BorderStyle.none, width: ResponsiveHelper.isDesktop(context) ? 0.7 : 0.3, color: Theme.of(context).disabledColor),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                borderRadius: BorderRadius.circular(widget.radius ??Dimensions.radiusDefault + 5),
                 borderSide: BorderSide(style: widget.showBorder ? BorderStyle.solid : BorderStyle.none, width: 1, color: Theme.of(context).primaryColor),
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                borderRadius: BorderRadius.circular(widget.radius ??Dimensions.radiusDefault + 5),
                 borderSide: BorderSide(style: widget.showBorder ? BorderStyle.solid : BorderStyle.none, width: 0.3, color: Theme.of(context).primaryColor),
               ),
               errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                borderRadius: BorderRadius.circular(widget.radius ?? Dimensions.radiusDefault + 5),
                 borderSide: BorderSide(style: widget.showBorder ? BorderStyle.solid : BorderStyle.none, color: Theme.of(context).colorScheme.error),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                borderRadius: BorderRadius.circular(widget.radius ??Dimensions.radiusDefault + 5),
                 borderSide: BorderSide(style: widget.showBorder ? BorderStyle.solid : BorderStyle.none, color: Theme.of(context).colorScheme.error),
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                borderSide: BorderSide(style: widget.showBorder ? BorderStyle.solid : BorderStyle.none, color: Theme.of(context).disabledColor.withValues(alpha: 0.2)),
               ),
               isDense: true,
               hintText: widget.hintText.isEmpty || !ResponsiveHelper.isDesktop(context) ? widget.titleText : widget.hintText,
-              fillColor: Theme.of(context).cardColor,
-              hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).hintColor),
+              fillColor: Theme.of(context).disabledColor.withOpacity(0.1),
+              hintStyle: robotoRegular.copyWith(fontSize: 13, color:widget.color ?? Colors.black54),
               filled: true,
 
-              labelStyle : widget.showLabelText ? robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).hintColor) : null,
+              labelStyle : widget.showLabelText ? robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color:widget.color ?? Theme.of(context).hintColor) : null,
               errorStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
 
               label: widget.showLabelText ? Text.rich(TextSpan(children: [
@@ -174,7 +174,7 @@ class CustomTextFieldState extends State<CustomTextField> {
                   text: widget.labelText ?? '',
                   style: robotoRegular.copyWith(
                     fontSize: widget.labelTextSize ?? Dimensions.fontSizeLarge,
-                    color: ((widget.focusNode?.hasFocus == true || widget.controller!.text.isNotEmpty ) &&  widget.isEnabled) ? Theme.of(context).textTheme.bodyLarge?.color :  Theme.of(context).hintColor.withValues(alpha: .75),
+                    color: ((widget.focusNode?.hasFocus == true || widget.controller!.text.isNotEmpty ) &&  widget.isEnabled) ? Theme.of(context).textTheme.bodyLarge?.color :widget.color ??  Theme.of(context).hintColor.withOpacity(.75),
                   ),
                 ),
 
@@ -220,11 +220,11 @@ class CustomTextFieldState extends State<CustomTextField> {
               ]),
               ) : widget.prefixImage != null && widget.prefixIcon == null ? Padding(
                 padding: EdgeInsets.all(ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeSmall : Dimensions.paddingSizeDefault),
-                child: CustomAssetImageWidget(widget.prefixImage!, height: 10, width: 10, fit: BoxFit.cover, color: widget.focusNode?.hasFocus == true ? Theme.of(context).primaryColor : Theme.of(context).hintColor.withValues(alpha: 0.7)),
-              ) : widget.prefixImage == null && widget.prefixIcon != null ? Icon(widget.prefixIcon, size: widget.iconSize, color: widget.focusNode?.hasFocus == true ? Theme.of(context).primaryColor : Theme.of(context).hintColor.withValues(alpha: 0.7)) : null,
+                child: CustomAssetImageWidget(widget.prefixImage!, height: 10, width: 10, fit: BoxFit.cover, color: widget.focusNode?.hasFocus == true ? Theme.of(context).primaryColor : Theme.of(context).hintColor.withOpacity(0.7)),
+              ) : widget.prefixImage == null && widget.prefixIcon != null ? Icon(widget.prefixIcon, size: widget.iconSize, color: widget.focusNode?.hasFocus == true ? Theme.of(context).primaryColor : Theme.of(context).hintColor.withOpacity(0.7)) : null,
 
               suffixIcon: widget.isPassword ? IconButton(
-                icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: Theme.of(context).hintColor.withValues(alpha: 0.3)),
+                icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility, color: Theme.of(context).hintColor.withOpacity(0.3)),
                 onPressed: _toggle,
               ) : widget.suffixImage != null ? InkWell(
                 onTap: widget.suffixOnPressed, child: Padding(

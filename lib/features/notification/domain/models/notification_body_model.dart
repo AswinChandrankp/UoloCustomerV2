@@ -14,8 +14,7 @@ enum NotificationType{
   //ignore: constant_identifier_names
   cashback,
   //ignore: constant_identifier_names
-  loyalty_point,
-  trip,
+  loyalty_point
 }
 
 class NotificationBodyModel {
@@ -89,7 +88,6 @@ class NotificationBodyModel {
       NotificationType.referral_earn.toString(): NotificationType.referral_earn,
       NotificationType.cashback.toString(): NotificationType.cashback,
       NotificationType.loyalty_point.toString(): NotificationType.loyalty_point,
-      NotificationType.trip.toString(): NotificationType.trip,
     };
 
     return enumMap[enumString] ?? NotificationType.general;

@@ -1,11 +1,19 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:sixam_mart/common/widgets/custom_image.dart';
+import 'package:sixam_mart/common/widgets/custom_loader.dart';
 import 'package:sixam_mart/common/widgets/footer_view.dart';
+import 'package:sixam_mart/features/cart/controllers/cart_controller.dart';
 import 'package:sixam_mart/features/category/controllers/category_controller.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
+import 'package:sixam_mart/features/store/widgets/bottom_cart_widget.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
+import 'package:sixam_mart/util/app_constants.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/common/widgets/cart_widget.dart';
@@ -80,6 +88,8 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
     });
   }
 
+
+  bool isgrocery = Get.find<SplashController>().module!.moduleType.toString() == AppConstants.grocery;
   @override
   Widget build(BuildContext context) {
     return GetBuilder<CategoryController>(builder: (catController) {
@@ -111,12 +121,16 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
             return;
           }
         },
-        child: Scaffold(
+        child:
+         
+         Scaffold(
+          backgroundColor: Theme.of(context).cardColor,
           appBar: (ResponsiveHelper.isDesktop(context) ? const WebMenuBar() : AppBar(
             backgroundColor: Theme.of(context).cardColor,
             surfaceTintColor: Theme.of(context).cardColor,
-            shadowColor: Theme.of(context).disabledColor.withValues(alpha: 0.5),
-            elevation: 2,
+            shadowColor: Theme.of(context).cardColor  ,
+            elevation: 0,
+            forceMaterialTransparency: true,
             title: catController.isSearching ? SizedBox(
               height: 45,
               child: TextField(
@@ -174,10 +188,10 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
                 ),
               ) : const SizedBox(),
 
-              IconButton(
-                onPressed: () => Get.toNamed(RouteHelper.getCartRoute()),
-                icon: CartWidget(color: Theme.of(context).textTheme.bodyLarge!.color, size: 25),
-              ),
+              // IconButton(
+              //   onPressed: () => Get.toNamed(RouteHelper.getCartRoute()),
+              //   icon: CartWidget(color: Theme.of(context).textTheme.bodyLarge!.color, size: 25),
+              // ),
 
               VegFilterWidget(type: catController.type, fromAppBar: true, onSelected: (String type) {
                 if(catController.isSearching) {
@@ -204,8 +218,8 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
             ],
           )),
           endDrawer: const MenuDrawer(),endDrawerEnableOpenDragGesture: false,
-          body: ResponsiveHelper.isDesktop(context) ? SingleChildScrollView(
-            child: FooterView(
+          body:    ResponsiveHelper.isDesktop(context) ?  SingleChildScrollView(
+            child:  FooterView(
               child: Center(child: SizedBox(
                 width: Dimensions.webMaxWidth,
                 child: Column(children: [
@@ -227,13 +241,13 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
                             margin: const EdgeInsets.only(right: Dimensions.paddingSizeSmall),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                              color: index == catController.subCategoryIndex ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : Colors.transparent,
+                              color: index == catController.subCategoryIndex ? Theme.of(context).primaryColor   : Colors.transparent,
                             ),
                             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                               Text(
                                 catController.subCategoryList![index].name!,
                                 style: index == catController.subCategoryIndex
-                                    ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor)
+                                    ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).cardColor)
                                     : robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                               ),
                             ]),
@@ -327,7 +341,8 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
               const SizedBox(height: 10),
 
               (catController.subCategoryList != null && !catController.isSearching) ? Center(child: Container(
-                height: 40, width: Dimensions.webMaxWidth, color: Theme.of(context).cardColor,
+                height: 40, width: Dimensions.webMaxWidth, 
+                // color: Theme.of(context).cardColor,
                 padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
                 child: ListView.builder(
                   key: scaffoldKey,
@@ -342,14 +357,14 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
                         padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
                         margin: const EdgeInsets.only(right: Dimensions.paddingSizeSmall),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                          color: index == catController.subCategoryIndex ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(Dimensions.radiusSmall + 5),
+                          color: index == catController.subCategoryIndex ? Theme.of(context).primaryColor   : Colors.transparent,
                         ),
                         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                           Text(
                             catController.subCategoryList![index].name!,
                             style: index == catController.subCategoryIndex
-                                ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor)
+                                ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).cardColor)
                                 : robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                           ),
                         ]),
@@ -359,7 +374,7 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
                 ),
               )) : const SizedBox(),
 
-              Center(child: Container(
+            isgrocery ? SizedBox() :  Center(child: Container(
                 width: Dimensions.webMaxWidth,
                 color: Theme.of(context).cardColor,
                 child: TabBar(
@@ -407,7 +422,13 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
                   }
                   return false;
                 },
-                child: TabBarView(
+                child:isgrocery ?  SingleChildScrollView(
+                      controller: scrollController,
+                      child: ItemsView(
+                        isStore: false, items: item, stores: null, noDataText: 'no_category_item_found'.tr,
+                        fromGrocerycategory: isgrocery,
+                      ),
+                    ) :  TabBarView(
                   controller: _tabController,
                   children: [
                     SingleChildScrollView(
@@ -416,7 +437,7 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
                         isStore: false, items: item, stores: null, noDataText: 'no_category_item_found'.tr,
                       ),
                     ),
-                    SingleChildScrollView(
+                   SingleChildScrollView(
                       controller: storeScrollController,
                       child: ItemsView(
                         isStore: true, items: null, stores: stores,
@@ -432,8 +453,163 @@ class CategoryItemScreenState extends State<CategoryItemScreen> with TickerProvi
                 child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
               )) : const SizedBox(),
 
+
+          // SizedBox(height: 100),
             ]),
           ),
+
+           floatingActionButton: GetBuilder<CartController>(builder: (cartController) {
+  return 
+  
+  isgrocery ? Stack(
+    children: [
+      
+    //   Positioned(
+    //     bottom: 120,
+    //     right: 5,
+    //     child:   Container(
+    //   width: 60,
+    //   height: 60,
+    //   decoration: BoxDecoration(
+    //     color: const Color.fromARGB(255, 32, 31, 31),
+    //     borderRadius: BorderRadius.circular(100),
+    //   ),
+      
+    //   child: FloatingActionButton(
+    //     backgroundColor: const Color.fromARGB(255, 32, 31, 31),
+    //     onPressed: (){
+    //               // showgrocceryMenu(
+    //               //    context,
+    //               // );
+        
+    //   },
+    //   isExtended: true, 
+    //    child: const Icon(Icons.menu_book_sharp,color: Colors.white,size: 30,),
+      
+    //   ),
+    // ) ,
+   
+    //   ),
+
+      // Cart Container (Visible only if cart items > 0)
+      if (cartController.cartList.isNotEmpty) 
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 40, bottom: 20),
+            child: InkWell(
+              onTap: () => Get.toNamed(RouteHelper.getCheckoutRoute('cart')),
+              child: Container(
+                width: 221,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(50), 
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                       
+                      //  Builder(
+                      //    builder: (context) {
+                           
+                      //      return Image.network(
+                      //       cartController.cartList[0].item!.imageFullUrl!,);
+                      //    }
+                      //  ),
+              
+                      Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Container(
+                          height: 38,
+                          width: 80,
+                                        decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: BorderRadius.circular(50), 
+                                      ),
+                          child: Stack(
+                            children: [
+                            
+                                  for (int index = 0;
+                                  //  index < cartController.cartList.length  ; 
+                                  index < min(cartController.cartList.length , 3);
+                                  //  index < min(cartController.cartList.length, 3);
+                                      index++) ...[
+                                    Positioned(
+                                      left: index * 20,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                        
+                                        child:  CustomImage(
+                                          image: cartController.cartList[index].item!.imageFullUrl ?? "",
+                                          fit: BoxFit.fill,
+                                          height: 38,
+                                          width: 38,
+                                        )
+                                        //  Image.network(
+                                        //   cartController!.cartList[index].item!.imageFullUrl ?? "",
+                                        //   height: 38,
+                                        //   width: 38,
+                                        //   fit: BoxFit.fill,
+                                        // ),
+                                      ),
+                                    ),
+                                  ]
+                                 
+                              //  Positioned(child: Image.network(cartController.cartList[].item!.imageFullUrl!,height: 50,width: 50,fit: BoxFit.fill,),) 
+                            ],
+                          ),
+                        ),
+                      ),
+                    
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("View Cart", style: robotoRegular.copyWith(color: Colors.white, fontSize: 15)),
+                        Text(
+                          "${cartController.cartList.length ?? 0} Items",
+                          style: const TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      ],
+                    ),
+              
+              
+                    Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: Container(
+                        height: 38,
+                        width: 38,
+                        decoration: BoxDecoration(
+                          borderRadius:  BorderRadius.circular(100),
+                          color:  const Color(0xFF27093C)
+                      ),
+                       child:  const Center(child: Icon(CupertinoIcons.right_chevron, color: Colors.white,),),
+                      ),
+                    )
+              
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+    ],
+  ) : const SizedBox();
+
+
+
+}),
+           bottomNavigationBar: isgrocery ? SizedBox(): GetBuilder<CartController>(
+      builder: (cartController){
+        return  cartController.cartList.isNotEmpty && !ResponsiveHelper.isDesktop(context)
+         ?  BottomCartWidget(
+          fromgroccery: false,
+         )
+         : const SizedBox() ;
+      },
+    ),
+    
         ),
       );
     });

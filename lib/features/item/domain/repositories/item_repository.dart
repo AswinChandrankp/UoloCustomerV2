@@ -39,6 +39,16 @@ class ItemRepository implements ItemRepositoryInterface {
   }
 
   @override
+  Future add(value) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future delete(int? id) {
+    throw UnimplementedError();
+  }
+
+  @override
   Future get(String? id, {bool isConditionWiseItem = false}) async {
     if(isConditionWiseItem) {
       return await _getConditionsWiseItems(int.parse(id!));
@@ -67,14 +77,11 @@ class ItemRepository implements ItemRepositoryInterface {
   }
 
   @override
-  Future getList({int? offset, String? type, bool isPopularItem = false, bool isReviewedItem = false, bool isFeaturedCategoryItems = false, bool isRecommendedItems = false,
-    bool isCommonConditions = false, bool isDiscountedItems = false, DataSourceEnum? source,
-    String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice,
-  }) async {
+  Future getList({int? offset, String? type, bool isPopularItem = false, bool isReviewedItem = false, bool isFeaturedCategoryItems = false, bool isRecommendedItems = false, bool isCommonConditions = false, bool isDiscountedItems = false, DataSourceEnum? source}) async {
     if(isPopularItem) {
-      return await _getPopularItemList(type: type!, source: source ?? DataSourceEnum.client, offset: offset!, search: search, categoryIds: categoryIds, filter: filter, rating: rating, minPrice: minPrice, maxPrice: maxPrice);
+      return await _getPopularItemList(type!, source: source ?? DataSourceEnum.client);
     } else if(isReviewedItem) {
-      return await _getReviewedItemList(type: type!, source: source ?? DataSourceEnum.client, offset: offset!, search: search, categoryIds: categoryIds, filter: filter, rating: rating, minPrice: minPrice, maxPrice: maxPrice);
+      return await _getReviewedItemList(type!, source: source ?? DataSourceEnum.client);
     } else if(isFeaturedCategoryItems) {
       return await _getFeaturedCategoriesItemList(source: source ?? DataSourceEnum.client);
     } else if(isRecommendedItems) {
@@ -82,134 +89,56 @@ class ItemRepository implements ItemRepositoryInterface {
     } else if(isCommonConditions) {
       return await _getCommonConditions();
     } else if(isDiscountedItems) {
-      return await _getDiscountedItemList(type: type!, source: source ?? DataSourceEnum.client, offset: offset!, search: search, categoryIds: categoryIds, filter: filter, rating: rating, minPrice: minPrice, maxPrice: maxPrice);
+      return await _getDiscountedItemList(type!, source: source ?? DataSourceEnum.client);
     }
   }
 
-  Future<ItemModel?> _getPopularItemList({required String type, required DataSourceEnum source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice}) async {
-    ItemModel? popularItemList;
+  Future<List<Item>?> _getPopularItemList(String type, {required DataSourceEnum source}) async {
+    List<Item>? popularItemList;
     String cacheId = '${AppConstants.popularItemUri}?type=$type-${Get.find<SplashController>().module!.id!}';
-
-    final filterString = filter != null ? jsonEncode(filter) : [];
-    final categoryIdsString = categoryIds != null ? jsonEncode(categoryIds) : [];
-
-    Map<String, dynamic>? query = {
-      'type': type,
-      'offset': offset.toString(),
-      'limit': '25',
-      if (search != null && search.isNotEmpty) 'search': search,
-      if (categoryIds != null && categoryIds.isNotEmpty) 'category_ids': categoryIdsString,
-      if (filter != null && filter.isNotEmpty) 'filter': filterString,
-      if (rating != null) 'rating_count': rating.toString(),
-      if (minPrice != null) 'min_price': minPrice.toString(),
-      if (maxPrice != null) 'max_price': maxPrice.toString(),
-    };
-
-    String uri = Uri.parse(AppConstants.popularItemUri).replace(queryParameters: query).toString();
 
     switch(source) {
 
       case DataSourceEnum.client:
-        Response response = await apiClient.getData(uri);
+        Response response = await apiClient.getData('${AppConstants.popularItemUri}?type=$type');
         if (response.statusCode == 200) {
-          popularItemList = ItemModel.fromJson(response.body);
+          popularItemList = [];
+          popularItemList.addAll(ItemModel.fromJson(response.body).items!);
           LocalClient.organize(DataSourceEnum.client, cacheId, jsonEncode(response.body), apiClient.getHeader());
         }
-        break;
 
       case DataSourceEnum.local:
         String? cacheResponseData = await LocalClient.organize(DataSourceEnum.local, cacheId, null, null);
         if(cacheResponseData != null) {
-          popularItemList = ItemModel.fromJson(jsonDecode(cacheResponseData));
+          popularItemList = [];
+          popularItemList.addAll(ItemModel.fromJson(jsonDecode(cacheResponseData)).items!);
         }
-        break;
     }
 
     return popularItemList;
   }
 
-  Future<ItemModel?> _getReviewedItemList({required String type, required DataSourceEnum source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice}) async {
+  Future<ItemModel?> _getReviewedItemList(String type, {required DataSourceEnum source}) async {
     ItemModel? itemModel;
     String cacheId = '${AppConstants.reviewedItemUri}?type=$type${Get.find<SplashController>().module!.id!}';
-
-    final filterString = filter != null ? jsonEncode(filter) : [];
-    final categoryIdsString = categoryIds != null ? jsonEncode(categoryIds) : [];
-
-    Map<String, dynamic>? query = {
-      'type': type,
-      'offset': offset.toString(),
-      'limit': '25',
-      if (search != null && search.isNotEmpty) 'search': search,
-      if (categoryIds != null && categoryIds.isNotEmpty) 'category_ids': categoryIdsString,
-      if (filter != null && filter.isNotEmpty) 'filter': filterString,
-      if (rating != null) 'rating_count': rating.toString(),
-      if (minPrice != null) 'min_price': minPrice.toString(),
-      if (maxPrice != null) 'max_price': maxPrice.toString(),
-    };
-
-    String uri = Uri.parse(AppConstants.reviewedItemUri).replace(queryParameters: query).toString();
 
     switch(source) {
 
       case DataSourceEnum.client:
-        Response response = await apiClient.getData(uri);
+        Response response = await apiClient.getData('${AppConstants.reviewedItemUri}?type=$type');
         if(response.statusCode == 200) {
           itemModel = ItemModel.fromJson(response.body);
           LocalClient.organize(DataSourceEnum.client, cacheId, jsonEncode(response.body), apiClient.getHeader());
         }
-        break;
 
       case DataSourceEnum.local:
         String? cacheResponseData = await LocalClient.organize(DataSourceEnum.local, cacheId, null, null);
         if(cacheResponseData != null) {
           itemModel = ItemModel.fromJson(jsonDecode(cacheResponseData));
         }
-        break;
     }
 
     return itemModel;
-  }
-
-  Future<ItemModel?> _getDiscountedItemList({required String type, required DataSourceEnum source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice}) async {
-    ItemModel? discountedItem;
-    String cacheId = '${AppConstants.discountedItemsUri}?type=$type&offset=1&limit=50${Get.find<SplashController>().module!.id!}';
-
-    final filterString = filter != null ? jsonEncode(filter) : [];
-    final categoryIdsString = categoryIds != null ? jsonEncode(categoryIds) : [];
-
-    Map<String, dynamic>? query = {
-      'type': type,
-      'offset': offset.toString(),
-      'limit': '25',
-      if (search != null && search.isNotEmpty) 'search': search,
-      if (categoryIds != null && categoryIds.isNotEmpty) 'category_ids': categoryIdsString,
-      if (filter != null && filter.isNotEmpty) 'filter': filterString,
-      if (rating != null) 'rating_count': rating.toString(),
-      if (minPrice != null) 'min_price': minPrice.toString(),
-      if (maxPrice != null) 'max_price': maxPrice.toString(),
-    };
-
-    String uri = Uri.parse(AppConstants.discountedItemsUri).replace(queryParameters: query).toString();
-
-    switch(source) {
-
-      case DataSourceEnum.client:
-        Response response = await apiClient.getData(uri);
-        if (response.statusCode == 200) {
-          discountedItem = ItemModel.fromJson(response.body);
-          LocalClient.organize(DataSourceEnum.client, cacheId, jsonEncode(response.body), apiClient.getHeader());
-        }
-        break;
-
-      case DataSourceEnum.local:
-        String? cacheResponseData = await LocalClient.organize(DataSourceEnum.local, cacheId, null, null);
-        if(cacheResponseData != null) {
-          discountedItem = ItemModel.fromJson(jsonDecode(cacheResponseData));
-        }
-        break;
-    }
-
-    return discountedItem;
   }
 
   Future<ItemModel?> _getFeaturedCategoriesItemList({required DataSourceEnum source}) async {
@@ -270,18 +199,34 @@ class ItemRepository implements ItemRepositoryInterface {
     return commonConditions;
   }
 
+  Future<List<Item>?> _getDiscountedItemList(String type, {required DataSourceEnum source}) async {
+    List<Item>? discountedItemList;
+    String cacheId = '${AppConstants.discountedItemsUri}?type=$type&offset=1&limit=50${Get.find<SplashController>().module!.id!}';
+
+    switch(source) {
+
+      case DataSourceEnum.client:
+        Response response = await apiClient.getData('${AppConstants.discountedItemsUri}?type=$type&offset=1&limit=50');
+        if (response.statusCode == 200) {
+          discountedItemList = [];
+          discountedItemList.addAll(ItemModel.fromJson(response.body).items!);
+          LocalClient.organize(DataSourceEnum.client, cacheId, jsonEncode(response.body), apiClient.getHeader());
+
+        }
+
+      case DataSourceEnum.local:
+        String? cacheResponseData = await LocalClient.organize(DataSourceEnum.local, cacheId, null, null);
+        if(cacheResponseData != null) {
+          discountedItemList = [];
+          discountedItemList.addAll(ItemModel.fromJson(jsonDecode(cacheResponseData)).items!);
+        }
+    }
+
+    return discountedItemList;
+  }
+
   @override
   Future update(Map<String, dynamic> body, int? id) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future add(value) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future delete(int? id) {
     throw UnimplementedError();
   }
 

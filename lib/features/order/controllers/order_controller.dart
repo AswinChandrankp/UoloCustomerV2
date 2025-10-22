@@ -42,7 +42,7 @@ class OrderController extends GetxController implements GetxService {
   List<String?>? _refundReasons;
   List<String?>? get refundReasons => _refundReasons;
 
-  int _selectedReasonIndex = -1;
+  int _selectedReasonIndex = 0;
   int get selectedReasonIndex => _selectedReasonIndex;
 
   XFile? _refundImage;
@@ -60,9 +60,6 @@ class OrderController extends GetxController implements GetxService {
   List<String?>? _supportReasons;
   List<String?>? get supportReasons => _supportReasons;
 
-  final List<String> _selectedParcelCancelReason = [];
-  List<String>? get selectedParcelCancelReason => _selectedParcelCancelReason;
-
   void expandedUpdate(bool status){
     _isExpanded = status;
     update();
@@ -73,13 +70,8 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  void selectReason(int index, {bool isUpdate = true}){
-    if(_selectedReasonIndex == index) {
-      _selectedReasonIndex = -1;
-    }else {
-      _selectedReasonIndex = index;
-    }
-
+  void selectReason(int index,{bool isUpdate = true}){
+    _selectedReasonIndex = index;
     if(isUpdate) {
       update();
     }
@@ -112,7 +104,7 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> getRefundReasons() async {
+  Future<void> getRefundReasons()async {
     _selectedReasonIndex = 0;
     _refundReasons = null;
     _refundReasons = await orderServiceInterface.getRefundReasons();
@@ -192,6 +184,27 @@ class OrderController extends GetxController implements GetxService {
     return _orderDetails;
   }
 
+
+   Future<OrderDetailsModel?> getOrderDetailsoneitem(String orderID) async {
+    _orderDetails = null;
+    _isLoading = true;
+    _showCancelled = false;
+
+    if(_trackModel == null || (_trackModel!.orderType != 'parcel' && !_trackModel!.prescriptionOrder!)) {
+      List<OrderDetailsModel>? detailsList = await orderServiceInterface.getOrderDetails(orderID, AuthHelper.isLoggedIn() ? null : AuthHelper.getGuestId());
+      _isLoading = false;
+      if (detailsList != null) {
+        _orderDetails = [];
+        _orderDetails!.addAll(detailsList);
+      }
+    }else {
+      _isLoading = false;
+      _orderDetails = [];
+    }
+    update();
+    return _orderDetails![0];
+  }
+
   Future<ResponseModel?> trackOrder(String? orderID, OrderModel? orderModel, bool fromTracking,
       {String? contactNumber, bool? fromGuestInput = false}) async {
     _trackModel = null;
@@ -221,6 +234,37 @@ class OrderController extends GetxController implements GetxService {
     return _responseModel;
   }
 
+
+  
+  Future<OrderModel?> trackOrderfromnotification(String? orderID, OrderModel? orderModel, bool fromTracking,
+      {String? contactNumber, bool? fromGuestInput = false}) async {
+    _trackModel = null;
+    _responseModel = null;
+    if(!fromTracking) {
+      _orderDetails = null;
+    }
+    _showCancelled = false;
+    if(orderModel == null) {
+      _isLoading = true;
+      Response response = await orderServiceInterface.trackOrder(
+        orderID, AuthHelper.isLoggedIn() ? null : AuthHelper.getGuestId(),
+        contactNumber: contactNumber,
+      );
+      if (response.statusCode == 200) {
+        _trackModel = OrderModel.fromJson(response.body);
+        _responseModel = ResponseModel(true, response.body.toString());
+      } else {
+        _responseModel = ResponseModel(false, response.statusText);
+      }
+      _isLoading = false;
+      update();
+    } else {
+      _trackModel = orderModel;
+      _responseModel = ResponseModel(true, 'Successful');
+    }
+    return _trackModel;
+  }
+
   Future<ResponseModel?> timerTrackOrder(String orderID, {String? contactNumber}) async {
     _showCancelled = false;
 
@@ -239,10 +283,10 @@ class OrderController extends GetxController implements GetxService {
     return _responseModel;
   }
 
-  Future<bool> cancelOrder({required int orderID, String? reason, String? guestId, required bool isParcel, List<String>? reasons, String? comment}) async {
+  Future<bool> cancelOrder(int? orderID, String? cancelReason, {String? guestId}) async {
     _isLoading = true;
     update();
-    bool success = await orderServiceInterface.cancelOrder(orderID: orderID.toString(), reason: reason, guestId: guestId, isParcel: isParcel, reasons: reasons, comment: comment);
+    bool success = await orderServiceInterface.cancelOrder(orderID.toString(), cancelReason, guestId: guestId);
     _isLoading = false;
     Get.back();
     if (success) {
@@ -275,32 +319,4 @@ class OrderController extends GetxController implements GetxService {
       createAccount: createAccount, guestId: guestId,
     );
   }
-
-  void toggleParcelCancelReason(String reason, bool isSelected) {
-    if (isSelected) {
-      if (!_selectedParcelCancelReason.contains(reason)) {
-        _selectedParcelCancelReason.add(reason);
-      }
-    } else {
-      _selectedParcelCancelReason.remove(reason);
-    }
-    update();
-  }
-
-  bool isReasonSelected(String reason) {
-    return _selectedParcelCancelReason.contains(reason);
-  }
-
-  void clearSelectedParcelCancelReason() {
-    _selectedParcelCancelReason.clear();
-  }
-
-  Future<bool> submitParcelReturn({required int orderId, required int returnOtp, String? contactNumber}) async {
-    bool isSuccess = await orderServiceInterface.submitParcelReturn(orderId: orderId, orderStatus: 'returned', returnOtp: returnOtp);
-    if(isSuccess) {
-      trackOrder(orderId.toString(), null, true, contactNumber: contactNumber);
-    }
-    return isSuccess;
-  }
-
 }

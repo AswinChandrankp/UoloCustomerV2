@@ -9,6 +9,7 @@ import 'package:sixam_mart/features/order/domain/models/support_model.dart';
 import 'package:sixam_mart/features/order/domain/repositories/order_repository_interface.dart';
 import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/util/app_constants.dart';
+import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
 
 class OrderRepository implements OrderRepositoryInterface {
   final ApiClient apiClient;
@@ -37,23 +38,26 @@ class OrderRepository implements OrderRepositoryInterface {
   }
 
   @override
-  Future<bool> cancelOrder({required String orderID, String? reason, String? guestId, required bool isParcel, List<String>? reasons, String? comment}) async {
+  Future add(value) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future delete(int? id) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> cancelOrder(String orderID, String? reason, {String? guestId}) async {
     bool success = false;
-
-    Map<String, dynamic> data;
-
-    if (isParcel) {
-      data = {'_method': 'put', 'order_id': orderID, 'reason': reasons ?? [], 'note': comment ?? ''};
-    } else {
-      data = {'_method': 'put', 'order_id': orderID, 'reason': reason ?? '', 'note': comment ?? ''};
-    }
-
+    Map<String, String> data = {'_method': 'put', 'order_id': orderID, 'reason': reason!};
     if(AuthHelper.isGuestLoggedIn() || guestId != null){
       data.addAll({'guest_id': guestId ?? AuthHelper.getGuestId()});
     }
-    Response response = await apiClient.postData(AppConstants.orderCancelUri, data, );
+    Response response = await apiClient.postData(AppConstants.orderCancelUri, data);
     if (response.statusCode == 200) {
       success = true;
+      showCustomSnackBar(response.body['message'], isError: false);
     }
     return success;
   }
@@ -125,6 +129,7 @@ class OrderRepository implements OrderRepositoryInterface {
     if (response.statusCode == 200) {
       RefundModel refundModel = RefundModel.fromJson(response.body);
       refundReasons = [];
+      refundReasons.insert(0, 'select_an_option');
       for (var element in refundModel.refundReasons!) {
         refundReasons.add(element.reason);
       }
@@ -143,27 +148,6 @@ class OrderRepository implements OrderRepositoryInterface {
       }
     }
     return supportReasons;
-  }
-
-  @override
-  Future<bool> submitParcelReturn({required int orderId, required String orderStatus, required int returnOtp}) async {
-    Map<String, dynamic> data = {
-      'order_id': orderId,
-      'order_status': orderStatus,
-      'return_otp': returnOtp,
-    };
-    Response response = await apiClient.postData(AppConstants.customerParcelReturn, data);
-    return response.statusCode == 200;
-  }
-
-  @override
-  Future add(value) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future delete(int? id) {
-    throw UnimplementedError();
   }
 
   @override

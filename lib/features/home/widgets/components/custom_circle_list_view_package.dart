@@ -501,6 +501,6 @@ class Gallery3DController {
 }
 
 mixin class Gallery3DMixin {
-  void animateTo(dynamic angle) {}
-  void jumpTo(dynamic angle) {}
+  void animateTo(angle) {}
+  void jumpTo(angle) {}
 }

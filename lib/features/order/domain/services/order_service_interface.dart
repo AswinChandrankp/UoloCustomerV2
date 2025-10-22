@@ -13,11 +13,10 @@ abstract class OrderServiceInterface {
   Future<List<String?>?> getRefundReasons();
   Future<void> submitRefundRequest(int selectedReasonIndex, List<String?>? refundReasons, String note, String? orderId, XFile? refundImage);
   Future<Response> trackOrder(String? orderID, String? guestId, {String? contactNumber});
-  Future<bool> cancelOrder({required String orderID, String? reason, String? guestId, required bool isParcel, List<String>? reasons, String? comment});
+  Future<bool> cancelOrder(String orderID, String? reason, {String? guestId});
   OrderModel? prepareOrderModel(PaginatedOrderModel? runningOrderModel, int? orderID);
   Future<bool> switchToCOD(String? orderID, {String? guestId});
   void paymentRedirect({required String url, required bool canRedirect, required String? contactNumber,
     required Function onClose, required final String? addFundUrl, required final String? subscriptionUrl,
     required final String orderID, int? storeId, required bool createAccount, required String guestId});
-  Future<bool> submitParcelReturn({required int orderId, required String orderStatus, required int returnOtp});
 }

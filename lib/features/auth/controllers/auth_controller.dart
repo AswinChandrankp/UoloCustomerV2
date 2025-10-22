@@ -1,6 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sixam_mart/common/models/response_model.dart';
@@ -45,8 +44,17 @@ class AuthController extends GetxController implements GetxService {
 
   var countryDialCode= "+880";
 
-  bool _isOtpViewEnable = false;
-  bool get isOtpViewEnable => _isOtpViewEnable;
+/*  Future<ResponseModel> registration(SignUpBodyModel signUpBody) async {
+    _isLoading = true;
+    update();
+    ResponseModel responseModel = await authServiceInterface.registration(signUpBody, Get.find<SplashController>().configModel!.customerVerification!);
+    if (responseModel.isSuccess && !Get.find<SplashController>().configModel!.customerVerification!) {
+      Get.find<ProfileController>().getUserInfo();
+    }
+    _isLoading = false;
+    update();
+    return responseModel;
+  }*/
 
   Future<ResponseModel> registration(SignUpBodyModel signUpBody) async {
     _isLoading = true;
@@ -77,18 +85,6 @@ class AuthController extends GetxController implements GetxService {
     return responseModel;
   }
 
-  void resetOtpView({bool isUpdate = true}) {
-    _isOtpViewEnable = false;
-    if(isUpdate) {
-      update();
-    }
-  }
-
-  void enableOtpView({bool enable = false}) {
-    _isOtpViewEnable = enable;
-    update();
-  }
-
   Future<ResponseModel> guestLogin() async {
     _guestLoading = true;
     update();
@@ -97,6 +93,17 @@ class AuthController extends GetxController implements GetxService {
     update();
     return responseModel;
   }
+
+  /*Future<void> loginWithSocialMedia(SocialLogInBody socialLogInBody) async {
+    _isLoading = true;
+    update();
+    bool canNavigateToLocation = await authServiceInterface.loginWithSocialMedia(socialLogInBody, 60, Get.find<SplashController>().configModel!.customerVerification!);
+    if(canNavigateToLocation) {
+      Get.find<LocationController>().navigateToLocationScreen('sign-in');
+    }
+    _isLoading = false;
+    update();
+  }*/
 
   Future<ResponseModel> loginWithSocialMedia(SocialLogInBody socialLogInBody) async {
     _isLoading = true;
@@ -135,6 +142,7 @@ class AuthController extends GetxController implements GetxService {
         && responseModel.authResponseModel!.isEmailVerified! && responseModel.authResponseModel!.isPersonalInfo!
         && responseModel.authResponseModel!.isExistUser == null) {
       Get.find<ProfileController>().getUserInfo();
+      print('------------call from auth controller get user cart data');
       Get.find<CartController>().getCartDataOnline();
     }
   }
@@ -177,9 +185,9 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<void> socialLogout() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-    googleSignIn.disconnect();
-    await FacebookAuth.instance.logOut();
+    // final GoogleSignIn googleSignIn = GoogleSignIn();
+    // googleSignIn.disconnect();
+    // await FacebookAuth.instance.logOut();
   }
 
   Future<bool> clearSharedAddress() async {

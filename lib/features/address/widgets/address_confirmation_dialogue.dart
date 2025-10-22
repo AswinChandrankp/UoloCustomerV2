@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:sixam_mart/features/address/controllers/address_controller.dart';
+import 'package:sixam_mart/features/location/controllers/location_controller.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
@@ -56,8 +56,8 @@ class AddressConfirmDialogue extends StatelessWidget {
               ),
               const SizedBox(height: Dimensions.paddingSizeLarge),
 
-              GetBuilder<AddressController>(builder: (addressController) {
-                return !addressController.isLoading ? Row( children: [
+              GetBuilder<LocationController>(builder: (locationController) {
+                return !locationController.isLoading ? Row( children: [
                   SizedBox(width: isDesktop ? Dimensions.paddingSizeExtremeLarge : 0),
                   Expanded(child: TextButton(
                     onPressed: () => onYesPressed(),
@@ -74,9 +74,9 @@ class AddressConfirmDialogue extends StatelessWidget {
                   SizedBox(width: isDesktop ? Dimensions.paddingSizeExtraLarge : Dimensions.paddingSizeLarge),
 
                   Expanded(child: CustomButton(
-                    buttonText:  'cancel'.tr, textColor: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.5),
+                    buttonText:  'cancel'.tr, textColor: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5),
                     onPressed: () => Get.back(),
-                    radius: Dimensions.radiusSmall, height: 50, color: Theme.of(context).disabledColor.withValues(alpha: 0.4),
+                    radius: Dimensions.radiusSmall, height: 50, color: Theme.of(context).disabledColor.withOpacity(0.4),
                   )),
                   SizedBox(width: isDesktop ? Dimensions.paddingSizeExtremeLarge : 0),
                 ]) : const Center(child: CircularProgressIndicator());

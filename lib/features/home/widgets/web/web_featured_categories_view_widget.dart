@@ -82,7 +82,7 @@ class _WebFeaturedCategoriesViewWidgetState extends State<WebFeaturedCategoriesV
             padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
             child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                color: Theme.of(context).primaryColor  ,
               ),
               child: Column(children: [
                 Padding(
@@ -153,7 +153,7 @@ class _WebFeaturedCategoriesViewWidgetState extends State<WebFeaturedCategoriesV
                       Positioned(
                         top: 90, right: 0,
                         child: ArrowIconButton(
-                          onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+                          onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                               duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
                         ),
                       ),
@@ -162,7 +162,7 @@ class _WebFeaturedCategoriesViewWidgetState extends State<WebFeaturedCategoriesV
                       Positioned(
                         top: 90, left: 0,
                         child: ArrowIconButton(
-                          onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+                          onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                               duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
                           isRight: false,
                         ),
@@ -188,7 +188,7 @@ class WebFeaturedCategoriesShimmerView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          color: Theme.of(context).primaryColor  ,
         ),
         child: Column(children: [
           Padding(

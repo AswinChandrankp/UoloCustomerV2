@@ -2,7 +2,6 @@ import 'package:get/get_connect/connect.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sixam_mart/api/api_client.dart';
-import 'package:sixam_mart/features/checkout/domain/models/surge_price_model.dart';
 import 'package:sixam_mart/features/payment/domain/models/offline_method_model.dart';
 import 'package:sixam_mart/features/checkout/domain/models/place_order_body_model.dart';
 import 'package:sixam_mart/features/checkout/domain/repositories/checkout_repository_interface.dart';
@@ -37,7 +36,7 @@ class CheckoutRepository implements CheckoutRepositoryInterface {
   Future<Response> getDistanceInMeter(LatLng originLatLng, LatLng destinationLatLng) async {
     return await apiClient.getData(
       '${AppConstants.distanceMatrixUri}?origin_lat=${originLatLng.latitude}&origin_lng=${originLatLng.longitude}'
-          '&destination_lat=${destinationLatLng.latitude}&destination_lng=${destinationLatLng.longitude}&mode=WALK',
+          '&destination_lat=${destinationLatLng.latitude}&destination_lng=${destinationLatLng.longitude}&mode=walking',
       handleError: false,
     );
   }
@@ -70,8 +69,6 @@ class CheckoutRepository implements CheckoutRepositoryInterface {
       'order_note': note,
       'dm_tips': dmTips,
       'delivery_instruction': deliveryInstruction,
-      'payment_method': 'cash_on_delivery',
-      'order_type': 'delivery',
     };
     return await apiClient.postMultipartData(AppConstants.placePrescriptionOrderUri, body, orderAttachment, handleError: false);
   }
@@ -111,26 +108,5 @@ class CheckoutRepository implements CheckoutRepositoryInterface {
     throw UnimplementedError();
   }
 
-  @override
-  Future<Response> getOrderTax(PlaceOrderBodyModel orderBody) async {
-    Response response = await apiClient.postData(AppConstants.getOrderTaxUri, orderBody.toJson());
-    return response;
-  }
-
-  @override
-  Future<SurgePriceModel?> getSurgePrice({required String zoneId, required String moduleId, required String dateTime, String? guestId}) async {
-    SurgePriceModel? surgePrice;
-    Map<String, dynamic> body = {
-      'zone_id': zoneId,
-      'module_id': moduleId,
-      'date_time': dateTime,
-      'guest_id': guestId ?? '',
-    };
-    Response response = await apiClient.postData(AppConstants.getSurgePriceUri, body);
-    if (response.statusCode == 200) {
-      surgePrice = SurgePriceModel.fromJson(response.body);
-    }
-    return surgePrice;
-  }
   
 }

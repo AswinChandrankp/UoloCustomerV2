@@ -1,67 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart/common/widgets/custom_text_field.dart';
 import 'package:sixam_mart/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/common/widgets/custom_button.dart';
 import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
 
-class CancellationDialogueWidget extends StatefulWidget {
+class CancellationDialogueWidget extends StatelessWidget {
   final int? orderId;
   final String? contactNumber;
   const CancellationDialogueWidget({super.key, required this.orderId, this.contactNumber});
 
   @override
-  State<CancellationDialogueWidget> createState() => _CancellationDialogueWidgetState();
-}
-
-class _CancellationDialogueWidgetState extends State<CancellationDialogueWidget> {
-
-  TextEditingController commentController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    Get.find<OrderController>().getOrderCancelReasons();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    Get.find<OrderController>().getOrderCancelReasons();
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusDefault)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
       insetPadding: const EdgeInsets.all(30),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: GetBuilder<OrderController>(builder: (orderController) {
-        return SizedBox(
-          width: 500,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
+      child: GetBuilder<OrderController>(
+        builder: (orderController) {
+          return SizedBox(
+            width: 500, height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(children: [
 
-            Container(
-              width: 500,
-              padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)],
+              Container(
+                width: 500,
+                padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)],
+                ),
+                child: Column(children: [
+                  Text('select_cancellation_reasons'.tr, style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeLarge)),
+                  const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                ]),
               ),
-              child: Column(children: [
-                Text('select_cancellation_reasons'.tr, style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeLarge)),
-                const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-              ]),
-            ),
 
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+              Expanded(
+                child: orderController.orderCancelReasons != null ? orderController.orderCancelReasons!.isNotEmpty ? ListView.builder(
+                    itemCount: orderController.orderCancelReasons!.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index){
 
-                  orderController.orderCancelReasons != null ? orderController.orderCancelReasons!.isNotEmpty ? Flexible(
-                    child: ListView.builder(
-                      itemCount: orderController.orderCancelReasons!.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index){
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+                        child: ListTile(
                           onTap: (){
                             orderController.setOrderCancelReason(orderController.orderCancelReasons![index].reason);
                           },
@@ -73,66 +57,47 @@ class _CancellationDialogueWidgetState extends State<CancellationDialogueWidget>
                               Flexible(child: Text(orderController.orderCancelReasons![index].reason!, style: robotoRegular, maxLines: 3, overflow: TextOverflow.ellipsis)),
                             ],
                           ),
-                        );
-                      },
-                    ),
-                  ) : SizedBox() : const Center(child: Padding(padding: EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault), child: CircularProgressIndicator())),
-                  const SizedBox(height: Dimensions.paddingSizeSmall),
-
-                  Text(
-                    'comments'.tr,
-                    style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge),
-                  ),
-                  const SizedBox(height: Dimensions.paddingSizeSmall),
-
-                  CustomTextField(
-                    controller: commentController,
-                    titleText: 'type_here_your_cancel_reason'.tr,
-                    showLabelText: false,
-                    maxLines: 2,
-                    inputType: TextInputType.multiline,
-                    inputAction: TextInputAction.done,
-                    capitalization: TextCapitalization.sentences,
-                  ),
-
-                ]),
+                        ),
+                      );
+                    }) : Center(child: Text('no_reasons_available'.tr)) : const Center(child: CircularProgressIndicator()),
               ),
-            ),
+              const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
-            Padding(
-              padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
-              child: !orderController.isLoading ? Row(children: [
-                Expanded(child: CustomButton(
-                  buttonText: 'cancel'.tr, color: Theme.of(context).disabledColor, radius: 50,
-                  onPressed: () => Get.back(),
-                )),
-                const SizedBox(width: Dimensions.paddingSizeSmall),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.fontSizeDefault, vertical: Dimensions.paddingSizeSmall),
+                child: !orderController.isLoading ? Row(children: [
+                  Expanded(child: CustomButton(
+                    buttonText: 'cancel'.tr, color: Theme.of(context).disabledColor, radius: 50,
+                    onPressed: () => Get.back(),
+                  )),
+                  const SizedBox(width: Dimensions.paddingSizeSmall),
 
-                Expanded(child: CustomButton(
-                  buttonText: 'submit'.tr,  radius: 50,
-                  onPressed: () {
-                    if((orderController.cancelReason != '' && orderController.cancelReason != null) || commentController.text.isNotEmpty){
-
-                      orderController.cancelOrder(orderID: widget.orderId!, reason: orderController.cancelReason, isParcel: false, comment: commentController.text.trim()).then((success) {
-                        if(success){
-                          orderController.trackOrder(widget.orderId.toString(), null, true, contactNumber: widget.contactNumber);
-                        }
-                      });
-
-                    }else{
+                  Expanded(child: CustomButton(
+                    buttonText: 'submit'.tr,  radius: 50,
+                    onPressed: (){
                       if(orderController.cancelReason != '' && orderController.cancelReason != null){
-                        showCustomSnackBar('you_did_not_select_any_reason'.tr);
-                      }else if(commentController.text.isNotEmpty){
-                        showCustomSnackBar('you_did_not_write_any_comment'.tr);
+
+                        orderController.cancelOrder(orderId, orderController.cancelReason).then((success) {
+                          if(success){
+                            orderController.trackOrder(orderId.toString(), null, true, contactNumber: contactNumber);
+                          }
+                        });
+
+                      }else{
+                        if(Get.isDialogOpen!){
+                          Get.back();
+                        }
+
+                        showCustomSnackBar('you_did_not_select_select_any_reason'.tr);
                       }
-                    }
-                  },
-                )),
-              ]) : const Center(child: CircularProgressIndicator()),
-            ),
-          ]),
-        );
-      }),
+                    },
+                  )),
+                ]) : const Center(child: CircularProgressIndicator()),
+              ),
+            ]),
+          );
+        }
+      ),
     );
   }
 }

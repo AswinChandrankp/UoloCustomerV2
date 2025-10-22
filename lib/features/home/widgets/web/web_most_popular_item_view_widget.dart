@@ -73,7 +73,7 @@ class _WebMostPopularItemViewWidgetState extends State<WebMostPopularItemViewWid
         Container(
           margin: const EdgeInsets.only(top: Dimensions.paddingSizeLarge, bottom: Dimensions.paddingSizeLarge),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            color: Theme.of(context).primaryColor  ,
             borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
           ),
           child: Column(children: [
@@ -118,7 +118,7 @@ class _WebMostPopularItemViewWidgetState extends State<WebMostPopularItemViewWid
             top: 200, left: 0,
             child: ArrowIconButton(
               isRight: false,
-              onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth/3),
+              onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),
@@ -127,7 +127,7 @@ class _WebMostPopularItemViewWidgetState extends State<WebMostPopularItemViewWid
           Positioned(
             top: 200, right: 0,
             child: ArrowIconButton(
-              onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth/3),
+              onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),

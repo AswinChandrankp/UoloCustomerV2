@@ -1,5 +1,4 @@
 import 'package:sixam_mart/common/widgets/custom_asset_image_widget.dart';
-import 'package:sixam_mart/common/widgets/custom_card.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
 import 'package:sixam_mart/features/order/domain/models/order_details_model.dart';
@@ -50,8 +49,14 @@ class OrderItemWidget extends StatelessWidget {
       }
     }
 
-    return CustomCard(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+        // boxShadow: [BoxShadow(color: Theme.of(context).primaryColor  , blurRadius: 10)],
+      ),
       padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+      margin: const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           ClipRRect(
@@ -70,7 +75,7 @@ class OrderItemWidget extends StatelessWidget {
                   style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
                   maxLines: 2, overflow: TextOverflow.ellipsis,
                 )),
-                Text('${'quantity'.tr}: ', style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                Text('${'quantity'.tr}:', style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
                 Text(
                   orderDetails.quantity.toString(),
                   style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
@@ -92,7 +97,7 @@ class OrderItemWidget extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall, horizontal: Dimensions.paddingSizeSmall),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                    color: Theme.of(context).primaryColor  ,
                   ),
                   child: Text(
                     orderDetails.itemDetails!.unitType ?? '',

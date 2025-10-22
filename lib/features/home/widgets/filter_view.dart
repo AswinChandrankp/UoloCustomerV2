@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart/features/store/controllers/store_controller.dart';
 import 'package:sixam_mart/util/dimensions.dart';
@@ -11,7 +12,6 @@ class FilterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return storeController.storeModel != null ? PopupMenuButton(
-      padding: EdgeInsets.zero,
       itemBuilder: (context) {
         return [
           PopupMenuItem(
@@ -41,27 +41,58 @@ class FilterView extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0),
         child: Container(
-          height: 40, width: 40,
+          height: 40, width: 70,
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-            border: Border.all(color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
+            border: Border.all(color: Theme.of(context).disabledColor),),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text("Filter" ,style: TextStyle(
+                  color: Colors.black,
+                  fontSize:  13,
+                  fontWeight: FontWeight.w500
+                ),),
+
+                const SizedBox(width: 5),
+                SvgPicture.asset(
+                  "assets/image/icons/rivet-icons_filter.svg"
+                )
+              ],
+            ),
           ),
-          child: Icon(Icons.filter_list, color: Theme.of(context).primaryColor),
         ),
       ),
       onSelected: (dynamic value) => storeController.setFilterType(value),
     ) : Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0),
       child: Container(
-        height: 40, width: 40,
+        height: 40, width: 70,
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+          borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
           border: Border.all(color: Theme.of(context).disabledColor),
         ),
-        child: Icon(Icons.filter_list, color: Theme.of(context).disabledColor),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+             Text("Filter" ,style: TextStyle(
+                 color:  Colors.black  ,
+                  fontSize:  13,
+                  fontWeight: FontWeight.w500
+                ),),
+           const SizedBox(width: 5),
+                SvgPicture.asset(
+                  "assets/image/icons/rivet-icons_filter.svg"
+                ),
+          ],
+        ),
       ),
     );
   }
 }
+

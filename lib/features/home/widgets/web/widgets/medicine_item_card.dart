@@ -25,8 +25,8 @@ class MedicineItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isShop = Get.find<SplashController>().module != null && Get.find<SplashController>().module!.moduleType.toString() == AppConstants.ecommerce;
-    double? discount = item.discount;
-    String? discountType = item.discountType;
+    double? discount = item.storeDiscount == 0 ? item.discount : item.storeDiscount;
+    String? discountType = item.storeDiscount == 0 ? item.discountType : 'percent';
 
     return OnHover(
       isItem: true,
@@ -107,7 +107,7 @@ class MedicineItemCard extends StatelessWidget {
                           children: List.generate(item.genericName!.length, (index) {
                             return Text(
                               '${item.genericName![index]}${item.genericName!.length-1 == index ? '.' : ', '}',
-                              style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5), fontSize: Dimensions.fontSizeSmall),
+                              style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color  , fontSize: Dimensions.fontSizeSmall),
                               maxLines: 1, overflow: TextOverflow.ellipsis,
                             );
                           }),

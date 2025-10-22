@@ -26,20 +26,12 @@ class GuestCreateAccount extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-          boxShadow: fromParcel ? [const BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)] : [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.05), blurRadius: 10)],
+          boxShadow: fromParcel ? [const BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)] : [BoxShadow(color: Theme.of(context).primaryColor  , blurRadius: 10)],
         ),
         padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge, vertical: Dimensions.paddingSizeLarge),
         child: Column(children: [
 
           Row(children: [
-
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('create_account_with_existing_info'.tr, style: robotoMedium),
-                Text('your_provided_phone_number_use_as_a_login_credential'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
-              ]),
-            ),
-            const SizedBox(width: Dimensions.paddingSizeSmall),
 
             SizedBox(
               height: 24, width: 24,
@@ -49,6 +41,9 @@ class GuestCreateAccount extends StatelessWidget {
                 activeColor: Theme.of(context).primaryColor,
               ),
             ),
+            const SizedBox(width: Dimensions.paddingSizeSmall),
+
+            Text('create_account_with_existing_info'.tr, style: robotoMedium),
 
           ]),
           SizedBox(height:  checkoutController.isCreateAccount ? Dimensions.paddingSizeLarge : 0),

@@ -15,6 +15,7 @@ import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/common/widgets/custom_image.dart';
 import 'package:sixam_mart/common/widgets/footer_view.dart';
+import 'package:sixam_mart/features/home/widgets/bad_weather_widget.dart';
 import 'package:sixam_mart/features/parcel/widgets/parcel_app_bar_widget.dart';
 import 'package:sixam_mart/features/parcel/widgets/deliver_item_card_widget.dart';
 import 'package:sixam_mart/features/parcel/widgets/get_service_video_widget.dart';
@@ -62,7 +63,7 @@ class _ParcelCategoryScreenState extends State<ParcelCategoryScreen> {
                 child: FooterView(child: SizedBox(width: Dimensions.webMaxWidth,
                     child: Column(crossAxisAlignment: ResponsiveHelper.isDesktop(context) ? CrossAxisAlignment.center : CrossAxisAlignment.start, children: [
 
-                      bannerController.parcelOtherBannerModel != null && bannerController.parcelOtherBannerModel!.banners != null ? bannerController.parcelOtherBannerModel!.banners!.isNotEmpty ? CarouselSlider.builder(
+                      bannerController.parcelOtherBannerModel != null ? bannerController.parcelOtherBannerModel!.banners!.isNotEmpty ? CarouselSlider.builder(
                         itemCount: bannerController.parcelOtherBannerModel!.banners!.length,
                         options: CarouselOptions(
                           autoPlay: true,
@@ -97,6 +98,7 @@ class _ParcelCategoryScreenState extends State<ParcelCategoryScreen> {
                         ),
                       ),
                       SizedBox(height: ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeExtraLarge : Dimensions.paddingSizeLarge),
+                      const BadWeatherWidget(inParcel: true),
 
                       Text('bringing_happiness_from_door_to_door'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
                       const SizedBox(height: Dimensions.paddingSizeExtraSmall),
@@ -134,7 +136,7 @@ class _ParcelCategoryScreenState extends State<ParcelCategoryScreen> {
                       const SizedBox(height: Dimensions.paddingSizeLarge),
 
                       parcelController.whyChooseDetails != null ? Container(
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.02),
+                        color: Theme.of(context).primaryColor,
                         child: GridView.builder(
                           controller: ScrollController(),
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

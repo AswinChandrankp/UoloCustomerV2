@@ -103,7 +103,7 @@ class _WebPopularStoresViewState extends State<WebPopularStoresView> {
                   top: 90, left: 0,
                   child: ArrowIconButton(
                     isRight: false,
-                    onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+                    onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
                   ),
                 ),
@@ -112,7 +112,7 @@ class _WebPopularStoresViewState extends State<WebPopularStoresView> {
                 Positioned(
                   top: 90, right: 0,
                   child: ArrowIconButton(
-                    onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+                    onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
                   ),
                 ),
@@ -176,7 +176,7 @@ class PopularStoreShimmer extends StatelessWidget {
                               Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(color: Theme.of(context).primaryColor.withValues(alpha: 0.3), width: 1),
+                                  border: Border.all(color: Theme.of(context).primaryColor  , width: 1),
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(100),

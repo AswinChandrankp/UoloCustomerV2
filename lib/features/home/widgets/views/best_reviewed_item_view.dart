@@ -30,7 +30,7 @@ class _BestReviewItemViewState extends State<BestReviewItemView> {
           padding: const EdgeInsets.symmetric(vertical : Dimensions.paddingSizeSmall, horizontal: Dimensions.paddingSizeDefault),
           child: TitleWidget(
             title: 'best_reviewed_item'.tr,
-            onTap: () => Get.toNamed(RouteHelper.getItemViewAllScreen(false, false)),
+            onTap: () => Get.toNamed(RouteHelper.getPopularItemRoute(false, false)),
           ),
         ),
 
@@ -145,7 +145,7 @@ class BestReviewItemShimmer extends StatelessWidget {
                                     padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.radiusDefault), topRight: Radius.circular(Dimensions.radiusDefault)),
-                                      color: Theme.of(context).cardColor.withValues(alpha: 0.7),
+                                      color: Theme.of(context).cardColor  ,
                                     ),
                                     child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
 

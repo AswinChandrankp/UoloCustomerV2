@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,6 +11,7 @@ import 'package:sixam_mart/features/location/domain/repositories/location_reposi
 import 'package:sixam_mart/features/location/domain/services/location_service_interface.dart';
 import 'package:sixam_mart/features/location/screens/pick_map_screen.dart';
 import 'package:sixam_mart/features/location/widgets/permission_dialog_widget.dart';
+import 'package:sixam_mart/features/parcel/domain/models/place_details_model.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/helper/address_helper.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
@@ -111,12 +111,10 @@ class LocationService implements LocationServiceInterface{
     LatLng latLng = const LatLng(0, 0);
     Response? response = await locationRepoInterface.get(id);
     if(response?.statusCode == 200) {
-
-      final data = response?.body;
-      final location = data['location'];
-      final double lat = location['latitude'];
-      final double lng = location['longitude'];
-      latLng = LatLng(lat, lng);
+      PlaceDetailsModel placeDetails = PlaceDetailsModel.fromJson(response?.body);
+      if(placeDetails.status == 'OK') {
+        latLng = LatLng(placeDetails.result!.geometry!.location!.lat!, placeDetails.result!.geometry!.location!.lng!);
+      }
     }
     return latLng;
   }
@@ -125,13 +123,9 @@ class LocationService implements LocationServiceInterface{
   Future<List<PredictionModel>> searchLocation(String text) async {
     List<PredictionModel> predictionList = [];
     Response response = await locationRepoInterface.searchLocation(text);
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && response.body['status'] == 'OK') {
       predictionList = [];
-      try {
-        response.body['suggestions'].forEach((prediction) => predictionList.add(PredictionModel.fromJson(prediction)));
-      } catch (e) {
-        log('$e');
-      }
+      response.body['predictions'].forEach((prediction) => predictionList.add(PredictionModel.fromJson(prediction)));
     } else {
       showCustomSnackBar(response.body['error_message'] ?? response.bodyString);
     }

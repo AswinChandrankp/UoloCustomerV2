@@ -14,10 +14,9 @@ class SearchFieldWidget extends StatefulWidget {
   final Function? onSubmit;
   final Function? onChanged;
   final double? radius;
-  final bool isFocused;
   const SearchFieldWidget({
-    super.key, required this.controller, required this.hint, this.suffixIcon,
-    required this.iconPressed, this.filledColor, this.onSubmit, this.onChanged, this.iconColor, this.radius, this.prefixIcon, this.isFocused = true,
+    super.key, required this.controller, required this.hint, required this.suffixIcon,
+    required this.iconPressed, this.filledColor, this.onSubmit, this.onChanged, this.iconColor, this.radius, this.prefixIcon,
   });
 
   @override
@@ -30,7 +29,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
     return TextField(
       controller: widget.controller,
       textInputAction: TextInputAction.search,
-      autofocus: widget.isFocused,
+      autofocus: true,
       inputFormatters: [
         FilteringTextInputFormatter.deny(RegExp(r'[!@#$%^&*(),.?":{}|<>_+-/~`•√π÷×§∆£¢€¥°=©®™✓;]')),
       ],
@@ -38,7 +37,7 @@ class _SearchFieldWidgetState extends State<SearchFieldWidget> {
         hintText: widget.hint,
         hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(widget.radius ?? Dimensions.radiusSmall), borderSide: BorderSide.none),
-        filled: true, fillColor: widget.filledColor ?? Theme.of(context).cardColor,
+        filled: true, fillColor: Colors.white12 ?? Theme.of(context).cardColor,
         isDense: true,
         suffixIcon: widget.suffixIcon != null ? IconButton(
           onPressed: widget.iconPressed as void Function()?,

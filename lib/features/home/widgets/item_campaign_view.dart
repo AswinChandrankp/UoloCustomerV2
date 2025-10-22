@@ -64,8 +64,11 @@ class ItemCampaignView extends StatelessWidget {
                             ),
                           ),
                           DiscountTag(
-                            discount: campaignController.itemCampaignList![index].discount,
-                            discountType: campaignController.itemCampaignList![index].discountType,
+                            discount: campaignController.itemCampaignList![index].storeDiscount! > 0
+                                ? campaignController.itemCampaignList![index].storeDiscount
+                                : campaignController.itemCampaignList![index].discount,
+                            discountType: campaignController.itemCampaignList![index].storeDiscount! > 0 ? 'percent'
+                                : campaignController.itemCampaignList![index].discountType,
                           ),
                           Get.find<ItemController>().isAvailable(campaignController.itemCampaignList![index])
                               ? const SizedBox() : const NotAvailableWidget(),

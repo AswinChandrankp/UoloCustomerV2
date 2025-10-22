@@ -66,7 +66,7 @@ class _WebCommonConditionViewWidgetState extends State<WebCommonConditionViewWid
       return (itemController.commonConditions != null && itemController.commonConditions!.isNotEmpty) ? Container(
         margin: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeLarge),
         decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+            color: Theme.of(context).primaryColor  ,
             borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
           ),
         child: Column(children: [
@@ -129,7 +129,7 @@ class _WebCommonConditionViewWidgetState extends State<WebCommonConditionViewWid
                   top: 100, left: 0,
                   child: ArrowIconButton(
                     isRight: false,
-                    onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+                    onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
                   ),
                 ),
@@ -138,7 +138,7 @@ class _WebCommonConditionViewWidgetState extends State<WebCommonConditionViewWid
                 Positioned(
                   top: 100, right: 0,
                   child: ArrowIconButton(
-                    onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+                    onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                         duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
                   ),
                 ),

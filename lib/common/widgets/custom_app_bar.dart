@@ -22,16 +22,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return ResponsiveHelper.isDesktop(context) ? const WebMenuBar() : AppBar(
       title: Text(title, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge!.color)),
-      centerTitle: true,
+      centerTitle: false,
       leading: backButton ? IconButton(
         icon: leadingIcon != null ? Image.asset(leadingIcon!, height: 22, width: 22) : const Icon(Icons.arrow_back_ios),
-        color: Theme.of(context).textTheme.bodyLarge!.color,
+        color: Colors.black,
         onPressed: () => onBackPressed != null ? onBackPressed!() : Navigator.pop(context),
       ) : const SizedBox(),
       backgroundColor: Theme.of(context).cardColor,
       surfaceTintColor: Theme.of(context).cardColor,
-      shadowColor: Theme.of(context).disabledColor.withValues(alpha: 0.5),
-      elevation: 2,
+      shadowColor: Theme.of(context).disabledColor  ,
+      elevation: 0,
       actions: showCart || onVegFilterTap != null ? [
         showCart ? IconButton(
           onPressed: () => Get.toNamed(RouteHelper.getCartRoute()),

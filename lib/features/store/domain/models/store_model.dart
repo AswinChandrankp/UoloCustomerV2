@@ -1,3 +1,8 @@
+import 'package:sixam_mart/features/category/domain/models/category_model.dart';
+import 'package:sixam_mart/features/item/domain/models/item_model.dart';
+import 'package:sixam_mart/features/location/domain/models/zone_data_model.dart';
+
+
 class StoreModel {
   int? totalSize;
   String? limit;
@@ -30,6 +35,7 @@ class StoreModel {
   }
 }
 
+
 class Store {
   int? id;
   String? name;
@@ -39,8 +45,10 @@ class Store {
   String? latitude;
   String? longitude;
   String? address;
+  String? surcharge_perc;
+  String? zoneName;
   double? minimumOrder;
-  String? currency;
+  CurrencyModel? currency;
   bool? freeDelivery;
   String? coverPhotoFullUrl;
   bool? delivery;
@@ -51,6 +59,8 @@ class Store {
   int? ratingCount;
   int? featured;
   int? zoneId;
+  ZoneDataModel? zone;
+  // int? zoneId;
   int? selfDeliverySystem;
   bool? posSystem;
   double? minimumShippingCharge;
@@ -81,6 +91,8 @@ class Store {
   StoreSubscription? storeSubscription;
   String? storeBusinessModel;
   double? distance;
+  int? distancelimit;
+  int? noservicerestriction;
   String? storeOpeningTime;
 
   Store({
@@ -88,6 +100,7 @@ class Store {
     this.name,
     this.phone,
     this.email,
+    this.surcharge_perc,
     this.logoFullUrl,
     this.latitude,
     this.longitude,
@@ -103,6 +116,7 @@ class Store {
     this.tax,
     this.featured,
     this.zoneId,
+    this.zone, 
     this.ratingCount,
     this.selfDeliverySystem,
     this.posSystem,
@@ -135,6 +149,8 @@ class Store {
     this.storeBusinessModel,
     this.distance,
     this.storeOpeningTime,
+    this.distancelimit,
+    this.noservicerestriction,
   });
 
   Store.fromJson(Map<String, dynamic> json) {
@@ -143,11 +159,13 @@ class Store {
     phone = json['phone'];
     email = json['email'];
     logoFullUrl = json['logo_full_url'] ?? '';
+    surcharge_perc = json['surcharge_perc'] ?? "" ;
     latitude = json['latitude'];
     longitude = json['longitude'];
     address = json['address'];
     minimumOrder = json['minimum_order'] == null ? 0 : json['minimum_order']?.toDouble();
-    currency = json['currency'];
+    // currency = json['zone']['currency'] != null ? CurrencyModel.fromJson(json['zone']['currency']) : null;
+    currency = json['zone'] != null && json['zone']['currency'] != null ? CurrencyModel.fromJson(json['zone']['currency']) : null;
     freeDelivery = json['free_delivery'];
     coverPhotoFullUrl = json['cover_photo_full_url'] ?? '';
     delivery = json['delivery'];
@@ -159,13 +177,13 @@ class Store {
     selfDeliverySystem = json['self_delivery_system'];
     posSystem = json['pos_system'];
     minimumShippingCharge = json['minimum_shipping_charge']?.toDouble();
-    maximumShippingCharge = /*(json['maximum_shipping_charge'] != null && json['maximum_shipping_charge'] == 0) ? null : */
-        json['maximum_shipping_charge']?.toDouble();
+    maximumShippingCharge = json['maximum_shipping_charge']?.toDouble();
     perKmShippingCharge = json['per_km_shipping_charge'] != null ? json['per_km_shipping_charge'].toDouble() : 0;
     open = json['open'];
     active = json['active'];
     featured = int.parse(json['featured'].toString());
     zoneId = json['zone_id'];
+    zone = json['zone'] != null ? ZoneDataModel.fromJson(json['zone']) : null; 
     deliveryTime = json['delivery_time'];
     veg = json['veg'];
     nonVeg = json['non_veg'];
@@ -205,6 +223,8 @@ class Store {
     storeBusinessModel = json['store_business_model'];
     distance = json['distance']?.toDouble();
     storeOpeningTime = json['current_opening_time'];
+    distancelimit = json['distance_limit'];
+    noservicerestriction = json['no_service_restriction'];
   }
 
   Map<String, dynamic> toJson() {
@@ -217,6 +237,7 @@ class Store {
     data['latitude'] = latitude;
     data['longitude'] = longitude;
     data['address'] = address;
+    data['surcharge_perc'] = surcharge_perc;
     data['minimum_order'] = minimumOrder;
     data['currency'] = currency;
     data['free_delivery'] = freeDelivery;
@@ -237,9 +258,12 @@ class Store {
     data['veg'] = veg;
     data['featured'] = featured;
     data['zone_id'] = zoneId;
+    if (zone != null) {
+      data['zone'] = zone!.toJson(); // Add this line
+    }
     data['non_veg'] = nonVeg;
     data['module_id'] = moduleId;
-    data['order_place_to_schedule_interval'] = orderPlaceToScheduleInterval;
+    data['order_place_to schedule_interval'] = orderPlaceToScheduleInterval;
     data['delivery_time'] = deliveryTime;
     data['category_ids'] = categoryIds;
     if (discount != null) {
@@ -267,9 +291,14 @@ class Store {
     }
     data['store_business_model'] = storeBusinessModel;
     data['distance'] = distance;
+    data['distance_limit'] = distancelimit;
+    data["no_service_restriction"] = noservicerestriction;
     return data;
   }
 }
+
+
+
 
 class Discount {
   int? id;

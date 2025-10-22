@@ -51,21 +51,21 @@ class _BrandsScreenState extends State<BrandsScreen> {
                     vertical: Dimensions.paddingSizeExtraLarge,
                   ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: isDesktop ? 4 : 3,
+                    crossAxisCount: isDesktop ? 4 : 2,
                     crossAxisSpacing: Dimensions.paddingSizeLarge,
                     mainAxisSpacing: Dimensions.paddingSizeLarge,
-                    mainAxisExtent: isDesktop ? 120 : 135,
+                    mainAxisExtent: isDesktop ? 120 : 95,
                   ),
                   itemCount: brandsController.brandList!.length,
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () => Get.toNamed(RouteHelper.getBrandsItemScreen(brandsController.brandList![index].id!, brandsController.brandList![index].name!)),
-                      child: Column(children: [
+                      child: Row(children: [
 
                         Container(
                           padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).disabledColor.withValues(alpha: 0.1),
+                            color: Theme.of(context).disabledColor  ,
                             borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
                           ),
                           child: ClipRRect(
@@ -76,17 +76,10 @@ class _BrandsScreenState extends State<BrandsScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: Dimensions.paddingSizeSmall),
+                        const SizedBox(width: Dimensions.paddingSizeSmall),
 
                         Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-                            child: Text(
-                              brandsController.brandList?[index].name ?? '',
-                              style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.7)),
-                              maxLines: 2, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                          child: Text(brandsController.brandList![index].name ?? '', style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color  )),
                         ),
 
                       ]),

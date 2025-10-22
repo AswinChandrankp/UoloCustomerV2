@@ -202,8 +202,8 @@ class CartService implements CartServiceInterface {
 
   @override
   Future<double> calculateDiscountedPrice(CartModel cartModel, int quantity, bool isFoodVariation) async{
-    double? discount = cartModel.item!.discount;
-    String? discountType = cartModel.item!.discountType;
+    double? discount = cartModel.item!.storeDiscount == 0 ? cartModel.item!.discount : cartModel.item!.storeDiscount;
+    String? discountType = cartModel.item!.storeDiscount == 0 ? cartModel.item!.discountType : 'percent';
     double variationPrice = 0;
     double addonPrice = 0;
 
@@ -238,8 +238,8 @@ class CartService implements CartServiceInterface {
     List<CartModel> cartList = [];
     for (OnlineCartModel cart in onlineCartModel) {
       double price = cart.item!.price!;
-      double? discount = cart.item!.discount;
-      String? discountType = cart.item!.discountType;
+      double? discount = cart.item!.storeDiscount == 0 ? cart.item!.discount! : cart.item!.storeDiscount!;
+      String? discountType = (cart.item!.storeDiscount == 0) ? cart.item!.discountType : 'percent';
       double discountedPrice = PriceConverter.convertWithDiscount(price, discount, discountType)!;
 
       double? discountAmount = price - discountedPrice;

@@ -14,16 +14,16 @@ class StoreFilterButtonWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: 35,
-        padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-          border: Border.all(color: isSelected == true ? Theme.of(context).primaryColor.withValues(alpha: 0.3) : Theme.of(context).disabledColor.withValues(alpha: 0.3)),
+          color:  isSelected == true ? Colors.black : Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: isSelected == true ? Colors.black : const Color.fromARGB(185, 222, 219, 219)),
         ),
         child:  Center(child: Text(buttonText, style: robotoRegular.copyWith( fontSize: Dimensions.fontSizeSmall,
-            fontWeight: isSelected == true ? FontWeight.w500 : FontWeight.w400,
-            color: isSelected == true ? Theme.of(context).primaryColor : Theme.of(context).disabledColor))),
+            fontWeight: isSelected == true ? FontWeight.values[4] : FontWeight.values[4] ,
+            color: isSelected == true ? Colors.white : const Color.fromARGB(193, 61, 61, 61)))),
       ),
     );
   }

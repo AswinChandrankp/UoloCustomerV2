@@ -28,10 +28,8 @@ class OrderViewWidget extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: GetBuilder<OrderController>(builder: (orderController) {
         PaginatedOrderModel? paginatedOrderModel;
-        if(isRunning) {
-          paginatedOrderModel = orderController.runningOrderModel;
-        }else {
-          paginatedOrderModel = orderController.historyOrderModel;
+        if(orderController.runningOrderModel != null && orderController.historyOrderModel != null) {
+          paginatedOrderModel = isRunning ? orderController.runningOrderModel : orderController.historyOrderModel;
         }
 
         return paginatedOrderModel != null ? paginatedOrderModel.orders!.isNotEmpty ? RefreshIndicator(
@@ -52,19 +50,20 @@ class OrderViewWidget extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: ResponsiveHelper.isDesktop(context) ? 0 : 100),
                   child: PaginatedListView(
                     scrollController: scrollController,
-                    onPaginate: (int? offset) async {
+                    onPaginate: (int? offset) {
                       if(isRunning) {
-                        await orderController.getRunningOrders(offset!, isUpdate: true);
+                        orderController.getRunningOrders(offset!, isUpdate: true);
                       }else {
-                        await orderController.getHistoryOrders(offset!, isUpdate: true);
+                        orderController.getHistoryOrders(offset!, isUpdate: true);
                       }
                     },
-                    totalSize: isRunning ? orderController.runningOrderModel?.totalSize : orderController.historyOrderModel?.totalSize,
-                    offset: isRunning ? orderController.runningOrderModel?.offset : orderController.historyOrderModel?.offset,
+                    totalSize: isRunning ? orderController.runningOrderModel!.totalSize : orderController.historyOrderModel!.totalSize,
+                    offset: isRunning ? orderController.runningOrderModel!.offset : orderController.historyOrderModel!.offset,
                     itemView: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisSpacing: ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeExtremeLarge : Dimensions.paddingSizeLarge,
                         mainAxisSpacing: ResponsiveHelper.isDesktop(context) ? Dimensions.paddingSizeExtremeLarge : 0,
+                        // childAspectRatio: ResponsiveHelper.isDesktop(context) ? 5 : 4.5,
                         mainAxisExtent: ResponsiveHelper.isDesktop(context) ? 130 : 100,
                         crossAxisCount: ResponsiveHelper.isMobile(context) ? 1 : 2,
                       ),
@@ -81,7 +80,7 @@ class OrderViewWidget extends StatelessWidget {
                           margin: ResponsiveHelper.isDesktop(context) ? const EdgeInsets.only(bottom: Dimensions.paddingSizeSmall) : null,
                           decoration: ResponsiveHelper.isDesktop(context) ? BoxDecoration(
                             color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                            boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 5))],
+                            boxShadow: [BoxShadow(color: Theme.of(context).primaryColor  , blurRadius: 10, offset: const Offset(0, 5))],
                           ) : null,
                           child: CustomInkWell(
                             onTap: () {
@@ -100,18 +99,18 @@ class OrderViewWidget extends StatelessWidget {
 
                                 Stack(children: [
                                   Container(
-                                    height: ResponsiveHelper.isDesktop(context) ? 80 : 60, width: ResponsiveHelper.isDesktop(context) ? 80 : 60, alignment: Alignment.center,
+                                    height: ResponsiveHelper.isDesktop(context) ? 80 : 80, width: ResponsiveHelper.isDesktop(context) ? 80 : 80, alignment: Alignment.center,
                                     decoration: isParcel ? BoxDecoration(
                                       borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                                      color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                                      color: Theme.of(context).primaryColor  ,
                                     ) : null,
                                     child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                                      borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
                                       child: CustomImage(
                                         image: isParcel ? '${paginatedOrderModel.orders![index].parcelCategory != null ? paginatedOrderModel.orders![index].parcelCategory!.imageFullUrl : ''}'
                                             : '${paginatedOrderModel.orders![index].store != null ? paginatedOrderModel.orders![index].store!.logoFullUrl : ''}',
-                                        height: isParcel ? 35 : ResponsiveHelper.isDesktop(context) ? 80 : 60,
-                                        width: isParcel ? 35 : ResponsiveHelper.isDesktop(context) ? 80 : 60, fit: isParcel ? null : BoxFit.cover,
+                                        height: isParcel ? 35 : ResponsiveHelper.isDesktop(context) ? 80 : 80,
+                                        width: isParcel ? 35 : ResponsiveHelper.isDesktop(context) ? 80 : 80, fit: isParcel ? null : BoxFit.cover,
                                       ),
                                     ),
                                   ),
@@ -140,7 +139,9 @@ class OrderViewWidget extends StatelessWidget {
                                 const SizedBox(width: Dimensions.paddingSizeSmall),
 
                                 Expanded(
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center, 
+                                  children: [
                                     Row(children: [
                                       Text(
                                         '${isParcel ? 'delivery_id'.tr : 'order_id'.tr}:',
@@ -157,7 +158,7 @@ class OrderViewWidget extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                                          color: Theme.of(context).primaryColor  ,
                                         ),
                                         child: Text(paginatedOrderModel.orders![index].orderStatus!.tr, style: robotoMedium.copyWith(
                                           fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).primaryColor,
@@ -178,10 +179,10 @@ class OrderViewWidget extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                                      color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                                      color: Theme.of(context).primaryColor  ,
                                     ),
                                     child: Text(paginatedOrderModel.orders![index].orderStatus!.tr, style: robotoMedium.copyWith(
-                                      fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).primaryColor,
+                                      fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).cardColor,
                                     )),
                                   ) : const SizedBox(),
                                   const SizedBox(height: Dimensions.paddingSizeSmall),
@@ -205,7 +206,7 @@ class OrderViewWidget extends StatelessWidget {
                                         )),
                                       ]),
                                     ),
-                                  ) : isParcel ? const SizedBox() : Text(
+                                  ) : Text(
                                     '${paginatedOrderModel.orders![index].detailsCount} ${paginatedOrderModel.orders![index].detailsCount! > 1 ? 'items'.tr : 'item'.tr}',
                                     style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall),
                                   ),

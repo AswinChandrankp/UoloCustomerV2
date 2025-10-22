@@ -48,7 +48,7 @@ class CampaignController extends GetxController implements GetxService {
     }
   }
 
-  void _prepareBasicCampaign(List<BasicCampaignModel>? basicCampaignList) {
+  _prepareBasicCampaign(List<BasicCampaignModel>? basicCampaignList) {
     if (basicCampaignList != null) {
       _basicCampaignList = [];
       _basicCampaignList!.addAll(basicCampaignList);
@@ -80,7 +80,7 @@ class CampaignController extends GetxController implements GetxService {
     }
   }
 
-  void _prepareItemCampaign(List<Item>? itemCampaignList) {
+  _prepareItemCampaign(List<Item>? itemCampaignList) {
     if (itemCampaignList != null) {
       _itemCampaignList = [];
       List<Item> campaign = [];

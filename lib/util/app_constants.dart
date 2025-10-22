@@ -4,17 +4,22 @@ import 'package:sixam_mart/features/language/domain/models/language_model.dart';
 import 'package:sixam_mart/util/images.dart';
 
 class AppConstants {
-  static const String appName = '6amMart';
-  static const double appVersion = 3.4; ///Flutter sdk 3.35.6
+  static const String appName = 'Uolo Delivery';
+  static const double appVersion = 10; 
 
-  static const String fontFamily = 'Roboto';
+  static const String fontFamily = 'Poppins';
   static const bool payInWevView = false;
   static const int balanceInputLen = 10;
-  static const String webHostedUrl = 'https://6ammart-web.6amtech.com';
+  static const String webHostedUrl = 'https://uolodelivery.com/';
   static const bool useReactWebsite = false;
-  static const String googleServerClientId = '491987943015-agln6biv84krpnngdphj87jkko7r9lb8.apps.googleusercontent.com';
 
-  static const String baseUrl = 'https://6ammart-admin.6amtech.com';
+  // static const String baseUrl = 'https://Uolo Delivery-admin.6amtech.com';
+  static const String baseUrl = 
+  // "https://testorders.uolodelivery.com";
+  "https://orders.uolodelivery.com";
+  // 'http://livetest.uolodelivery.com';
+  // "https://test.uolodelivery.com";
+
   static const String categoryUri = '/api/v1/categories';
   static const String bannerUri = '/api/v1/banners';
   static const String storeItemUri = '/api/v1/items/latest';
@@ -106,6 +111,7 @@ class AppConstants {
   static const String taxiBannerUri = '/api/v1/banners/taxi';
   static const String topRatedVehiclesListUri = '/api/v1/vehicles/top-rated/list';
   static const String bandListUri = '/api/v1/vehicles/brand/list';
+  static const String taxiCouponApplyUri = '/api/v1/coupon/apply/taxi?code=';
   static const String tripPlaceUri = '/api/v1/trip/place';
   static const String runningTripUri = '/api/v1/trip/list';
   static const String vehicleChargeUri = '/api/v1/vehicle/extra_charge';
@@ -147,10 +153,6 @@ class AppConstants {
   static const String firebaseAuthVerify = '/api/v1/auth/firebase-verify-token';
   static const String personalInformationUri = '/api/v1/auth/update-info';
   static const String firebaseResetPassword = '/api/v1/auth/firebase-reset-password';
-  static const String getOrderTaxUri = '/api/v1/customer/order/get-Tax';
-  static const String getSurgePriceUri = '/api/v1/customer/order/get-surge-price';
-  static const String customerParcelReturn = '/api/v1/customer/order/parcel-return';
-  static const String getMetaData = '/api/v1/get-metadata';
 
   ///Subscription
   static const String businessPlanUri = '/api/v1/vendor/business_plan';
@@ -170,72 +172,33 @@ class AppConstants {
   static const String removeAllCartUri = '/api/v1/customer/cart/remove';
   static const String removeItemCartUri = '/api/v1/customer/cart/remove-item';
 
-  ///taxi
-  static const String getTopRatedCarsUri = '/api/v1/rental/vehicle/top-rated';
-  static const String getTaxiBannerUri = '/api/v1/rental/banners';
-  static const String getTaxiCouponUri = '/api/v1/rental/coupon/list';
-  static const String taxiCouponApplyUri = '/api/v1/rental/coupon/apply';
-  static const String getVehicleDetailsUri = '/api/v1/rental/vehicle/get-vehicle-details';
-  static const String getVehicleCategoriesUri = '/api/v1/rental/vehicle/category-list';
-  static const String getSelectVehiclesUri = '/api/v1/rental/vehicle/search/';
-  static const String getSearchVehicleSuggestionUri = '/api/v1/rental/vehicle/search/suggestion';
-  static const String addToCarCartUri = '/api/v1/rental/user/cart/add-to-cart';
-  static const String updateCarCartUri = '/api/v1/rental/user/cart/update-cart';
-  static const String removeCarCartUri = '/api/v1/rental/user/cart/remove-vehicle';
-  static const String getCarCartListUri = '/api/v1/rental/user/cart/get-cart';
-  static const String tripBookingUri = '/api/v1/rental/user/trip/trip-booking';
-  static const String tripUpdateUserDataUri = '/api/v1/rental/user/cart/update-user-data';
-  static const String removeAllCarCartUri = '/api/v1/rental/user/cart/remove-cart';
-  static const String removeMultipleCarCartUri = '/api/v1/rental/user/cart/remove-multiple-cart';
-  static const String tripListUri = '/api/v1/rental/user/trip/get-trip-list';
-  static const String tripDetailsUri = '/api/v1/rental/user/trip/get-trip-details';
-  static const String tripCancelUri = '/api/v1/rental/user/trip/cancel-trip';
-  static const String getProviderDetailsUri = '/api/v1/rental/provider/get-provider-details';
-  static const String getProviderVehicleListUri = '/api/v1/rental/vehicle/get-provider-vehicles';
-  static const String getProviderVehicleCategoryListUri = '/api/v1/rental/vehicle/category-list';
-  static const String tripPaymentUri = '/api/v1/rental/user/trip/payment';
-  static const String addTaxiWishListUri = '/api/v1/rental/user/wish-list/add';
-  static const String removeTaxiWishListUri = '/api/v1/rental/user/wish-list/remove';
-  static const String getTaxiWishListUri = '/api/v1/rental/user/wish-list';
-  static const String getTaxiBrandListUri = '/api/v1/rental/vehicle/brand-list';
-  static const String getTaxiProviderReviewUri = '/api/v1/rental/provider/get-provider-reviews';
-  static const String addTaxiReviewUri = '/api/v1/rental/user/review/add';
-  static const String getPopularTaxiSuggestionUri = '/api/v1/rental/vehicle/popular-suggestion/';
-  static const String getProviderBannerUri = '/api/v1/rental/banners';
-  static const String getTripTaxUri = '/api/v1/rental/user/trip/get-tax';
-  static const String getParcelCancellationReasons = '/api/v1/get-parcel-cancellation-reasons';
-
   /// Shared Key
-  static const String theme = '6ammart_theme';
-  static const String token = '6ammart_token';
-  static const String countryCode = '6ammart_country_code';
-  static const String languageCode = '6ammart_language_code';
+  static const String theme = 'Uolo Delivery_theme';
+  static const String token = 'Uolo Delivery_token';
+  static const String countryCode = 'Uolo Delivery_country_code';
+  static const String languageCode = 'Uolo Delivery_language_code';
   static const String cacheCountryCode = 'cache_country_code';
   static const String cacheLanguageCode = 'cache_language_code';
-  static const String cartList = '6ammart_cart_list';
-  static const String userPassword = '6ammart_user_password';
-  static const String userAddress = '6ammart_user_address';
-  static const String userNumber = '6ammart_user_number';
-  static const String userCountryCode = '6ammart_user_country_code';
-  static const String notification = '6ammart_notification';
+  static const String cartList = 'Uolo Delivery_cart_list';
+  static const String userPassword = 'Uolo Delivery_user_password';
+  static const String userAddress = 'Uolo Delivery_user_address';
+  static const String userNumber = 'Uolo Delivery_user_number';
+  static const String userCountryCode = 'Uolo Delivery_user_country_code';
+  static const String notification = 'Uolo Delivery_notification';
   static const String notificationIdList = 'notification_id_list';
-  static const String searchHistory = '6ammart_search_history';
-  static const String intro = '6ammart_intro';
-  static const String notificationCount = '6ammart_notification_count';
-  static const String dmTipIndex = '6ammart_dm_tip_index';
-  static const String earnPoint = '6ammart_earn_point';
-  static const String acceptCookies = '6ammart_accept_cookies';
-  static const String suggestedLocation = '6ammart_suggested_location';
-  static const String walletAccessToken = '6ammart_wallet_access_token';
-  static const String guestId = '6ammart_guest_id';
-  static const String guestNumber = '6ammart_guest_number';
-  static const String referBottomSheet = '6ammart_reffer_bottomsheet_show';
-  static const String dmRegisterSuccess = '6ammart_dm_registration_success';
-  static const String isRestaurantRegister = '6ammart_store_registration';
-
-  ///taxi
-  static const String taxiSearchHistory = '6ammart_taxi_search_history';
-  static const String taxiSearchAddressHistory = '6ammart_taxi_search_address_history';
+  static const String searchHistory = 'Uolo Delivery_search_history';
+  static const String intro = 'Uolo Delivery_intro';
+  static const String notificationCount = 'Uolo Delivery_notification_count';
+  static const String dmTipIndex = 'bolo Delivery_dm_tip_index';
+  static const String earnPoint = 'Uolo Delivery_earn_point';
+  static const String acceptCookies = 'Uolo Delivery_accept_cookies';
+  static const String suggestedLocation = 'Uolo Delivery_suggested_location';
+  static const String walletAccessToken = 'Uolo Delivery_wallet_access_token';
+  static const String guestId = 'Uolo Delivery_guest_id';
+  static const String guestNumber = 'Uolo Delivery_guest_number';
+  static const String referBottomSheet = 'Uolo Delivery_reffer_bottomsheet_show';
+  static const String dmRegisterSuccess = 'Uolo Delivery_dm_registration_success';
+  static const String isRestaurantRegister = 'Uolo Delivery_store_registration';
 
   static const String topic = 'all_zone_customer';
   static const String zoneId = 'zoneId';
@@ -256,12 +219,12 @@ class AppConstants {
   ];
 
   /// Delivery Tips
-  static List<String> tips = ['0' ,'15', '10', '20', '40', 'custom'];
+  static List<String> tips = ['0' , '10','15', '20', '40', 'custom'];
   static List<String> deliveryInstructionList = [
-    'deliver_to_front_door',
-    'deliver_the_reception_desk',
-    'avoid_calling_phone',
-    'come_with_no_sound',
+    'deliver_to_front_door'.tr,
+    // 'deliver_the_reception_desk'.tr,
+    'avoid_calling_phone'.tr,
+    'come_with_no_sound'.tr,
   ];
 
   static List<ChooseUsModel> whyChooseUsList = [
@@ -279,18 +242,19 @@ class AppConstants {
   static const String handover = 'handover';
   static const String pickedUp = 'picked_up';
   static const String delivered = 'delivered';
-  static const String canceled = 'canceled';
-  static const String failed = 'failed';
-  static const String refunded = 'refunded';
-  static const String returned = 'returned';
+
+  // ///user type..
+  // static const String user = 'user';
+  // static const String customer = 'customer';
+  // static const String admin = 'admin';
+  // static const String deliveryMan = 'delivery_man';
+  // static const String vendor = 'vendor';
 
   ///modules..
   static const String pharmacy = 'pharmacy';
   static const String food = 'food';
-  static const String parcel = 'parcel';
   static const String ecommerce = 'ecommerce';
   static const String grocery = 'grocery';
-  static const String taxi = 'rental';
 
   static List<LanguageModel> languages = [
     LanguageModel(imageUrl: Images.english, languageName: 'English', countryCode: 'US', languageCode: 'en'),
@@ -331,12 +295,4 @@ class AppConstants {
       'value' : 'CashBack'
     },
   ];
-
-  //taxi seats..
-  static List<String> seats = ['1-4', '5-8', '9-13', '14+'];
-
-  ///Rental Type
-  static const String hourly = 'hourly';
-  static const String distanceWise = 'distance_wise';
-  static const String dayWise = 'day_wise';
 }

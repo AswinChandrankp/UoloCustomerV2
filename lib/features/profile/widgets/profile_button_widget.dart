@@ -17,12 +17,15 @@ class ProfileButtonWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap as void Function()?,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: isButtonActive != null ? 12 : Dimensions.paddingSizeLarge),
+        padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.paddingSizeSmall,
+          vertical: isButtonActive != null ? Dimensions.paddingSizeExtraSmall : Dimensions.paddingSizeDefault,
+        ),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
           border: Border.all(color: Theme.of(context).primaryColor, width: 0.1),
-          boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 5)],
+          // boxShadow: [BoxShadow(color: Theme.of(context).primaryColor  , spreadRadius: 1, blurRadius: 5)],
         ),
         child: Row(children: [
           iconImage != null ? Image.asset(iconImage!, height: 18, width: 25) : Icon(icon, size: 25, color: color ?? Theme.of(context).textTheme.bodyMedium!.color),
@@ -34,9 +37,9 @@ class ProfileButtonWidget extends StatelessWidget {
             scale: 0.7,
             child: CupertinoSwitch(
               value: isButtonActive!,
-              activeTrackColor: Theme.of(context).primaryColor,
+              // activeTrackColor: Theme.of(context).primaryColor,
               onChanged: (bool? value) => onTap(),
-              inactiveTrackColor: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+              // inactiveTrackColor: Theme.of(context).primaryColor  ,
             ),
           ) : const SizedBox()
         ]),

@@ -13,13 +13,12 @@ class OfflinePaymentButton extends StatelessWidget {
   final bool isSelected;
   final List<OfflineMethodModel>? offlineMethodList;
   final bool isOfflinePaymentActive;
-  final Function? onTap;
+  final Function onTap;
   final CheckoutController checkoutController;
   final ParcelController? parcelController;
   final bool forParcel;
   final JustTheController tooltipController;
-  final bool? disablePayment;
-  const OfflinePaymentButton({super.key, required this.isSelected, required this.offlineMethodList, required this.isOfflinePaymentActive, required this.onTap, required this.checkoutController, this.parcelController, this.forParcel = false, required this.tooltipController, this.disablePayment});
+  const OfflinePaymentButton({super.key, required this.isSelected, required this.offlineMethodList, required this.isOfflinePaymentActive, required this.onTap, required this.checkoutController, this.parcelController, this.forParcel = false, required this.tooltipController});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class OfflinePaymentButton extends StatelessWidget {
       child: Container(
         width: Dimensions.webMaxWidth,
         decoration: BoxDecoration(
-          color: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : Colors.transparent,
+          color: isSelected ? Theme.of(context).primaryColor   : Colors.transparent,
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
           border: Border.all(color: forParcel ? Colors.transparent : Theme.of(context).disabledColor, width: 0.3),
         ),
@@ -39,8 +38,8 @@ class OfflinePaymentButton extends StatelessWidget {
             Container(
               height: 20, width: 20,
               decoration: BoxDecoration(
-                shape: BoxShape.circle, color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).cardColor,
-                border: Border.all(color: Theme.of(context).disabledColor),
+                  shape: BoxShape.circle, color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).cardColor,
+                  border: Border.all(color: Theme.of(context).disabledColor)
               ),
               child: Icon(Icons.check, color: Theme.of(context).cardColor, size: 16),
             ),
@@ -49,7 +48,7 @@ class OfflinePaymentButton extends StatelessWidget {
             Expanded(
               child: Text(
                 'pay_offline'.tr,
-                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: disablePayment! ? Theme.of(context).disabledColor : Theme.of(context).textTheme.bodyLarge!.color),
+                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault),
                 overflow: TextOverflow.ellipsis, maxLines: 1,
               ),
             ),

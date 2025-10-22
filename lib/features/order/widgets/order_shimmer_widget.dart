@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class OrderShimmerWidget extends StatelessWidget {
-  final OrderController? orderController;
-  const OrderShimmerWidget({super.key, this.orderController});
+  final OrderController orderController;
+  const OrderShimmerWidget({super.key, required this.orderController});
 
   @override
   Widget build(BuildContext context) {
@@ -37,26 +37,26 @@ class OrderShimmerWidget extends StatelessWidget {
                   padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
                   child: Shimmer(
                     duration: const Duration(seconds: 2),
-                    enabled: orderController?.runningOrderModel == null,
+                    enabled: orderController.runningOrderModel == null,
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 
                       Row(children: [
                         Container(
                           height: ResponsiveHelper.isDesktop(context) ? 80 : 60, width: ResponsiveHelper.isDesktop(context) ? 80 : 60,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(Dimensions.radiusSmall), color: Theme.of(context).shadowColor),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(Dimensions.radiusSmall), color: Colors.grey[300]),
                         ),
                         const SizedBox(width: Dimensions.paddingSizeSmall),
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Container(height: 15, width: 100, color: Theme.of(context).shadowColor),
+                          Container(height: 15, width: 100, color: Colors.grey[300]),
                           const SizedBox(height: Dimensions.paddingSizeSmall),
-                          Container(height: 15, width: 150, color: Theme.of(context).shadowColor),
+                          Container(height: 15, width: 150, color: Colors.grey[300]),
                         ])),
                         Column(children: [
                           !ResponsiveHelper.isDesktop(context) ? Container(
                             height: 20, width: 50,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                              color: Theme.of(context).shadowColor,
+                              color: Colors.grey[300],
                             ),
                           ) : const SizedBox(),
                           const SizedBox(height: Dimensions.paddingSizeSmall),
@@ -64,7 +64,7 @@ class OrderShimmerWidget extends StatelessWidget {
                             height: 20, width: 70,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                              color: Theme.of(context).shadowColor,
+                              color: Colors.grey[300],
                             ),
                           )
                         ]),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
@@ -55,12 +54,13 @@ class _CustomFavouriteWidgetState extends State<CustomFavouriteWidget> with Sing
       },
       child: ScaleTransition(
         scale: Tween(begin: 0.7, end: 1.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut)),
-        child: Icon(widget.isWished ? CupertinoIcons.heart_solid : CupertinoIcons.heart, color: widget.isWished ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withValues(alpha: 0.3), size: widget.size),
+        child: Icon(widget.isWished ? Icons.favorite : Icons.favorite_border_rounded, color: Theme.of(context).primaryColor, size: widget.size),
+        // child: CustomAssetImageWidget(widget.isWished ? Images.favouriteIcon : Images.unFavouriteIcon, height: widget.size, width: widget.size),
       ),
     );
   }
 
-  void _decideWished(bool isWished, FavouriteController favouriteController) {
+  _decideWished(bool isWished, FavouriteController favouriteController) {
     if(widget.isStore) {
       isWished ? favouriteController.removeFromFavouriteList(widget.storeId ?? widget.store?.id, true)
           : favouriteController.addToFavouriteList(null, widget.storeId ?? widget.store?.id, true);

@@ -11,11 +11,11 @@ abstract class StoreServiceInterface {
   Future<StoreModel?> getStoreList(int offset, String filterBy, String storeType, {required DataSourceEnum source});
   Future<List<Store>?> getPopularStoreList(String type, {required DataSourceEnum source});
   Future<List<Store>?> getLatestStoreList(String type, {required DataSourceEnum source});
-  Future<List<Store>?> getTopOfferStoreList({required DataSourceEnum source, String? filterBy, String? sortBy});
+  Future<List<Store>?> getTopOfferStoreList({required DataSourceEnum source});
   Future<List<Store>?> getFeaturedStoreList({required DataSourceEnum source});
   Future<List<Store>?> getVisitAgainStoreList({required DataSourceEnum source});
   Future<Store?> getStoreDetails(String storeID, bool fromCart, String slug, String languageCode, ModuleModel? module, int? cacheModuleId, int? moduleId);
-  Future<ItemModel?> getStoreItemList({int? storeID, required int offset, int? categoryID, String? type, List<String>? filter, int? rating, double? lowerValue, double? upperValue});
+  Future<ItemModel?> getStoreItemList(int? storeID, int offset, int? categoryID, String type);
   Future<ItemModel?> getStoreSearchItemList(String searchText, String? storeID, int offset, String type, int? categoryID);
   Future<RecommendedItemModel?> getStoreRecommendedItemList(int? storeId);
   Future<CartSuggestItemModel?> getCartStoreSuggestedItemList(int? storeId, String languageCode, ModuleModel? module, int? cacheModuleId, int? moduleId);

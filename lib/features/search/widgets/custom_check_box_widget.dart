@@ -1,3 +1,4 @@
+import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -17,11 +18,8 @@ class CustomCheckBoxWidget extends StatelessWidget {
           onChanged: (bool? isActive) => onClick(),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           activeColor: Theme.of(context).primaryColor,
-          side: BorderSide(
-            color: value ? Theme.of(context).primaryColor : Theme.of(context).disabledColor.withValues(alpha: 0.5),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall), side: BorderSide.none),
         ),
-
         Text(title, style: robotoRegular),
       ]),
     );

@@ -46,7 +46,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void initCall(){
     if(AuthHelper.isLoggedIn()) {
       Get.find<ProfileController>().getUserInfo();
-      Get.find<ChatController>().getConversationList(1, type: ResponsiveHelper.isDesktop(Get.context) ? 'vendor1' : '');
+      Get.find<ChatController>().getConversationList(1, type: ResponsiveHelper.isDesktop(Get.context) ? 'vendor' : '');
     }
   }
 
@@ -173,7 +173,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                 showCustomSnackBar('${type!.tr} ${'not_found'.tr}');
                               }
                             },
-                            highlightColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+                            highlightColor: Theme.of(context).colorScheme.surface  ,
                             radius: Dimensions.radiusSmall,
                             child: Stack(children: [
                               Padding(

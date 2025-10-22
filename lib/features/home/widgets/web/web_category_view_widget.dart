@@ -99,7 +99,7 @@ class _WebCategoryViewWidgetState extends State<WebCategoryViewWidget> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                              color: Theme.of(context).disabledColor.withValues(alpha: 0.3),
+                              color: Theme.of(context).disabledColor  ,
                               border: Border.all(color: hovered ? Theme.of(context).primaryColor : Theme.of(context).cardColor, width: hovered ? 1 : 0),
                             ),
                             child: ClipRRect(
@@ -133,7 +133,7 @@ class _WebCategoryViewWidgetState extends State<WebCategoryViewWidget> {
       Positioned(
         top: 80, right: 0,
         child: ArrowIconButton(
-          onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+          onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
               duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
         ),
       ),
@@ -142,7 +142,7 @@ class _WebCategoryViewWidgetState extends State<WebCategoryViewWidget> {
       Positioned(
         top: 80, left: 0,
         child: ArrowIconButton(
-          onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+          onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
               duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
           isRight: false,
         ),
@@ -239,8 +239,8 @@ class _PharmacyCategoryViewState extends State<PharmacyCategoryView> {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Theme.of(context).primaryColor.withValues(alpha: 0.3),
-                                  Theme.of(context).cardColor.withValues(alpha: 0.3),
+                                  Theme.of(context).primaryColor  ,
+                                  Theme.of(context).cardColor  ,
                                 ],
                               ),
                             ),
@@ -277,7 +277,7 @@ class _PharmacyCategoryViewState extends State<PharmacyCategoryView> {
         Positioned(
           top: 75, right: 0,
           child: ArrowIconButton(
-            onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+            onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                 duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
           ),
         ),
@@ -286,7 +286,7 @@ class _PharmacyCategoryViewState extends State<PharmacyCategoryView> {
         Positioned(
           top: 75, left: 0,
           child: ArrowIconButton(
-            onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+            onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                 duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             isRight: false,
           ),
@@ -414,7 +414,7 @@ class _FoodCategoryViewState extends State<FoodCategoryView> {
         Positioned(
           top: 60, right: 0,
           child: ArrowIconButton(
-            onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+            onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                 duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
           ),
         ),
@@ -423,7 +423,7 @@ class _FoodCategoryViewState extends State<FoodCategoryView> {
         Positioned(
           top: 60, left: 0,
           child: ArrowIconButton(
-            onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+            onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                 duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             isRight: false,
           ),

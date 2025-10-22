@@ -12,7 +12,7 @@ class CookiesView extends StatelessWidget {
   Widget build(BuildContext context) {
     double padding = (MediaQuery.of(context).size.width - Dimensions.webMaxWidth) / 2;
     return Container(
-      decoration: BoxDecoration(color: Colors.black.withValues(alpha: Get.isDarkMode ? 1 : 0.8)),
+      decoration: const BoxDecoration(color: Colors.black),
       padding: EdgeInsets.symmetric(
         vertical: Dimensions.paddingSizeDefault,
         horizontal: ResponsiveHelper.isDesktop(context) ? padding : Dimensions.paddingSizeDefault,

@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
@@ -36,11 +35,7 @@ class NoInternetScreen extends StatelessWidget {
                 final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
 
                 if(!connectivityResult.contains(ConnectivityResult.none)) {
-                  try {
-                    Get.off(child);
-                  } catch (e) {
-                    Get.offAllNamed(RouteHelper.getInitialRoute());
-                  }
+                  Get.off(child);
                 }
               },
               child: Container(

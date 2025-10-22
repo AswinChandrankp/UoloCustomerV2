@@ -2,7 +2,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
-import 'package:sixam_mart/features/checkout/controllers/checkout_controller.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart/features/address/controllers/address_controller.dart';
@@ -43,9 +42,7 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
    final TextEditingController _receiverHouseController = TextEditingController();
    final TextEditingController _receiverFloorController = TextEditingController();
    final TextEditingController _guestSenderEmailController = TextEditingController();
-   final TextEditingController _guestReceiverEmailController = TextEditingController();
-   final TextEditingController _senderAddressController = TextEditingController();
-   final TextEditingController _receiverAddressController = TextEditingController();
+    final TextEditingController _guestReceiverEmailController = TextEditingController();
 
   TabController? _tabController;
   String? _countryDialCode;
@@ -67,6 +64,8 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
     Get.find<ParcelController>().setDestinationAddress(AddressHelper.getUserAddressFromSharedPref(), notify: false);
     Get.find<ParcelController>().setIsPickedUp(true, false);
     Get.find<ParcelController>().setIsSender(true, false);
+    Get.find<ParcelController>().setSenderAddressIndex(0, canUpdate: false);
+    Get.find<ParcelController>().setReceiverAddressIndex(0, canUpdate: false);
     Get.find<ParcelController>().setCountryCode(_countryDialCode!, true);
     Get.find<ParcelController>().setCountryCode(_countryDialCode!, false);
     if(AuthHelper.isLoggedIn() && Get.find<AddressController>().addressList == null) {
@@ -127,8 +126,6 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
     _receiverFloorController.dispose();
     _guestSenderEmailController.dispose();
     _guestReceiverEmailController.dispose();
-    _senderAddressController.dispose();
-    _receiverAddressController.dispose();
     _tabController?.dispose();
   }
 
@@ -136,8 +133,7 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'parcel_location'.tr),
-      endDrawer: const MenuDrawer(),
-      endDrawerEnableOpenDragGesture: false,
+      endDrawer: const MenuDrawer(),endDrawerEnableOpenDragGesture: false,
       body: SafeArea(
         child: GetBuilder<ParcelController>(builder: (parcelController) {
           return Column(children: [
@@ -146,23 +142,15 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
 
               Center(
                 child: Container(
-                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
                   width: Dimensions.webMaxWidth,
-                  margin: EdgeInsets.all(Dimensions.paddingSizeDefault),
-                  padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).disabledColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                  ),
+                  color: Theme.of(context).cardColor,
                   child: Column(
                     children: [
 
                       TabBar(
-                        padding: EdgeInsets.zero,
-                        labelPadding: EdgeInsets.zero,
                         controller: _tabController,
-                        indicatorColor: Colors.transparent,
-                        indicatorWeight: 0.1,
+                        labelColor: Theme.of(context).primaryColor,
                         unselectedLabelColor: Colors.black,
                         onTap: (int index) {
                           if(index == 1) {
@@ -172,34 +160,20 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
                         unselectedLabelStyle: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeSmall),
                         labelStyle: robotoBold.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
                         tabs: [
-                          Container(
-                            padding: EdgeInsets.all(Dimensions.paddingSizeSmall),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: parcelController.isSender ? Theme.of(context).primaryColor : null,
-                              borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
                             child: Text(
                               'sender_info'.tr,
-                              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: parcelController.isSender ? Theme.of(context).cardColor : Theme.of(context).primaryColor),
+                              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: parcelController.isSender ? Theme.of(context).primaryColor : Theme.of(context).textTheme.bodyMedium!.color),
                             ),
                           ),
-
-                          Container(
-                            padding: EdgeInsets.all(Dimensions.paddingSizeSmall),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: parcelController.isSender ? null : Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                            ),
-                            child: Text(
-                              'receiver_info'.tr,
-                              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: parcelController.isSender ? Theme.of(context).primaryColor : Theme.of(context).cardColor),
-                            ),
+                          Text(
+                            'receiver_info'.tr,
+                            style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: !parcelController.isSender ? Theme.of(context).primaryColor : Theme.of(context).textTheme.bodyMedium!.color),
                           ),
                         ],
                       ),
-
+                      // Container(height: 3, width: Dimensions.webMaxWidth, decoration: BoxDecoration(color: Theme.of(context).primaryColor))
                     ],
                   ),
                 ),
@@ -213,14 +187,11 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
                     isSender: true, nameController: _senderNameController, phoneController: _senderPhoneController, bottomButton: _bottomButton(),
                     streetController: _senderStreetNumberController, floorController: _senderFloorController, houseController: _senderHouseController,
                     countryCode: parcelController.senderCountryCode, guestEmailController: _guestSenderEmailController,
-                    senderAddressController: _senderAddressController, receiverAddressController: _receiverAddressController,
                   ),
-
                   ParcelViewWidget(
                     isSender: false, nameController: _receiverNameController, phoneController: _receiverPhoneController, bottomButton: _bottomButton(),
                     streetController: _receiverStreetNumberController, floorController: _receiverFloorController, houseController: _receiverHouseController,
                     countryCode: parcelController.receiverCountryCode, guestEmailController: _guestReceiverEmailController,
-                    senderAddressController: _senderAddressController, receiverAddressController: _receiverAddressController,
                   ),
                 ],
               )),
@@ -235,60 +206,65 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
   }
 
   Widget _bottomButton() {
-    return GetBuilder<ParcelController>(builder: (parcelController) {
-      return CustomButton(
-        margin: ResponsiveHelper.isDesktop(context) ? null : const EdgeInsets.all(Dimensions.paddingSizeSmall),
-        buttonText: parcelController.isSender ? 'continue'.tr : 'save_and_continue'.tr,
-        onPressed: () async {
-          if( _tabController!.index == 0 ) {
-            _validateSender(parcelController);
-          } else{
-            String numberWithCountryCode = '${parcelController.receiverCountryCode??''}${_receiverPhoneController.text.trim()}';
-            PhoneValid phoneValid = await CustomValidator.isPhoneValid(numberWithCountryCode);
-            numberWithCountryCode = phoneValid.phone;
-
-            if(parcelController.destinationAddress == null) {
-              showCustomSnackBar('select_destination_address'.tr);
-            } else if(_receiverNameController.text.isEmpty){
-              showCustomSnackBar('enter_receiver_name'.tr);
-            } else if(_receiverPhoneController.text.isEmpty){
-              showCustomSnackBar('enter_receiver_phone_number'.tr);
-            } else if (!phoneValid.isValid) {
-              showCustomSnackBar('invalid_phone_number'.tr);
-            } else {
-              AddressModel destination = AddressModel(
-                address: parcelController.destinationAddress!.address,
-                additionalAddress: parcelController.destinationAddress!.additionalAddress,
-                addressType: parcelController.destinationAddress!.addressType,
-                contactPersonName: _receiverNameController.text.trim(),
-                contactPersonNumber: numberWithCountryCode,
-                latitude: parcelController.destinationAddress!.latitude,
-                longitude: parcelController.destinationAddress!.longitude,
-                method: parcelController.destinationAddress!.method,
-                zoneId: parcelController.destinationAddress!.zoneId,
-                zoneIds: parcelController.destinationAddress!.zoneIds,
-                id: parcelController.destinationAddress!.id,
-                streetNumber: _receiverStreetNumberController.text.trim(),
-                house: _receiverHouseController.text.trim(),
-                floor: _receiverFloorController.text.trim(),
-                email: _guestReceiverEmailController.text.trim(),
-                zoneData: parcelController.destinationAddress!.zoneData,
-              );
-
-              parcelController.setDestinationAddress(destination);
-
-              Get.toNamed(RouteHelper.getParcelRequestRoute(
-                widget.category,
-                parcelController.pickupAddress!,
-                parcelController.destinationAddress!,
-              ));
-              Get.find<CheckoutController>().updateFirstTime();
-              Get.find<CheckoutController>().updateFirstTimeCodActive();
+    return GetBuilder<ParcelController>(
+      builder: (parcelController) {
+        return CustomButton(
+          margin: ResponsiveHelper.isDesktop(context) ? null : const EdgeInsets.all(Dimensions.paddingSizeSmall),
+          buttonText: parcelController.isSender ? 'continue'.tr : 'save_and_continue'.tr,
+          onPressed: () async {
+            if( _tabController!.index == 0 ) {
+              _validateSender(parcelController);
             }
-         }
-        },
-      );
-    });
+            else{
+              String numberWithCountryCode = '${parcelController.receiverCountryCode??''}${_receiverPhoneController.text.trim()}';
+              PhoneValid phoneValid = await CustomValidator.isPhoneValid(numberWithCountryCode);
+              numberWithCountryCode = phoneValid.phone;
+
+              if(parcelController.destinationAddress == null) {
+                  showCustomSnackBar('select_destination_address'.tr);
+              }
+              else if(_receiverNameController.text.isEmpty){
+                showCustomSnackBar('enter_receiver_name'.tr);
+              }
+              else if(_receiverPhoneController.text.isEmpty){
+                showCustomSnackBar('enter_receiver_phone_number'.tr);
+              }
+              else if (!phoneValid.isValid) {
+                showCustomSnackBar('invalid_phone_number'.tr);
+              }
+              else {
+                AddressModel destination = AddressModel(
+                  address: parcelController.destinationAddress!.address,
+                  additionalAddress: parcelController.destinationAddress!.additionalAddress,
+                  addressType: parcelController.destinationAddress!.addressType,
+                  contactPersonName: _receiverNameController.text.trim(),
+                  contactPersonNumber: numberWithCountryCode,
+                  latitude: parcelController.destinationAddress!.latitude,
+                  longitude: parcelController.destinationAddress!.longitude,
+                  method: parcelController.destinationAddress!.method,
+                  zoneId: parcelController.destinationAddress!.zoneId,
+                  zoneIds: parcelController.destinationAddress!.zoneIds,
+                  id: parcelController.destinationAddress!.id,
+                  streetNumber: _receiverStreetNumberController.text.trim(),
+                  house: _receiverHouseController.text.trim(),
+                  floor: _receiverFloorController.text.trim(),
+                  email: _guestReceiverEmailController.text.trim(),
+                  zoneData: parcelController.destinationAddress!.zoneData,
+                );
+
+                parcelController.setDestinationAddress(destination);
+
+                Get.toNamed(RouteHelper.getParcelRequestRoute(
+                  widget.category,
+                  parcelController.pickupAddress!,
+                  parcelController.destinationAddress!,
+                ));
+              }
+           }
+          },
+        );
+      }
+    );
   }
 
   Future<void> _validateSender(ParcelController parcelController) async {
@@ -334,12 +310,7 @@ class _ParcelLocationScreenState extends State<ParcelLocationScreen> with Ticker
         zoneData: parcelController.pickupAddress!.zoneData,
       );
       parcelController.setPickupAddress(pickup, true);
-      // Use post-frame callback to delay tab animation
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _tabController!.animateTo(1);
-        }
-      });
+      _tabController!.animateTo(1);
     }
   }
 

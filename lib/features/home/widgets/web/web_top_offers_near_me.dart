@@ -79,7 +79,7 @@ class _WebTopOffersNearMeState extends State<WebTopOffersNearMe> {
 
       return (storeList != null && storeList.isEmpty) ? const SizedBox() : Stack(children: [
         Container(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+          color: Theme.of(context).primaryColor  ,
           padding: widget.isShop ? const EdgeInsets.only(bottom: Dimensions.paddingSizeLarge) : EdgeInsets.zero,
           margin: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
           child: Column(children: [
@@ -121,7 +121,7 @@ class _WebTopOffersNearMeState extends State<WebTopOffersNearMe> {
             top: 130, left: 0,
             child: ArrowIconButton(
               isRight: false,
-              onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+              onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),
@@ -130,7 +130,7 @@ class _WebTopOffersNearMeState extends State<WebTopOffersNearMe> {
           Positioned(
             top: 130, right: 0,
             child: ArrowIconButton(
-              onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+              onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),
@@ -267,7 +267,7 @@ class _WebTopOffersNearMeState extends State<WebTopOffersNearMe> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: 3),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                              color: Theme.of(context).primaryColor  ,
                               borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge),
                             ),
                             child: Row(children: [
@@ -329,7 +329,7 @@ class _WebTopOffersNearMeState extends State<WebTopOffersNearMe> {
                       padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: 2),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.radiusDefault), bottomRight: Radius.circular(Dimensions.radiusDefault)),
-                        color: Theme.of(context).colorScheme.error.withValues(alpha: 0.8),
+                        color: Theme.of(context).colorScheme.error   ,
                       ),
                       child: Text(
                         discount > 0 ? '${(isRightSide || discountType == 'percent') ? '' : currencySymbol}$discount${discountType == 'percent' ? '%'
@@ -358,7 +358,7 @@ class _WebTopOffersNearMeState extends State<WebTopOffersNearMe> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: 3),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+        color: Theme.of(context).primaryColor  ,
         borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [

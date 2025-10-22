@@ -39,8 +39,6 @@ class PlaceOrderBodyModel {
   double? _extraPackagingAmount;
   int? _createNewUser;
   String? _password;
-  bool? isPrescriptionOrder;
-  double? _bringChangeAmount;
 
   PlaceOrderBodyModel({
     required List<OnlineCart> cart,
@@ -51,36 +49,34 @@ class PlaceOrderBodyModel {
     required String paymentMethod,
     required int? storeId,
     required double? distance,
-    String? scheduleAt,
+    required String? scheduleAt,
     required double? discountAmount,
-    double? taxAmount,
+    required double taxAmount,
     required String orderNote,
-    String? address,
+    required String? address,
     required AddressModel? receiverDetails,
-    String? latitude,
-    String? longitude,
-    int? senderZoneId,
-    String? contactPersonName,
-    String? contactPersonNumber,
-    String? addressType,
+    required String? latitude,
+    required String? longitude,
+    required int? senderZoneId,
+    required String contactPersonName,
+    required String? contactPersonNumber,
+    required String? addressType,
     required String? parcelCategoryId,
     required String? chargePayer,
-    String? streetNumber,
-    String? house,
-    String? floor,
+    required String streetNumber,
+    required String house,
+    required String floor,
     required String dmTips,
     required String unavailableItemNote,
-    String? deliveryInstruction,
+    required String deliveryInstruction,
     required int cutlery,
     required int partialPayment,
     required int guestId,
     required int isBuyNow,
-    String? guestEmail,
+    required String? guestEmail,
     required double? extraPackagingAmount,
     required int? createNewUser,
     required String? password,
-    this.isPrescriptionOrder = false,
-    double? bringChangeAmount,
   }) {
     _cart = cart;
     _couponDiscountAmount = couponDiscountAmount;
@@ -118,8 +114,6 @@ class PlaceOrderBodyModel {
     _extraPackagingAmount = extraPackagingAmount;
     _createNewUser = createNewUser;
     _password = password;
-    isPrescriptionOrder = isPrescriptionOrder ?? false;
-    _bringChangeAmount = bringChangeAmount;
   }
 
   List<OnlineCart>? get cart => _cart;
@@ -157,8 +151,6 @@ class PlaceOrderBodyModel {
   double? get extraPackagingAmount => _extraPackagingAmount;
   int? get createNewUser => _createNewUser;
   String? get password => _password;
-  bool? get isPrescription => isPrescriptionOrder;
-  double? get bringChangeAmount => _bringChangeAmount;
 
   PlaceOrderBodyModel.fromJson(Map<String, dynamic> json) {
     if (json['cart'] != null) {
@@ -203,8 +195,6 @@ class PlaceOrderBodyModel {
     _extraPackagingAmount = json['extra_packaging_amount'] != null && json['extra_packaging_amount'] != 'null' ? double.parse(json['extra_packaging_amount'].toString()) : null;
     _createNewUser = json['create_new_user'] != null ? int.parse(json['create_new_user'].toString()) : null;
     _password = json['password'];
-    isPrescriptionOrder = json['is_prescription'] != null ? json['is_prescription'] == 'true' : false;
-    _bringChangeAmount = json['bring_change_amount'] != null ? double.parse(json['bring_change_amount'].toString()) : null;
   }
 
   Map<String, String> toJson() {
@@ -242,8 +232,8 @@ class PlaceOrderBodyModel {
     if (_senderZoneId != null) {
       data['sender_zone_id'] = _senderZoneId.toString();
     }
-    data['contact_person_name'] = _contactPersonName ?? '';
-    data['contact_person_number'] = _contactPersonNumber ?? '';
+    data['contact_person_name'] = _contactPersonName!;
+    data['contact_person_number'] = _contactPersonNumber!;
     data['address_type'] = _addressType ?? '';
     if (_parcelCategoryId != null) {
       data['parcel_category_id'] = _parcelCategoryId!;
@@ -272,10 +262,6 @@ class PlaceOrderBodyModel {
     data['create_new_user'] = _createNewUser.toString();
     if (_password != null) {
       data['password'] = _password!;
-    }
-    data['is_prescription'] = isPrescriptionOrder == true ? 'true' : 'false';
-    if(_bringChangeAmount != null) {
-      data['bring_change_amount'] = _bringChangeAmount.toString();
     }
     return data;
   }

@@ -16,6 +16,18 @@ class HomeController extends GetxController implements GetxService {
   bool _showFavButton = true;
   bool get showFavButton => _showFavButton;
 
+  // bool _canShoeReferrerBottomSheet = false;
+  // bool get canShoeReferrerBottomSheet => _canShoeReferrerBottomSheet;
+
+  // void toggleReferrerBottomSheet({bool? status}) {
+  //   if(Get.find<ProfileController>().userInfoModel!.isValidForDiscount! && status == null) {
+  //     _canShoeReferrerBottomSheet = true;
+  //   } else {
+  //     _canShoeReferrerBottomSheet = status ?? false;
+  //   }
+  // }
+
+
   Future<void> getCashBackOfferList() async {
     _cashBackOfferList = null;
     _cashBackOfferList = await homeServiceInterface.getCashBackOfferList();
@@ -26,6 +38,11 @@ class HomeController extends GetxController implements GetxService {
     _cashBackOfferList = null;
     update();
   }
+
+/*  Future<double> getCashBackAmount(double amount) async {
+    _cashBackAmount = await homeServiceInterface.getCashBackAmount(amount);
+    return _cashBackAmount;
+  }*/
 
   Future<void> getCashBackData(double amount) async {
     CashBackModel? cashBackModel = await homeServiceInterface.getCashBackData(amount);

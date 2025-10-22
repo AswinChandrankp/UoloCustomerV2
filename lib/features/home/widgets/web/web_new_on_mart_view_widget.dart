@@ -200,7 +200,7 @@ class _WebNewOnMartViewWidgetState extends State<WebNewOnMartViewWidget> {
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: 3),
                                           decoration: BoxDecoration(
-                                            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                                            color: Theme.of(context).primaryColor  ,
                                             borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge),
                                           ),
                                           child: Row(children: [
@@ -257,7 +257,7 @@ class _WebNewOnMartViewWidgetState extends State<WebNewOnMartViewWidget> {
             top: 110, left: 0,
             child: ArrowIconButton(
               isRight: false,
-              onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+              onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),
@@ -266,7 +266,7 @@ class _WebNewOnMartViewWidgetState extends State<WebNewOnMartViewWidget> {
           Positioned(
             top: 110, right: 0,
             child: ArrowIconButton(
-              onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+              onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),

@@ -85,7 +85,7 @@ class _WebLandingPageState extends State<WebLandingPage> {
               height: 250,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                color: Theme.of(context).primaryColor  ,
               ),
               child: Row(children: [
                 const SizedBox(width: 40),
@@ -125,7 +125,7 @@ class _WebLandingPageState extends State<WebLandingPage> {
                 height: 130,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                  color: Theme.of(context).primaryColor  ,
                 ),
                 child: Row(children: [
                   Expanded(flex: 3, child: Padding(
@@ -145,12 +145,10 @@ class _WebLandingPageState extends State<WebLandingPage> {
                   Expanded(flex: 7, child: Padding(
                     padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
                     child: Row(children: [
-                      Expanded(child: TypeAheadField(
-                        hideOnEmpty: true,
-                        controller: _controller,
+                      Expanded(child: TypeAheadField<PredictionModel>(
                         builder: (context, controller, focusNode) {
                           return TextField(
-                            controller: controller,
+                            controller: _controller,
                             focusNode: focusNode,
                             textInputAction: TextInputAction.search,
                             textCapitalization: TextCapitalization.words,
@@ -159,11 +157,11 @@ class _WebLandingPageState extends State<WebLandingPage> {
                               hintText: 'search_location'.tr,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Theme.of(context).primaryColor.withValues(alpha: 0.3), width: 1),
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor  , width: 1),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Theme.of(context).primaryColor.withValues(alpha: 0.3), width: 1),
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor  , width: 1),
                               ),
                               hintStyle: Theme.of(context).textTheme.displayMedium!.copyWith(
                                 fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor,
@@ -184,7 +182,6 @@ class _WebLandingPageState extends State<WebLandingPage> {
                             ),
                           );
                         },
-
                         suggestionsCallback: (pattern) async {
                           return await Get.find<LocationController>().searchLocation(context, pattern);
                         },
@@ -205,10 +202,6 @@ class _WebLandingPageState extends State<WebLandingPage> {
                         onSelected: (PredictionModel suggestion) async {
                           _controller.text = suggestion.description ?? '';
                           _address = await Get.find<LocationController>().setLocation(suggestion.placeId, suggestion.description, null);
-                        },
-
-                        errorBuilder : (_,value) {
-                          return const SizedBox();
                         },
                       )),
                       const SizedBox(width: Dimensions.paddingSizeSmall),
@@ -321,7 +314,7 @@ class _WebLandingPageState extends State<WebLandingPage> {
                             child: HtmlWidget(
                               splashController.moduleList![index].description ?? '',
                               key: Key(widget.route.toString()),
-                              textStyle: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.6)),
+                              textStyle: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color  ),
                               onTapUrl: (String url){
                                 return launchUrlString(url);
                               },
@@ -434,7 +427,7 @@ class _WebLandingPageState extends State<WebLandingPage> {
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).cardColor,
                                       borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                      border: Border.all(color: Theme.of(context).disabledColor.withValues(alpha: 0.6), width: 1),
+                                      border: Border.all(color: Theme.of(context).disabledColor  , width: 1),
                                       boxShadow: splashController.hoverStates[index] ? [const BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 5)] : [],
                                     ),
                                     child: Text(

@@ -44,7 +44,7 @@ class MessageBubbleWidget extends StatelessWidget {
               if(message.message != null) Flexible(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withValues(alpha: .10),
+                    color: Theme.of(context).primaryColor,
                     borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(Dimensions.radiusDefault),
                       topRight: Radius.circular(Dimensions.radiusDefault),
@@ -52,7 +52,7 @@ class MessageBubbleWidget extends StatelessWidget {
                     ),
                   ),
                   padding: EdgeInsets.all(message.message != null ? Dimensions.paddingSizeDefault : 0),
-                  child: Text(message.message ?? '', style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color, fontSize: Dimensions.fontSizeSmall)),
+                  child: Text(message.message ?? '', style: robotoRegular.copyWith(color: Theme.of(context).cardColor, fontSize: Dimensions.fontSizeSmall)),
                 ),
               ),
               const SizedBox(height: 8.0),
@@ -92,9 +92,9 @@ class MessageBubbleWidget extends StatelessWidget {
 
                 (message.message != null && message.message!.isNotEmpty) ? Flexible(
                   child: Container(
-                    decoration: BoxDecoration(
-                      color: Get.isDarkMode ? Theme.of(context).primaryColor.withValues(alpha: 0.2) : const Color(0xffE8EEFA),
-                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    decoration: const BoxDecoration(
+                      color: Color(0xffE8EEFA),
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
                     ),
                     child: Container(
                       padding: EdgeInsets.all(message.message != null ? Dimensions.paddingSizeDefault : 0),
@@ -163,7 +163,7 @@ class MessageBubbleWidget extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
           decoration: BoxDecoration(
-            color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
+            color: Theme.of(context).disabledColor  ,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(Dimensions.radiusDefault),
             ),
@@ -187,7 +187,7 @@ class MessageBubbleWidget extends StatelessWidget {
               child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.deepPurple.withValues(alpha: 0.1),
+                    color: Colors.deepPurple  ,
                     borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                   ),
                   padding: const EdgeInsets.all(4),
@@ -237,7 +237,7 @@ class MessageBubbleWidget extends StatelessWidget {
             order.detailsCount != null && order.detailsCount! > 0 ? Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                color: Theme.of(context).disabledColor.withValues(alpha: 0.1),
+                color: Theme.of(context).disabledColor  ,
               ),
               padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
               child: Column(children: [

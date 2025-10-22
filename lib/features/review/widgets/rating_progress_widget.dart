@@ -23,7 +23,7 @@ class RatingProgressWidget extends StatelessWidget {
         child: LinearProgressIndicator(
           minHeight: isDesktop ? Dimensions.paddingSizeSmall : Dimensions.paddingSizeExtraSmall,
           value: progressValue,
-          backgroundColor: Theme.of(context).hintColor.withValues(alpha: 0.2),
+          backgroundColor: Theme.of(context).hintColor  ,
           borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
           valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
         ),
@@ -31,8 +31,8 @@ class RatingProgressWidget extends StatelessWidget {
 
       Container(
         alignment: Alignment.centerRight,
-        width: 30,
-        child: Text('${ratingPercent.toStringAsFixed(0)}%', style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyMedium!.color?.withValues(alpha: 0.5))),
+        width: 50,
+        child: Text('${ratingPercent.toStringAsFixed(1)}%', style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyMedium!.color  )),
       ),
 
     ]);

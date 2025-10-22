@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sixam_mart/features/home/widgets/bad_weather_widget.dart';
 import 'package:sixam_mart/features/home/widgets/highlight_widget.dart';
 import 'package:sixam_mart/features/home/widgets/views/product_with_categories_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/best_store_nearby_view.dart';
@@ -7,7 +8,6 @@ import 'package:sixam_mart/features/home/widgets/views/just_for_you_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/middle_section_banner_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/new_on_mart_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/promotional_banner_view.dart';
-import 'package:sixam_mart/features/home/widgets/views/recommended_store_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/top_offers_near_me.dart';
 import 'package:sixam_mart/features/home/widgets/views/visit_again_view.dart';
 import 'package:sixam_mart/features/home/widgets/banner_view.dart';
@@ -24,9 +24,11 @@ class PharmacyHomeScreen extends StatelessWidget {
 
       Container(
         width: MediaQuery.of(context).size.width,
-        color: Theme.of(context).disabledColor.withValues(alpha: 0.1),
+        color: Theme.of(context).disabledColor  ,
         child:  const Column(
           children: [
+            BadWeatherWidget(),
+
             BannerView(isFeatured: false),
             SizedBox(height: 12),
           ],
@@ -35,7 +37,6 @@ class PharmacyHomeScreen extends StatelessWidget {
 
       const CategoryView(),
       isLoggedIn ? const VisitAgainView() : const SizedBox(),
-      const RecommendedStoreView(),
       const ProductWithCategoriesView(),
       const HighlightWidget(),
       const MiddleSectionBannerView(),

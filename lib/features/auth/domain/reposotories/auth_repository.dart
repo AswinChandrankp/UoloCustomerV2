@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -25,10 +26,37 @@ class AuthRepository implements AuthRepositoryInterface{
     return sharedPreferences.getBool(AppConstants.notification) ?? true;
   }
 
+/*  @override
+  Future<ResponseModel> registration(SignUpBodyModel signUpBody) async {
+    Response response = await apiClient.postData(AppConstants.registerUri, signUpBody.toJson(), handleError: false);
+    if (response.statusCode == 200) {
+      return ResponseModel(true, response.body["token"]);
+    } else {
+      return ResponseModel(false, response.statusText);
+    }
+  }*/
+
+
   @override
   Future<Response> registration(SignUpBodyModel signUpBody) async {
     return await apiClient.postData(AppConstants.registerUri, signUpBody.toJson(), handleError: false);
   }
+
+
+/*  @override
+  Future<Response> login({String? phone, String? password}) async {
+    String guestId = getSharedPrefGuestId();
+    String? deviceToken = await saveDeviceToken();
+    Map<String, String> data = {
+      "phone": phone!,
+      "password": password!,
+      "cm_firebase_token": deviceToken!,
+    };
+    if(guestId.isNotEmpty) {
+      data.addAll({"guest_id": guestId});
+    }
+    return await apiClient.postData(AppConstants.loginUri, data, handleError: false);
+  }*/
 
   @override
   Future<Response> login({required String emailOrPhone, required String password, required String loginType, required String fieldType, bool alreadyInApp = false}) async {
@@ -94,6 +122,11 @@ class AuthRepository implements AuthRepositoryInterface{
     return await apiClient.postData(AppConstants.personalInformationUri, data, handleError: false);
   }
 
+/*  @override
+  Future<Response> loginWithSocialMedia(SocialLogInBody socialLogInBody, int timeout) async {
+    return await apiClient.postData(AppConstants.socialLoginUri, socialLogInBody.toJson(), timeout: timeout);
+  }*/
+
   @override
   Future<Response> loginWithSocialMedia(SocialLogInBody socialLogInModel) async {
     String guestId = getSharedPrefGuestId();
@@ -103,6 +136,25 @@ class AuthRepository implements AuthRepositoryInterface{
     }
     return await apiClient.postData(AppConstants.loginUri, data);
   }
+
+/*  @override
+  Future<bool> saveUserToken(String token) async {
+    apiClient.token = token;
+    if(sharedPreferences.getString(AppConstants.userAddress) != null){
+      AddressModel? addressModel = AddressModel.fromJson(jsonDecode(sharedPreferences.getString(AppConstants.userAddress)!));
+      apiClient.updateHeader(
+        token, addressModel.zoneIds, addressModel.areaIds, sharedPreferences.getString(AppConstants.languageCode),
+         ModuleHelper.getModule()?.id, addressModel.latitude, addressModel.longitude,
+      );
+    }else{
+      apiClient.updateHeader(
+          token, null, null, sharedPreferences.getString(AppConstants.languageCode),
+          ModuleHelper.getModule()?.id,
+          null, null
+      );
+    }
+    return await sharedPreferences.setString(AppConstants.token, token);
+  }*/
 
   @override
   Future<bool> saveUserToken(String token, {bool alreadyInApp = false}) async {
@@ -137,7 +189,9 @@ class AuthRepository implements AuthRepositoryInterface{
       }
       if(!GetPlatform.isWeb) {
         FirebaseMessaging.instance.subscribeToTopic(AppConstants.topic);
-        FirebaseMessaging.instance.subscribeToTopic('zone_${AddressHelper.getUserAddressFromSharedPref()!.zoneId}_customer');
+        if(AddressHelper.getUserAddressFromSharedPref() != null){
+         FirebaseMessaging.instance.subscribeToTopic('zone_${AddressHelper.getUserAddressFromSharedPref()!.zoneId}_customer');
+        }
       }
     }
     return await apiClient.postData(AppConstants.tokenUri, {"_method": "put", "cm_firebase_token": notificationDeviceToken.isNotEmpty ? notificationDeviceToken : deviceToken}, handleError: false);
@@ -202,7 +256,9 @@ class AuthRepository implements AuthRepositoryInterface{
     sharedPreferences.remove(AppConstants.token);
     sharedPreferences.remove(AppConstants.guestId);
     sharedPreferences.setStringList(AppConstants.cartList, []);
+    // sharedPreferences.remove(AppConstants.userAddress);
     apiClient.token = null;
+    // apiClient.updateHeader(null, null, null, null, null, null, null);
     await guestLogin();
     if(sharedPreferences.getString(AppConstants.userAddress) != null){
       AddressModel? addressModel = AddressModel.fromJson(jsonDecode(sharedPreferences.getString(AppConstants.userAddress)!));
@@ -267,6 +323,7 @@ class AuthRepository implements AuthRepositoryInterface{
     return sharedPreferences.getString(AppConstants.guestNumber) ?? "";
   }
 
+  ///Todo:
   @override
   Future<bool> saveDmTipIndex(String index) async {
     return await sharedPreferences.setString(AppConstants.dmTipIndex, index);
@@ -327,5 +384,7 @@ class AuthRepository implements AuthRepositoryInterface{
   Future update(Map<String, dynamic> body, int? id) {
     throw UnimplementedError();
   }
+
+
 
 }

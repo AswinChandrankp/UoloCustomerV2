@@ -15,10 +15,24 @@ class AuthService implements AuthServiceInterface{
     return authRepositoryInterface.isSharedPrefNotificationActive();
   }
 
+  /*@override
+  Future<ResponseModel> registration(SignUpBodyModel signUpBody, bool isCustomerVerificationOn) async {
+    ResponseModel responseModel = await authRepositoryInterface.registration(signUpBody);
+    if(responseModel.isSuccess) {
+      if(!isCustomerVerificationOn) {
+        authRepositoryInterface.saveUserToken(responseModel.message!);
+        await authRepositoryInterface.updateToken();
+        authRepositoryInterface.clearSharedPrefGuestId();
+      }
+    }
+    return responseModel;
+  }*/
+
   @override
   Future<ResponseModel> registration(SignUpBodyModel signUpBody) async {
     Response response = await authRepositoryInterface.registration(signUpBody);
     if(response.statusCode == 200){
+      
       AuthResponseModel authResponse = AuthResponseModel.fromJson(response.body);
       await _updateHeaderFunctionality(authResponse, alreadyInApp: false);
       return ResponseModel(true, authResponse.token??'', authResponseModel: authResponse);
@@ -26,6 +40,28 @@ class AuthService implements AuthServiceInterface{
       return ResponseModel(false, response.statusText);
     }
   }
+
+/*  @override
+  Future<ResponseModel> login({String? phone, String? password, required bool isCustomerVerificationOn}) async {
+    Response response = await authRepositoryInterface.login(phone: phone, password: password);
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+
+      // Get.find<AuthController>().firebaseVerifyPhoneNumber(phone!);
+      // responseModel = ResponseModel(false, 'success');
+      if(isCustomerVerificationOn && response.body['is_phone_verified'] == 0) {
+
+      }else {
+        authRepositoryInterface.saveUserToken(response.body['token']);
+        await authRepositoryInterface.updateToken();
+        authRepositoryInterface.clearSharedPrefGuestId();
+      }
+      responseModel = ResponseModel(true, '${response.body['is_phone_verified']}${response.body['token']}', isPhoneVerified: response.body['is_phone_verified'] == 1);
+    } else {
+      responseModel = ResponseModel(false, response.statusText, isPhoneVerified: response.body['is_phone_verified'] == 1);
+    }
+    return responseModel;
+  }*/
 
   @override
   Future<ResponseModel> login({required String emailOrPhone, required String password, required String loginType, required String fieldType, bool alreadyInApp = false}) async {
@@ -63,6 +99,37 @@ class AuthService implements AuthServiceInterface{
   Future<ResponseModel> guestLogin() async {
     return await authRepositoryInterface.guestLogin();
   }
+
+  /*@override
+  Future<bool> loginWithSocialMedia(SocialLogInBody socialLogInBody, int timeout, bool isCustomerVerificationOn) async {
+    bool canNavigateToLocation = false;
+    Response response = await authRepositoryInterface.loginWithSocialMedia(socialLogInBody, timeout);
+    if (response.statusCode == 200) {
+      String? token = response.body['token'];
+      if(token != null && token.isNotEmpty) {
+        if(isCustomerVerificationOn && response.body['is_phone_verified'] == 0) {
+          if(Get.find<SplashController>().configModel!.firebaseOtpVerification!) {
+            Get.find<AuthController>().firebaseVerifyPhoneNumber(response.body['phone'], token, fromSignUp: true);
+          }else{
+            Get.toNamed(RouteHelper.getVerificationRoute(response.body['phone'] ?? socialLogInBody.email, token, RouteHelper.signUp, ''));
+          }
+        }else {
+          authRepositoryInterface.saveUserToken(response.body['token']);
+          await authRepositoryInterface.updateToken();
+          authRepositoryInterface.clearSharedPrefGuestId();
+          canNavigateToLocation = true;
+        }
+      }else {
+        Get.toNamed(RouteHelper.getForgotPassRoute(true, socialLogInBody));
+      }
+    }else if(response.statusCode == 403 && response.body['errors'][0]['code'] == 'email'){
+      Get.toNamed(RouteHelper.getForgotPassRoute(true, socialLogInBody));
+    } else {
+      showCustomSnackBar(response.statusText);
+    }
+    return canNavigateToLocation;
+  }*/
+
 
   @override
   Future<ResponseModel> loginWithSocialMedia(SocialLogInBody socialLogInModel, {bool isCustomerVerificationOn = false}) async {
@@ -163,6 +230,7 @@ class AuthService implements AuthServiceInterface{
     return authRepositoryInterface.getGuestContactNumber();
   }
 
+  ///Todo:
   @override
   Future<bool> saveDmTipIndex(String index) async {
     return await authRepositoryInterface.saveDmTipIndex(index);

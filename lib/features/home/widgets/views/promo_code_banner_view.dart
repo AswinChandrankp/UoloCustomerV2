@@ -49,7 +49,7 @@ class _PromoCodeBannerViewState extends State<PromoCodeBannerView> {
                 height: 135, width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeSmall),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                  color: Theme.of(context).primaryColor  ,
                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
                   image: const DecorationImage(
                     image: AssetImage(Images.promoCodeBg),
@@ -68,41 +68,60 @@ class _PromoCodeBannerViewState extends State<PromoCodeBannerView> {
                       Text(
                         '${couponController.couponList![itemIndex].title ?? ''} ${'min_order_of'.tr} ${PriceConverter.convertPrice(couponController.couponList![itemIndex].minPurchase)}',
                           textAlign: TextAlign.center,
-                          style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyLarge!.color!.withValues(alpha: 0.8)),
+                          style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyLarge!.color!   ),
                       ),
                       const SizedBox(height: Dimensions.paddingSizeSmall),
 
-                      DottedBorder(
-                        options: RoundedRectDottedBorderOptions(
-                          color: Theme.of(context).primaryColor,
-                          strokeWidth: 1,
-                          strokeCap: StrokeCap.butt,
-                          dashPattern: const [5, 5],
-                          padding: const EdgeInsets.all(0),
-                          radius: const Radius.circular(50),
-                        ),
-                        child: Container(
-                          height: 35, width: 130,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(50)),
-                          child: CustomInkWell(
-                            onTap: () {
-                              if(couponController.couponList![itemIndex].code != null){
-                                Clipboard.setData(ClipboardData(text: couponController.couponList![itemIndex].code ?? ''));
-                                showCustomSnackBar('coupon_code_copied'.tr, isError: false);
-                              }
-                            },
-                            radius: 50,
-                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-                            child: Row(mainAxisSize: MainAxisSize.min, children: [
-                              Icon(Icons.copy, color: Theme.of(context).primaryColor, size: 16),
-                              const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                     DottedBorder(
+  options: RoundedRectDottedBorderOptions(
+    color: Theme.of(context).primaryColor,
+    strokeWidth: 1,
+    strokeCap: StrokeCap.butt,
+    dashPattern: [5, 5],
+    padding: EdgeInsets.all(0),
+    radius: Radius.circular(50),
+  ),
+  child: Container(
+    height: 35,
+    width: 130,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: Theme.of(context).cardColor,
+      borderRadius: BorderRadius.circular(50),
+    ),
+    child: CustomInkWell(
+      onTap: () {
+        if (couponController.couponList![itemIndex].code != null) {
+          Clipboard.setData(
+            ClipboardData(text: couponController.couponList![itemIndex].code ?? ''),
+          );
+          showCustomSnackBar('coupon_code_copied'.tr, isError: false);
+        }
+      },
+      radius: 50,
+      padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.copy, color: Theme.of(context).primaryColor, size: 16),
+          const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+          Flexible(
+            child: Text(
+              couponController.couponList![itemIndex].code ?? '',
+              style: robotoMedium.copyWith(
+                color: Theme.of(context).primaryColor,
+                fontSize: Dimensions.fontSizeSmall,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+)
 
-                              Flexible(child: Text(couponController.couponList![itemIndex].code ?? '', style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall), maxLines: 1, overflow: TextOverflow.ellipsis)),
-                            ]),
-                          ),
-                        ),
-                      ),
 
                     ]),
                   ),
@@ -129,7 +148,7 @@ class _PromoCodeBannerViewState extends State<PromoCodeBannerView> {
                   ),
                 ) : Container(
                   height: 5, width: 6,
-                  decoration: BoxDecoration(color: Theme.of(context).primaryColor.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(Dimensions.radiusDefault)),
+                  decoration: BoxDecoration(color: Theme.of(context).primaryColor  , borderRadius: BorderRadius.circular(Dimensions.radiusDefault)),
                 ),
               );
             }).toList(),

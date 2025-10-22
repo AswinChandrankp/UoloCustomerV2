@@ -96,77 +96,69 @@ class OrderModel {
   double? flashStoreDiscountAmount;
   double? extraPackagingAmount;
   double? referrerBonusAmount;
-  ParcelCancellation? parcelCancellation;
-  double? bringChangeAmount;
-  String? cancellationNote;
-  List<Reviews>? reviews;
 
-  OrderModel({
-    this.id,
-    this.userId,
-    this.orderAmount,
-    this.couponDiscountAmount,
-    this.couponDiscountTitle,
-    this.paymentStatus,
-    this.orderStatus,
-    this.totalTaxAmount,
-    this.paymentMethod,
-    this.couponCode,
-    this.orderNote,
-    this.orderType,
-    this.createdAt,
-    this.updatedAt,
-    this.deliveryCharge,
-    this.scheduleAt,
-    this.otp,
-    this.pending,
-    this.accepted,
-    this.confirmed,
-    this.processing,
-    this.handover,
-    this.pickedUp,
-    this.delivered,
-    this.canceled,
-    this.refundRequested,
-    this.refunded,
-    this.scheduled,
-    this.storeDiscountAmount,
-    this.failed,
-    this.detailsCount,
-    this.chargePayer,
-    this.moduleType,
-    this.deliveryMan,
-    this.deliveryAddress,
-    this.receiverDetails,
-    this.parcelCategory,
-    this.store,
-    this.orderAttachmentFullUrl,
-    this.dmTips,
-    this.refundCancellationNote,
-    this.refundCustomerNote,
-    this.refund,
-    this.prescriptionOrder,
-    this.taxStatus,
-    this.cancellationReason,
-    this.processingTime,
-    this.cutlery,
-    this.unavailableItemNote,
-    this.deliveryInstruction,
-    this.taxPercentage,
-    this.additionalCharge,
-    this.partiallyPaidAmount,
-    this.payments,
-    this.orderProofFullUrl,
-    this.offlinePayment,
-    this.flashAdminDiscountAmount,
-    this.flashStoreDiscountAmount,
-    this.extraPackagingAmount,
-    this.referrerBonusAmount,
-    this.parcelCancellation,
-    this.bringChangeAmount,
-    this.cancellationNote,
-    this.reviews,
-  });
+  OrderModel(
+      {this.id,
+        this.userId,
+        this.orderAmount,
+        this.couponDiscountAmount,
+        this.couponDiscountTitle,
+        this.paymentStatus,
+        this.orderStatus,
+        this.totalTaxAmount,
+        this.paymentMethod,
+        this.couponCode,
+        this.orderNote,
+        this.orderType,
+        this.createdAt,
+        this.updatedAt,
+        this.deliveryCharge,
+        this.scheduleAt,
+        this.otp,
+        this.pending,
+        this.accepted,
+        this.confirmed,
+        this.processing,
+        this.handover,
+        this.pickedUp,
+        this.delivered,
+        this.canceled,
+        this.refundRequested,
+        this.refunded,
+        this.scheduled,
+        this.storeDiscountAmount,
+        this.failed,
+        this.detailsCount,
+        this.chargePayer,
+        this.moduleType,
+        this.deliveryMan,
+        this.deliveryAddress,
+        this.receiverDetails,
+        this.parcelCategory,
+        this.store,
+        this.orderAttachmentFullUrl,
+        this.dmTips,
+        this.refundCancellationNote,
+        this.refundCustomerNote,
+        this.refund,
+        this.prescriptionOrder,
+        this.taxStatus,
+        this.cancellationReason,
+        this.processingTime,
+        this.cutlery,
+        this.unavailableItemNote,
+        this.deliveryInstruction,
+        this.taxPercentage,
+        this.additionalCharge,
+        this.partiallyPaidAmount,
+        this.payments,
+        this.orderProofFullUrl,
+        this.offlinePayment,
+        this.flashAdminDiscountAmount,
+        this.flashStoreDiscountAmount,
+        this.extraPackagingAmount,
+        this.referrerBonusAmount,
+      });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -248,15 +240,6 @@ class OrderModel {
     flashStoreDiscountAmount = json['flash_store_discount_amount']?.toDouble();
     extraPackagingAmount = json['extra_packaging_amount']?.toDouble();
     referrerBonusAmount = json['ref_bonus_amount']?.toDouble();
-    parcelCancellation = json['parcel_cancellation'] != null ? ParcelCancellation.fromJson(json['parcel_cancellation']) : null;
-    bringChangeAmount = json['bring_change_amount']?.toDouble();
-    cancellationNote = json['cancellation_note'];
-    if (json['reviews'] != null) {
-      reviews = <Reviews>[];
-      json['reviews'].forEach((v) {
-        reviews!.add(Reviews.fromJson(v));
-      });
-    }
   }
 
   Map<String, dynamic> toJson() {
@@ -335,14 +318,6 @@ class OrderModel {
     data['flash_store_discount_amount'] = flashStoreDiscountAmount;
     data['extra_packaging_amount'] = extraPackagingAmount;
     data['ref_bonus_amount'] = referrerBonusAmount;
-    if (parcelCancellation != null) {
-      data['parcel_cancellation'] = parcelCancellation!.toJson();
-    }
-    data['bring_change_amount'] = bringChangeAmount;
-    data['cancellation_note'] = cancellationNote;
-    if (reviews != null) {
-      data['reviews'] = reviews!.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }
@@ -363,22 +338,22 @@ class DeliveryMan {
   String? lng;
   String? location;
 
-  DeliveryMan({
-    this.id,
-    this.fName,
-    this.lName,
-    this.phone,
-    this.email,
-    this.imageFullUrl,
-    this.zoneId,
-    this.active,
-    this.available,
-    this.avgRating,
-    this.ratingCount,
-    this.lat,
-    this.lng,
-    this.location,
-  });
+  DeliveryMan(
+      {this.id,
+        this.fName,
+        this.lName,
+        this.phone,
+        this.email,
+        this.imageFullUrl,
+        this.zoneId,
+        this.active,
+        this.available,
+        this.avgRating,
+        this.ratingCount,
+        this.lat,
+        this.lng,
+        this.location,
+      });
 
   DeliveryMan.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -426,15 +401,13 @@ class Payments {
   String? createdAt;
   String? updatedAt;
 
-  Payments({
-    this.id,
+  Payments({this.id,
     this.orderId,
     this.amount,
     this.paymentStatus,
     this.paymentMethod,
     this.createdAt,
-    this.updatedAt,
-  });
+    this.updatedAt});
 
   Payments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -556,137 +529,6 @@ class MethodFields {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['input_name'] = inputName;
     data['input_data'] = inputData;
-    return data;
-  }
-}
-
-class ParcelCancellation {
-  int? id;
-  int? orderId;
-  List<String>? reason;
-  String? cancelBy;
-  String? note;
-  int? returnOtp;
-  double? returnFee;
-  String? returnFeePaymentStatus;
-  String? returnDate;
-  double? dmPenaltyFee;
-  String? createdAt;
-  String? updatedAt;
-  int? beforePickup;
-
-  ParcelCancellation({
-    this.id,
-    this.orderId,
-    this.reason,
-    this.cancelBy,
-    this.note,
-    this.returnOtp,
-    this.returnFee,
-    this.returnFeePaymentStatus,
-    this.returnDate,
-    this.dmPenaltyFee,
-    this.createdAt,
-    this.updatedAt,
-    this.beforePickup,
-  });
-
-  ParcelCancellation.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    orderId = json['order_id'];
-    reason = json['reason'] != null ? (json['reason'] is List
-    ? List<String>.from(json['reason'])
-    : json['reason'].toString().replaceAll('[', '').replaceAll(']', '').split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList())
-    : null;
-    cancelBy = json['cancel_by'];
-    note = json['note'];
-    returnOtp = json['return_otp'];
-    returnFee = json['return_fee'] != null ? double.tryParse(json['return_fee'].toString()) : null;
-    returnFeePaymentStatus = json['return_fee_payment_status'];
-    returnDate = json['return_date'];
-    dmPenaltyFee = json['dm_penalty_fee'] != null ? double.tryParse(json['dm_penalty_fee'].toString()) : null;
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    beforePickup = json['before_pickup'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['order_id'] = orderId;
-    data['reason'] = reason;
-    data['cancel_by'] = cancelBy;
-    data['note'] = note;
-    data['return_otp'] = returnOtp;
-    data['return_fee'] = returnFee;
-    data['return_fee_payment_status'] = returnFeePaymentStatus;
-    data['return_date'] = returnDate;
-    data['dm_penalty_fee'] = dmPenaltyFee;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    data['before_pickup'] = beforePickup;
-    return data;
-  }
-}
-
-class Reviews {
-  int? id;
-  int? itemId;
-  int? userId;
-  String? comment;
-  String? attachment;
-  int? rating;
-  int? orderId;
-  String? createdAt;
-  String? updatedAt;
-  int? status;
-  int? moduleId;
-  String? reviewId;
-
-  Reviews({
-    this.id,
-    this.itemId,
-    this.userId,
-    this.comment,
-    this.attachment,
-    this.rating,
-    this.orderId,
-    this.createdAt,
-    this.updatedAt,
-    this.status,
-    this.moduleId,
-    this.reviewId,
-  });
-
-  Reviews.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    itemId = json['item_id'];
-    userId = json['user_id'];
-    comment = json['comment'];
-    attachment = json['attachment'];
-    rating = json['rating'];
-    orderId = json['order_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    status = json['status'];
-    moduleId = json['module_id'];
-    reviewId = json['review_id'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['item_id'] = itemId;
-    data['user_id'] = userId;
-    data['comment'] = comment;
-    data['attachment'] = attachment;
-    data['rating'] = rating;
-    data['order_id'] = orderId;
-    data['created_at'] = createdAt;
-    data['updated_at'] = updatedAt;
-    data['status'] = status;
-    data['module_id'] = moduleId;
-    data['review_id'] = reviewId;
     return data;
   }
 }

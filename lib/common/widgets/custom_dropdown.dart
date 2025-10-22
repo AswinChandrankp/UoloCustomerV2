@@ -73,7 +73,7 @@ class CustomDropdownState<T> extends State<CustomDropdown<T?>>
     var style = widget.dropdownButtonStyle;
     // link the overlay to the button
     return CompositedTransformTarget(
-      link: _layerLink,
+      link: this._layerLink,
       child: SizedBox(
         width: style.width,
         height: style.height,
@@ -132,7 +132,7 @@ class CustomDropdownState<T> extends State<CustomDropdown<T?>>
                 child: CompositedTransformFollower(
                   offset:
                   widget.dropdownStyle.offset ?? Offset(0, size.height + 5),
-                  link: _layerLink,
+                  link: this._layerLink,
                   showWhenUnlinked: false,
                   child: Material(
                     elevation: widget.dropdownStyle.elevation ?? 0,
@@ -188,13 +188,13 @@ class CustomDropdownState<T> extends State<CustomDropdown<T?>>
   void _toggleDropdown({bool close = false}) async {
     if (_isOpen || close) {
       await _animationController.reverse();
-      _overlayEntry.remove();
+      this._overlayEntry.remove();
       setState(() {
         _isOpen = false;
       });
     } else {
-      _overlayEntry = _createOverlayEntry();
-      Overlay.of(context).insert(_overlayEntry);
+      this._overlayEntry = this._createOverlayEntry();
+      Overlay.of(context).insert(this._overlayEntry);
       setState(() => _isOpen = true);
       _animationController.forward();
     }

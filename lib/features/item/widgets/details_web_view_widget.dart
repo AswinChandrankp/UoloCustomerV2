@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart/features/cart/controllers/cart_controller.dart';
+
 import 'package:sixam_mart/features/item/controllers/item_controller.dart';
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/checkout/domain/models/place_order_body_model.dart';
 import 'package:sixam_mart/features/cart/domain/models/cart_model.dart';
 import 'package:sixam_mart/helper/price_converter.dart';
+import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
@@ -49,40 +51,14 @@ class DetailsWebViewWidget extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-
-                        Stack(
-                          children: [
-                            SizedBox(
-                              height: Get.size.height * 0.5,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
-                                child: CustomImage(
-                                  fit: BoxFit.cover, height: Get.size.height * 0.5, width: double.infinity,
-                                  image: '${imageList[itemController.productSelect]}',
-                                ),
-                              ),
-                            ),
-
-                            imageList.length > 1 ? Positioned(
-                              left: 10, top: Get.size.height * 0.5 / 2 - 30,
-                              child: InkWell(
-                                onTap: () => itemController.setSelect(itemController.productSelect == 0 ? imageList.length - 1 : itemController.productSelect - 1, true),
-                                child: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 16),
-                              ),
-                            ) : const SizedBox(),
-
-                            imageList.length > 1 ? Positioned(
-                              right: 5, top: Get.size.height * 0.5 / 2 - 30,
-                              child: InkWell(
-                                onTap: () => itemController.setSelect(itemController.productSelect == imageList.length - 1 ? 0 : itemController.productSelect + 1, true),
-                                child: const Icon(Icons.arrow_forward_ios, color: Colors.black, size: 16),
-                              ),
-                            ) : const SizedBox(),
-
-                          ],
+                        SizedBox(
+                          height: Get.size.height*0.5,
+                          child: CustomImage(
+                            fit: BoxFit.cover,
+                            image: '${imageList[itemController.productSelect]}',
+                          ),
                         ),
-                        const SizedBox(height: 15),
-
+                        const SizedBox(height: 10),
                         SizedBox(height: 70, child: itemController.item!.imageFullUrl != null ? ListView.builder(
                           itemCount: imageList.length,
                           scrollDirection: Axis.horizontal,
@@ -90,28 +66,24 @@ class DetailsWebViewWidget extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.only(right: Dimensions.paddingSizeSmall),
                               child: InkWell(
-                                onTap: () => itemController.setSelect(index, true),
+                                onTap: () => itemController.setSelect(index,true),
                                 child: Container(
                                   width: 70,
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).cardColor,
-                                    borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
-                                    border: Border.all(color: index == itemController.productSelect ? Theme.of(context).primaryColor : Colors.transparent),
+                                    borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                                    border: Border.all(color: index == itemController.productSelect ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                                        width: index == itemController.productSelect ? 2 : 1),
                                   ),
                                   padding: const EdgeInsets.all(2),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(Dimensions.radiusMedium),
-                                    child: CustomImage(
-                                      fit: BoxFit.cover,
-                                      image: '${imageList[index]}',
-                                    ),
+                                  child: CustomImage(
+                                    fit: BoxFit.cover,
+                                    image: '${imageList[index]}',
                                   ),
                                 ),
                               ),
                             );
                           },
-                        ) : const SizedBox()),
-
+                        ) : const SizedBox(),)
                       ],
                     ),
                   )),
@@ -127,16 +99,14 @@ class DetailsWebViewWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: Dimensions.paddingSizeSmall),
-                            Text('description'.tr, style: robotoBold),
+                            Text('description'.tr, style: robotoMedium),
                             const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-
                             Text(
                               itemController.item!.description!,
                               style: robotoRegular,
                               maxLines: itemController.isReadMore ? 10 : 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-
                             itemController.item!.description!.length > 150 ? InkWell(
                               onTap: () => itemController.changeReadMore(),
                               child: Text(
@@ -145,20 +115,20 @@ class DetailsWebViewWidget extends StatelessWidget {
                               ),
                             ) : const SizedBox(),
 
-                            const SizedBox(height: Dimensions.paddingSizeDefault),
+                            const SizedBox(height: Dimensions.paddingSizeLarge),
                           ],
                         ) : const SizedBox(),
 
                         (itemController.item!.nutritionsName != null && itemController.item!.nutritionsName!.isNotEmpty) ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('nutrition_details'.tr, style: robotoBold),
+                            Text('nutrition_details'.tr, style: robotoMedium),
                             const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
                             Wrap(children: List.generate(itemController.item!.nutritionsName!.length, (index) {
                               return Text(
                                 '${itemController.item!.nutritionsName![index]}${itemController.item!.nutritionsName!.length-1 == index ? '.' : ', '}',
-                                style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
+                                style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color  ),
                               );
                             })),
                             const SizedBox(height: Dimensions.paddingSizeLarge),
@@ -168,13 +138,13 @@ class DetailsWebViewWidget extends StatelessWidget {
                         (itemController.item!.allergiesName != null && itemController.item!.allergiesName!.isNotEmpty) ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('allergic_ingredients'.tr, style: robotoBold),
+                            Text('allergic_ingredients'.tr, style: robotoMedium),
                             const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
                             Wrap(children: List.generate(itemController.item!.allergiesName!.length, (index) {
                               return Text(
                                 '${itemController.item!.allergiesName![index]}${itemController.item!.allergiesName!.length-1 == index ? '.' : ', '}',
-                                style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.5)),
+                                style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color  ),
                               );
                             })),
                             const SizedBox(height: Dimensions.paddingSizeLarge),
@@ -184,7 +154,7 @@ class DetailsWebViewWidget extends StatelessWidget {
                         itemController.item!.isPrescriptionRequired! ? Container(
                           padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.1),
+                            color: Theme.of(context).colorScheme.error  ,
                             borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                           ),
                           child: Text(
@@ -202,24 +172,21 @@ class DetailsWebViewWidget extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                              Row(
-                                children: [
-                                  Text(itemController.item!.choiceOptions![index].title!, style: robotoBold),
-                                  Text(' (${'select_one'.tr})', style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeExtraSmall)),
-                                ],
-                              ),
+                              Text(itemController.item!.choiceOptions![index].title!, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                              const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+
+                              Text('select_one'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeSmall)),
                               const SizedBox(height: Dimensions.paddingSizeSmall),
 
                               GridView.builder(
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 20,
                                   mainAxisSpacing: 10,
-                                  mainAxisExtent: 35,
+                                  childAspectRatio: ResponsiveHelper.isDesktop(context) ? 6.5 : (1 / 0.25),
                                 ),
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(right: 200),
                                 itemCount: itemController.item!.choiceOptions![index].options!.length,
                                 itemBuilder: (context, i) {
                                   return InkWell(
@@ -230,8 +197,9 @@ class DetailsWebViewWidget extends StatelessWidget {
                                       alignment: Alignment.center,
                                       padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall),
                                       decoration: BoxDecoration(
-                                        color: itemController.variationIndex![index] != i ? Theme.of(context).disabledColor.withValues(alpha: 0.1) : Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.circular(100),
+                                        color: itemController.variationIndex![index] != i ? Theme.of(context).colorScheme.surface : Theme.of(context).primaryColor,
+                                        borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                                        border: itemController.variationIndex![index] != i ? Border.all(color: Theme.of(context).disabledColor, width: 1) : null,
                                       ),
                                       child: Text(
                                         itemController.item!.choiceOptions![index].options![i].trim(), maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -249,18 +217,19 @@ class DetailsWebViewWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 30),
 
-                        GetBuilder<CartController>(builder: (cartController) {
-                          return Row(children: [
-                            Text('${'total_amount'.tr}:', style: robotoBold),
-                            const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-
-                            Text(PriceConverter.convertPrice(itemController.cartIndex != -1
-                                ? _getItemDetailsDiscountPrice(cart: Get.find<CartController>().cartList[itemController.cartIndex])
-                                : priceWithAddOns), textDirection: TextDirection.ltr, style: robotoBold.copyWith(
-                              color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeLarge,
-                            )),
-                          ]);
-                        }),
+                        GetBuilder<CartController>(
+                          builder: (cartController) {
+                            return Row(children: [
+                              Text('${'total_amount'.tr}:', style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                              const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                              Text(PriceConverter.convertPrice(itemController.cartIndex != -1
+                                  ? _getItemDetailsDiscountPrice(cart: Get.find<CartController>().cartList[itemController.cartIndex])
+                                  : priceWithAddOns), textDirection: TextDirection.ltr, style: robotoBold.copyWith(
+                                color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeLarge,
+                              )),
+                            ]);
+                          }
+                        ),
                         const SizedBox(height: 30),
 
                         Row(children: [
@@ -302,7 +271,8 @@ class DetailsWebViewWidget extends StatelessWidget {
                                 onPressed: (!Get.find<SplashController>().configModel!.moduleConfig!.module!.stock! || stock! > 0) ?  () async {
                                   if(itemController.item!.availableDateStarts != null) {
                                     Get.toNamed(RouteHelper.getCheckoutRoute('campaign'), arguments: CheckoutScreen(
-                                      storeId: null, fromCart: false, cartList: [cartModel],
+                                      storeId: null,
+                                       fromCart: false, cartList: [cartModel],
                                     ));
                                   }else if (Get.find<CartController>().existAnotherStoreItem(cartModel!.item!.storeId, Get.find<SplashController>().module!.id)) {
                                     Get.dialog(ConfirmationDialog(
@@ -358,8 +328,8 @@ class DetailsWebViewWidget extends StatelessWidget {
   double _getItemDetailsDiscountPrice({required CartModel cart}) {
     double discountedPrice = 0;
 
-    double? discount = cart.item!.discount;
-    String? discountType = cart.item!.discountType;
+    double? discount = cart.item!.storeDiscount == 0 ? cart.item!.discount! : cart.item!.storeDiscount!;
+    String? discountType = (cart.item!.storeDiscount == 0) ? cart.item!.discountType : 'percent';
     String variationType = cart.variation != null && cart.variation!.isNotEmpty ? cart.variation![0].type! : '';
 
     if(cart.variation != null && cart.variation!.isNotEmpty){

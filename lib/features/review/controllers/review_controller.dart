@@ -58,14 +58,13 @@ class ReviewController extends GetxController implements GetxService {
     }
   }
 
-  void setRating(int index, int rate, {bool notify = true}) {
+  void setRating(int index, int rate) {
     _ratingList[index] = rate;
-    if(notify) update();
+    update();
   }
 
-  void setReview(int index, String review, {bool notify = true}) {
+  void setReview(int index, String review) {
     _reviewList[index] = review;
-    if (notify) update();
   }
 
   void setDeliveryManRating(int rate) {
@@ -82,6 +81,19 @@ class ReviewController extends GetxController implements GetxService {
       update();
     }
     _loadingList[index] = false;
+    update();
+    return responseModel;
+  }
+
+    Future<ResponseModel> submitReviewfromdialog( ReviewBodyModel reviewBody) async {
+    // _loadingList[index] = true;
+    update();
+    ResponseModel responseModel = await reviewServiceInterface.submitReview(reviewBody);
+    if (responseModel.isSuccess) {
+      // _submitList[index] = true;
+      update();
+    }
+    // _loadingList[index] = false;
     update();
     return responseModel;
   }

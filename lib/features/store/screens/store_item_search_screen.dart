@@ -64,11 +64,11 @@ class _StoreItemSearchScreenState extends State<StoreItemSearchScreen> {
                       contentPadding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                        borderSide: BorderSide(color: Theme.of(context).primaryColor.withValues(alpha: 0.3), width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                        borderSide: BorderSide(color: Theme.of(context).primaryColor.withValues(alpha: 0.3), width: 1),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor  , width: 1),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.search, color: Theme.of(context).hintColor, size: 25),
@@ -116,7 +116,7 @@ class _StoreItemSearchScreenState extends State<StoreItemSearchScreen> {
           ),
 
           bottomNavigationBar: GetBuilder<CartController>(builder: (cartController) {
-            return cartController.cartList.isNotEmpty && !ResponsiveHelper.isDesktop(context) ? const BottomCartWidget() : const SizedBox();
+            return cartController.cartList.isNotEmpty && !ResponsiveHelper.isDesktop(context) ?  BottomCartWidget() : const SizedBox();
           })
 
         );

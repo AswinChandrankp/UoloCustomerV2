@@ -15,7 +15,6 @@ import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/helper/custom_validator.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
-import 'package:sixam_mart/util/app_constants.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
@@ -144,7 +143,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                     children: [
                       Container(
                         height: 64,
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.10),
+                        color: Theme.of(context).primaryColor.withOpacity(0.10),
                         child: Center(child: Text('address'.tr, style: robotoMedium)),
                       ),
                       const SizedBox(height: Dimensions.paddingSizeLarge),
@@ -518,7 +517,6 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                               locationController.getCurrentLocation(true, mapController: controller);
                             }
                           },
-                          myLocationButtonEnabled: false,
                           style: Get.isDarkMode ? Get.find<ThemeController>().darkMap : Get.find<ThemeController>().lightMap,
                           gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
                             Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
@@ -609,7 +607,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge, vertical: Dimensions.paddingSizeSmall),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Dimensions.radiusDefault), color: locationController.addressTypeIndex == index
-                              ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : Theme.of(context).cardColor,
+                              ? Theme.of(context).primaryColor.withOpacity(0.1) : Theme.of(context).cardColor,
                             boxShadow: locationController.addressTypeIndex == index ? null : const [BoxShadow(color: Colors.black12, spreadRadius: 1, blurRadius: 5)],
                             border: Border.all(color: locationController.addressTypeIndex == index ? Theme.of(context).primaryColor : Theme.of(context).disabledColor)
                           ),
@@ -638,7 +636,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   const SizedBox(height: Dimensions.paddingSizeExtremeLarge),
 
                   CustomTextField(
-                    labelText: widget.fromRide || (Get.find<SplashController>().module != null && Get.find<SplashController>().module!.moduleType.toString() == AppConstants.taxi) ? 'pickup_address'.tr : 'delivery_address'.tr,
+                    labelText: 'delivery_address'.tr,
                     titleText: 'write_delivery_address'.tr,
                     inputType: TextInputType.streetAddress,
                     controller: _addressController,
@@ -748,20 +746,17 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
   }
 
   Widget button(LocationController locationController) {
-    return GetBuilder<AddressController>(
-      builder: (addressController) {
-        return Container(
-          width: Dimensions.webMaxWidth,
-          padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-          child: CustomButton(
-            radius: Dimensions.radiusSmall,
-            isBold: false,
-            isLoading: addressController.isLoading,
-            buttonText: widget.forGuest ? 'done'.tr : widget.address == null ? 'save_location'.tr : 'update_address'.tr,
-            onPressed: () async => _onSaveOrUpdateButtonPressed(locationController),
-          ),
-        );
-      }
+    return Container(
+      width: Dimensions.webMaxWidth,
+      padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+      child: CustomButton(
+        radius: Dimensions.radiusSmall,
+        isBold: false,
+        isLoading: locationController.isLoading,
+        buttonText: widget.forGuest ? 'done'.tr : widget.address == null
+            ? 'save_location'.tr : 'update_address'.tr,
+        onPressed: () async => _onSaveOrUpdateButtonPressed(locationController),
+      ),
     );
   }
 
@@ -835,9 +830,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         }catch(_) {}
         Get.back(result: addressModel);
         showCustomSnackBar(response.message, isError: false);
-      } else if(widget.fromRide) {
-        Get.back();
-      } else {
+      }else {
         showCustomSnackBar(response.message);
       }
     });

@@ -9,17 +9,18 @@ class SearchController extends GetxController implements GetxService {
   final SearchServiceInterface searchServiceInterface;
   SearchController({required this.searchServiceInterface});
 
-  List<Item>? _searchItemList;
-  List<Item>? get searchItemList => _searchItemList;
+  // List<Item>? _searchItemList;
+  // List<Item>? get searchItemList => _searchItemList;
   
   List<Item>? _allItemList;
   List<Item>? get allItemList => _allItemList;
-  
+  RxList<Item>? searchItemList = <Item>[].obs;
+final RxList<Store>? searchStoreList = <Store>[].obs;
   List<Item>? _suggestedItemList;
   List<Item>? get suggestedItemList => _suggestedItemList;
   
-  List<Store>? _searchStoreList;
-  List<Store>? get searchStoreList => _searchStoreList;
+  // List<Store>? _searchStoreList;
+  // List<Store>? get searchStoreList => _searchStoreList;
   
   List<Store>? _allStoreList;
   List<Store>? get allStoreList => _allStoreList;
@@ -39,7 +40,8 @@ class SearchController extends GetxController implements GetxService {
   
   List<String> _historyList = [];
   List<String> get historyList => _historyList;
-  
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
   bool _isSearchMode = true;
   bool get isSearchMode => _isSearchMode;
   
@@ -147,8 +149,8 @@ class SearchController extends GetxController implements GetxService {
       _storeResultText = '';
       _allStoreList = null;
       _allItemList = null;
-      _searchItemList = null;
-      _searchStoreList = null;
+      searchItemList!.clear();
+      searchStoreList!.clear();
       _sortIndex = -1;
       _storeSortIndex = -1;
       _isDiscountedItems = false;
@@ -179,12 +181,14 @@ class SearchController extends GetxController implements GetxService {
   }
 
   void sortItemSearchList() {
-    _searchItemList = searchServiceInterface.sortItemSearchList(_allItemList, _upperValue, _lowerValue, _rating, _veg, _nonVeg, _isAvailableItems, _isDiscountedItems, _sortIndex);
+    searchItemList!.value = searchServiceInterface.sortItemSearchList(_allItemList, _upperValue, _lowerValue, _rating, _veg, _nonVeg, _isAvailableItems, _isDiscountedItems, _sortIndex)! ;
     update();
   }
 
   void sortStoreSearchList() {
-    _searchStoreList = searchServiceInterface.sortStoreSearchList(_allStoreList, _storeRating, _storeVeg, _storeNonVeg, _isAvailableStore, _isDiscountedStore, _storeSortIndex);
+    searchStoreList!.clear();
+    searchStoreList!.value = searchServiceInterface.sortStoreSearchList(_allStoreList, _storeRating, _storeVeg, _storeNonVeg, _isAvailableStore, _isDiscountedStore, _storeSortIndex)!;
+  
     update();
   }
 
@@ -196,64 +200,247 @@ class SearchController extends GetxController implements GetxService {
   void getSuggestedItems() async {
     List<Item>? suggestedItemList = await searchServiceInterface.getSuggestedItems();
     if(suggestedItemList != null) {
+
       _suggestedItemList = [];
+suggestedItemList.removeWhere((element) => element.store!.noservicerestriction == 0 && element.store!.distancelimit == 0);
       _suggestedItemList!.addAll(suggestedItemList);
     }
     update();
   }
 
-  void searchData(String? query, bool fromHome) async {
-    if((_isStore && query!.isNotEmpty && query != _storeResultText) || (!_isStore && query!.isNotEmpty && (query != _itemResultText || fromHome))) {
-      _searchHomeText = query;
-      _searchText = query;
-      _rating = -1;
-      _storeRating = -1;
-      _upperValue = 0;
-      _lowerValue = 0;
-      if (_isStore) {
-        _searchStoreList = null;
-        _allStoreList = null;
-      } else {
-        _searchItemList = null;
-        _allItemList = null;
-      }
-      if (!_historyList.contains(query)) {
-        _historyList.insert(0, query);
-      }
-      searchServiceInterface.saveSearchHistory(_historyList);
-      _isSearchMode = false;
-      if(!fromHome) {
-        update();
-      }
+  // void searchData(String? query, bool fromHome) async {
+  //   if((_isStore && query!.isNotEmpty && query != _storeResultText) || (!_isStore && query!.isNotEmpty && (query != _itemResultText || fromHome))) {
+  //     _searchHomeText = query;
+  //     _searchText = query;
+  //     _rating = -1;
+  //     _storeRating = -1;
+  //     _upperValue = 0;
+  //     _lowerValue = 0;
+  //     if (_isStore) {
+  //       _searchStoreList = null;
+  //       _allStoreList = null;
+  //     } else {
+  //       _searchItemList = null;
+  //       _allItemList = null;
+  //     }
+  //     if (!_historyList.contains(query)) {
+  //       _historyList.insert(0, query);
+  //     }
+  //     searchServiceInterface.saveSearchHistory(_historyList);
+  //     _isSearchMode = false;
+  //     if(!fromHome) {
+  //       update();
+  //     }
 
-      Response response = await searchServiceInterface.getSearchData(query, _isStore);
-      if (response.statusCode == 200) {
-        if (query.isEmpty) {
-          if (_isStore) {
-            _searchStoreList = [];
-          } else {
-            _searchItemList = [];
-          }
-        } else {
-          if (_isStore) {
-            _storeResultText = query;
-            _searchStoreList = [];
-            _allStoreList = [];
-            _searchStoreList!.addAll(StoreModel.fromJson(response.body).stores!);
-            _allStoreList!.addAll(StoreModel.fromJson(response.body).stores!);
-          } else {
-            _itemResultText = query;
-            _searchItemList = [];
-            _allItemList = [];
-            _searchItemList!.addAll(ItemModel.fromJson(response.body).items!);
-            _allItemList!.addAll(ItemModel.fromJson(response.body).items!);
-          }
-        }
-      }
+  //     Response response = await searchServiceInterface.getSearchData(query, _isStore);
+  //     if (response.statusCode == 200) {
+  //       if (query.isEmpty) {
+  //         if (_isStore) {
+  //           _searchStoreList = [];
+  //         } else {
+  //           _searchItemList = [];
+  //         }
+  //       } else {
+  //         if (_isStore) {
+  //           _storeResultText = query;
+  //           _searchStoreList = [];
+  //           _allStoreList = [];
+  //           StoreModel.fromJson(response.body).stores!.removeWhere((element) =>  element.noservicerestriction == 0 &&  element.distancelimit == 0  );
+  //           _searchStoreList!.addAll(StoreModel.fromJson(response.body).stores!);
+  //             // _searchStoreList!.removeWhere((element) =>  element.noservicerestriction == 0 &&  element.distancelimit == 0  );
+
+  //           _allStoreList!.addAll(StoreModel.fromJson(response.body).stores!);
+  //               //  _allStoreList!.removeWhere((element) =>  element.noservicerestriction == 0 &&  element.distancelimit == 0  );
+  //         } else {
+  //           _itemResultText = query;
+  //           _searchItemList = [];
+  //           _allItemList = [];
+  //           _searchItemList!.addAll(ItemModel.fromJson(response.body).items!);
+  //           _allItemList!.addAll(ItemModel.fromJson(response.body).items!);
+  //         }
+  //       }
+  //     }
+  //     update();
+  //   }
+  // }
+// void searchData(String? query, bool fromHome) async {
+//   // Check if the query is valid and not already processed
+//   if (query != null && query.isNotEmpty && 
+//       ((_isStore && query != _storeResultText) || 
+//       (!_isStore && (query != _itemResultText || fromHome)))) {
+    
+//     // Update search parameters
+//     _searchHomeText = query;
+//     _searchText = query;
+//     _rating = -1;
+//     _storeRating = -1;
+//     _upperValue = 0;
+//     _lowerValue = 0;
+
+//     // Clear previous search results
+//     if (_isStore) {
+//       _searchStoreList = null;
+//       _allStoreList = null;
+//     } else {
+//       _searchItemList = null;
+//       _allItemList = null;
+//     }
+
+//     // Update search history
+//     if (!_historyList.contains(query)) {
+//       _historyList.insert(0, query);
+//     }
+//     searchServiceInterface.saveSearchHistory(_historyList);
+//     _isSearchMode = false;
+
+//     if (!fromHome) {
+//       update();
+//     }
+
+//     // Fetch search data
+//     try {
+//       Response response = await searchServiceInterface.getSearchData(query, _isStore);
+//       if (response.statusCode == 200) {
+//         if (_isStore) {
+//           _storeResultText = query;
+//           _searchStoreList = [];
+//           _allStoreList = [];
+          
+//           // Parse response once
+//           var storeData = StoreModel.fromJson(response.body);
+//           storeData.stores!.removeWhere((element) => element.noservicerestriction == 0 && element.distancelimit == 0);
+          
+//           _searchStoreList!.addAll(storeData.stores!);
+//           _allStoreList!.addAll(storeData.stores!);
+//         } else {
+//           _itemResultText = query;
+//           _searchItemList = [];
+//           _allItemList = [];
+          
+//           // Parse response once
+//           var itemData = ItemModel.fromJson(response.body);
+//                 itemData.items!.removeWhere((element) => element.store!.noservicerestriction == 0 && element.store!.distancelimit == 0);
+//           print(" ======================================== the search data${response.body.toString()}=========================================================");
+//           _searchItemList!.addAll(itemData.items!);
+//           _allItemList!.addAll(itemData.items!);
+//         }
+//       } else {
+//         // Handle unexpected status codes
+//         print('Error: Received status code ${response.statusCode}');
+//       }
+//     } catch (e) {
+//       // Handle exceptions (e.g., network errors)
+//       print('Error fetching search data: $e');
+//     }
+
+//     update();
+//   }
+// }
+  
+  
+  void searchData(String? query, bool fromHome) async {
+_isLoading = true;
+// update();
+  if (query != null &&
+      query.isNotEmpty &&
+      ((_isStore && query != _storeResultText) ||
+          (!_isStore && (query != _itemResultText || fromHome)))) {
+   
+    _searchHomeText = query;
+    _searchText = query;
+    _rating = -1;
+    _storeRating = -1;
+    _upperValue = 0;
+    _lowerValue = 0;
+
+
+    if (_isStore) {
+      searchStoreList!.value = [];
+      _allStoreList = [];
+    } else {
+      searchItemList!.value = [];
+      _allItemList = [];
+    }
+
+    if (!_historyList.contains(query)) {
+      _historyList.insert(0, query);
+    }
+    searchServiceInterface.saveSearchHistory(_historyList);
+    _isSearchMode = false;
+
+    if (!fromHome) {
       update();
     }
-  }
 
+
+    try {
+      Response response = await searchServiceInterface.getSearchData(query, _isStore);
+      if (response.statusCode == 200) {
+        if (_isStore) {
+          _storeResultText = query;
+          searchStoreList!.value = [];
+          _allStoreList = [];
+
+
+          final storeData = StoreModel.fromJson(response.body);
+          if (storeData.stores == null || storeData.stores!.isEmpty) {
+            print('No stores found in response');
+                _isLoading = false;
+update();
+            update();
+            return;
+          }
+
+          final filteredStores = storeData.stores!.where((element) {
+            return !(element.noservicerestriction == 0 && element.distancelimit == 0);
+          }).toList();
+
+     
+          searchStoreList!.addAll(filteredStores);
+          _allStoreList!.addAll(filteredStores);
+          print('Filtered ${filteredStores.length} stores');
+        } else {
+          _itemResultText = query;
+          searchItemList!.value = [];
+          _allItemList = [];
+
+       
+          final itemData = ItemModel.fromJson(response.body);
+          if (itemData.items == null || itemData.items!.isEmpty) {
+            print('No items found in response');
+            // update();
+               _isLoading = false;
+update();
+            return;
+          }
+
+        
+          final filteredItems = itemData.items!.where((element) {
+            final store = element.store;
+            print('=======================================Store: ${store?.name}, noservicerestriction: ${store?.noservicerestriction}, distancelimit: ${store?.distancelimit}===========================================================');
+            if (store == null) return false; 
+            return !(store.noservicerestriction == 0 && store.distancelimit == 0);
+          }).toList();
+
+        
+          searchItemList!.addAll(filteredItems);
+          _allItemList!.addAll(filteredItems);
+          print('Filtered ${filteredItems.length} items');
+        }
+      } else {
+        
+        print('Error: Received status code ${response.statusCode}');
+      }
+    } catch (e) {
+    
+      print('Error fetching search data: $e');
+    }
+
+    update();
+  }
+    _isLoading = false;
+update();
+}
   void getHistoryList() {
     _isSearchMode = true;
     _searchText = '';
@@ -324,6 +511,7 @@ class SearchController extends GetxController implements GetxService {
     List<String> items = <String>[];
     _searchSuggestionModel = await searchServiceInterface.getSearchSuggestions(searchText);
     if(_searchSuggestionModel != null) {
+      
       for (var item in _searchSuggestionModel!.items!) {
         items.add(item.name!);
       }

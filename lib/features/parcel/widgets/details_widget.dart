@@ -14,12 +14,12 @@ class DetailsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-      Text(title, style: robotoSemiBold),
+      Text(title, style: robotoMedium),
       const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
       Text(
-        address?.contactPersonName ?? '',
-        style: robotoSemiBold.copyWith(color: Theme.of(context).hintColor),
+        address!.contactPersonName ?? '',
+        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
       ),
 
       Text(

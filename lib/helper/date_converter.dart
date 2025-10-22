@@ -29,21 +29,7 @@ class DateConverter {
   }
 
   static String dateTimeStringToDateTime(String dateTime) {
-    DateTime d;
-    try{
-      d = DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime);
-    } catch(_) {
-     d = isoStringToLocalDate(dateTime);
-    }
-    return DateFormat('dd MMM yyyy,  ${_timeFormatter()}').format(d);
-  }
-
-  static String taxiDateTimeToString(DateTime dateTime) {
-    return DateFormat('dd MMM yyyy,  ${_timeFormatter()}').format(dateTime);
-  }
-
-  static String dateTimeStringToUTCTime(String dateTime) {
-    return DateFormat('dd MMM yyyy  ${_timeFormatter()}').format(DateFormat('yyyy-MM-ddTHH:mm:ss.SSS').parse(dateTime));
+    return DateFormat('dd MMM yyyy  ${_timeFormatter()}').format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
   }
 
   static String dateTimeStringToDateOnly(String dateTime) {
@@ -179,6 +165,8 @@ class DateConverter {
   static String containTAndZToUTCFormat(String time) {
     var newTime = '${time.substring(0,10)} ${time.substring(11,23)}';
     return DateFormat('dd MMM, yyyy').format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(newTime));
+
+    // return DateFormat('${_timeFormatter()} | d-MMM-yyyy ').format(dateTime.toLocal());
   }
 
   static String convertTodayYesterdayFormat(String createdAt) {
@@ -213,46 +201,6 @@ class DateConverter {
 
   static String dateTimeStringToFormattedTime(String dateTime) {
     return DateFormat(_timeFormatter()).format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTime));
-  }
-
-  static DateTime formattingTripDateTime(DateTime pickedTime, DateTime pickedDate) {
-    return DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
-  }
-
-  static bool isSameDate(DateTime pickedTime) {
-    return pickedTime.year == DateTime.now().year && pickedTime.month == DateTime.now().month && pickedTime.day == DateTime.now().day && pickedTime.hour == DateTime.now().hour && pickedTime.minute == DateTime.now().minute;
-  }
-
-  static bool isAfterCurrentDateTime(DateTime pickedTime) {
-    DateTime pick = DateTime(pickedTime.year, pickedTime.month, pickedTime.day, pickedTime.hour, pickedTime.minute);
-    DateTime current = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute);
-    return pick.isAfter(current);
-  }
-
-  static int durationFromNow(String time) {
-    DateTime parsedTime = DateTime.parse(time);
-    return parsedTime.difference(DateTime.now()).inMinutes;
-  }
-
-  static String dateToDateTime(DateTime dateTime) {
-    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
-  }
-
-  static String convertTodayYesterdayDate(String createdAt) {
-    final DateTime createdDate = DateFormat('yyyy-MM-dd HH:mm:ss').parse(createdAt);
-    final DateTime now = DateTime.now();
-    final DateFormat formatter = DateFormat('dd MMM yyyy');
-
-    if (createdDate.year == now.year && createdDate.month == now.month && createdDate.day == now.day) {
-      return 'Today';
-    }
-
-    final DateTime yesterday = now.subtract(const Duration(days: 1));
-    if (createdDate.year == yesterday.year && createdDate.month == yesterday.month && createdDate.day == yesterday.day) {
-      return 'Yesterday';
-    }
-
-    return formatter.format(createdDate);
   }
 
 }

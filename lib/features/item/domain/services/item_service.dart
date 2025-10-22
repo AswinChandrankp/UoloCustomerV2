@@ -14,13 +14,13 @@ class ItemService implements ItemServiceInterface {
   ItemService({required this.itemRepositoryInterface});
 
   @override
-  Future<ItemModel?> getPopularItemList({required String type, DataSourceEnum? source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice}) async {
-    return await itemRepositoryInterface.getList(isPopularItem: true,  type: type, source: source, offset: offset, search: search, categoryIds: categoryIds, filter: filter, rating: rating, minPrice: minPrice, maxPrice: maxPrice);
+  Future<List<Item>?> getPopularItemList(String type, DataSourceEnum? source) async {
+    return await itemRepositoryInterface.getList(type: type, isPopularItem: true, source: source);
   }
 
   @override
-  Future<ItemModel?> getReviewedItemList({required String type, DataSourceEnum? source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice}) async {
-    return await itemRepositoryInterface.getList(isReviewedItem: true,  type: type, source: source, offset: offset, search: search, categoryIds: categoryIds, filter: filter, rating: rating, minPrice: minPrice, maxPrice: maxPrice);
+  Future<ItemModel?> getReviewedItemList(String type, DataSourceEnum? source) async {
+    return await itemRepositoryInterface.getList(type: type, isReviewedItem: true, source: source);
   }
 
   @override
@@ -34,8 +34,8 @@ class ItemService implements ItemServiceInterface {
   }
 
   @override
-  Future<ItemModel?> getDiscountedItemList({required String type, DataSourceEnum? source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice}) async {
-    return await itemRepositoryInterface.getList(isDiscountedItems: true, type: type, source: source, offset: offset, search: search, categoryIds: categoryIds, filter: filter, rating: rating, minPrice: minPrice, maxPrice: maxPrice);
+  Future<List<Item>?> getDiscountedItemList(String type, DataSourceEnum? source) async {
+    return await itemRepositoryInterface.getList(isDiscountedItems: true, type: type, source: source);
   }
 
   @override

@@ -71,13 +71,8 @@ class OrderService implements OrderServiceInterface {
   }
 
   @override
-  Future<bool> cancelOrder({required String orderID, String? reason, String? guestId, required bool isParcel, List<String>? reasons, String? comment}) async {
-    return await orderRepositoryInterface.cancelOrder(orderID: orderID, reason: reason, guestId: guestId, isParcel: isParcel, reasons: reasons, comment: comment);
-  }
-
-  @override
-  Future<bool> submitParcelReturn({required int orderId, required String orderStatus, required int returnOtp}) async {
-    return await orderRepositoryInterface.submitParcelReturn(orderId: orderId, orderStatus: orderStatus, returnOtp: returnOtp);
+  Future<bool> cancelOrder(String orderID, String? reason, {String? guestId}) async {
+    return await orderRepositoryInterface.cancelOrder(orderID, reason, guestId: guestId);
   }
 
   @override

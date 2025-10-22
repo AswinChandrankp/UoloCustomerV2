@@ -115,7 +115,7 @@ class MapScreenState extends State<MapScreen> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                             color: Theme.of(context).cardColor,
-                            // boxShadow: [BoxShadow(color: Theme.of(context).disabledColor.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10)],
+                            // boxShadow: [BoxShadow(color: Theme.of(context).disabledColor  , spreadRadius: 3, blurRadius: 10)],
                           ),
                           child: widget.fromStore ? Row(children: [
                             Expanded(
@@ -191,12 +191,12 @@ class MapScreenState extends State<MapScreen> {
   void _setMarker({AddressModel? address, bool fromCurrentLocation = false}) async {
 
     BitmapDescriptor markerIcon = await MarkerHelper.convertAssetToBitmapDescriptor(
-      width: 50,
+      width: widget.isFood ? 50 : 50,
       imagePath: widget.fromStore ? widget.isFood ? Images.restaurantMarker : Images.markerStore : Images.locationMarker,
     );
 
     BitmapDescriptor myLocationMarkerIcon = await MarkerHelper.convertAssetToBitmapDescriptor(
-      width: 30,
+      width: 50,
       imagePath: Images.userMarker,
     );
 
@@ -216,7 +216,7 @@ class MapScreenState extends State<MapScreen> {
           markerId: const MarkerId('id--1'),
           visible: true,
           draggable: false,
-          zIndexInt: 2,
+          zIndex: 2,
           flat: true,
           anchor: const Offset(0.5, 0.5),
           position: LatLng(
@@ -228,7 +228,7 @@ class MapScreenState extends State<MapScreen> {
       });
     }
 
-    /// Animate to coordinate
+   
     LatLngBounds? bounds;
     if(_mapController != null) {
       if(address != null){
@@ -272,13 +272,13 @@ class MapScreenState extends State<MapScreen> {
       }
     }
 
-    ///current location marker set
+    
     if(address != null) {
       _markers.add(Marker(
         markerId: const MarkerId('id--2'),
         visible: true,
         draggable: false,
-        zIndexInt: 2,
+        zIndex: 2,
         flat: true,
         anchor: const Offset(0.5, 0.5),
         position: LatLng(

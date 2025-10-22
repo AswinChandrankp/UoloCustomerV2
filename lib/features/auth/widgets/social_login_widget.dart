@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -30,6 +29,7 @@ class SocialLoginWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+
 
     bool canAppleLogin = Get.find<SplashController>().configModel!.appleLogin!.isNotEmpty && Get.find<SplashController>().configModel!.appleLogin![0].status!
     && !GetPlatform.isAndroid;
@@ -235,54 +235,41 @@ class SocialLoginWidget extends StatelessWidget {
   }
 
   void _googleLogin(GoogleSignIn googleSignIn) async {
-    try{
-      if(googleSignIn.supportsAuthenticate()) {
-        await googleSignIn.initialize(serverClientId: AppConstants.googleServerClientId).then((_) async {
+    // googleSignIn.signOut();
+    // GoogleSignInAccount googleAccount = (await googleSignIn.initialize())!;
+    // GoogleSignInAuthentication auth = await googleAccount.authentication;
 
-          googleSignIn.signOut();
-          GoogleSignInAccount googleAccount = await googleSignIn.authenticate();
-          const List<String> scopes = <String>['email'];
-          GoogleSignInClientAuthorization? auth = await googleAccount.authorizationClient.authorizationForScopes(scopes);
+    // SocialLogInBody googleBodyModel = SocialLogInBody(
+    //   email: googleAccount.email, token: auth.accessToken, uniqueId: googleAccount.id,
+    //   medium: 'google', accessToken: 1, loginType: CentralizeLoginType.social.name,
+    // );
 
-          SocialLogInBody googleBodyModel = SocialLogInBody(
-            email: googleAccount.email, token: auth?.accessToken, uniqueId: googleAccount.id,
-            medium: 'google', accessToken: 1, loginType: CentralizeLoginType.social.name,
-          );
-
-          Get.find<AuthController>().loginWithSocialMedia(googleBodyModel).then((response) {
-            if (response.isSuccess) {
-              _processSocialSuccessSetup(response, googleBodyModel, null, null);
-            } else {
-              showCustomSnackBar(response.message);
-            }
-          });
-
-        });
-      }else {
-        debugPrint("Google Sign-In not supported on this device.");
-      }
-    }catch(e){
-      debugPrint('Error in google sign in: $e');
-    }
+    // Get.find<AuthController>().loginWithSocialMedia(googleBodyModel).then((response) {
+    //   if (response.isSuccess) {
+    //     _processSocialSuccessSetup(response, googleBodyModel, null, null);
+    //   } else {
+    //     showCustomSnackBar(response.message);
+    //   }
+    // });
   }
 
   void _facebookLogin() async {
-    LoginResult result = await FacebookAuth.instance.login(permissions: ["public_profile", "email"]);
-    if (result.status == LoginStatus.success) {
-      Map userData = await FacebookAuth.instance.getUserData();
+    // LoginResult result = await FacebookAuth.instance.login(permissions: ["public_profile", "email"]);
+    // if (result.status == LoginStatus.success) {
+    //   Map userData = await FacebookAuth.instance.getUserData();
 
-      SocialLogInBody facebookBodyModel = SocialLogInBody(
-        email: userData['email'], token: result.accessToken!.tokenString, uniqueId: userData['id'],
-        medium: 'facebook', loginType: CentralizeLoginType.social.name,
-      );
+      // SocialLogInBody facebookBodyModel = SocialLogInBody(
+      //   email: userData['email'], token: result.accessToken!.tokenString, uniqueId: result.accessToken!.tokenString,
+      //   medium: 'facebook', loginType: CentralizeLoginType.social.name,
+      // );
 
-      Get.find<AuthController>().loginWithSocialMedia(facebookBodyModel).then((response) {
-        if (response.isSuccess) {
-          _processSocialSuccessSetup(response, null, null, facebookBodyModel);
-        } else {
-          showCustomSnackBar(response.message);
-        }
-      });
+      // Get.find<AuthController>().loginWithSocialMedia(facebookBodyModel).then((response) {
+      //   if (response.isSuccess) {
+      //     _processSocialSuccessSetup(response, null, null, facebookBodyModel);
+      //   } else {
+      //     showCustomSnackBar(response.message);
+      //   }
+      // });
     }
   }
 
@@ -300,6 +287,11 @@ class SocialLoginWidget extends StatelessWidget {
         redirectUri: Uri.parse(redirectURL),
       ),
     );
+
+    // webAuthenticationOptions: WebAuthenticationOptions(
+    //   clientId: Get.find<SplashController>().configModel.appleLogin[0].clientId,
+    //   redirectUri: Uri.parse('https://Uolo Delivery-web.6amtech.com/apple'),
+    // ),
 
     SocialLogInBody appleBodyModel = SocialLogInBody(
       email: credential.email, token: credential.authorizationCode, uniqueId: credential.authorizationCode,
@@ -353,4 +345,4 @@ class SocialLoginWidget extends StatelessWidget {
       Get.find<LocationController>().navigateToLocationScreen('sign-in', offNamed: true);
     }
   }
-}
+

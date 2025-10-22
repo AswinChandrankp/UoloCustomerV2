@@ -83,7 +83,7 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                 capitalization: TextCapitalization.sentences,
                 controller: _controller,
                 hintText: 'write_your_review_here'.tr,
-                fillColor: Theme.of(context).disabledColor.withValues(alpha: 0.05),
+                fillColor: Theme.of(context).disabledColor,
               ),
               const SizedBox(height: 40),
 
@@ -94,11 +94,11 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                   children: [
                     !reviewController.isLoading ? CustomButton(
                       buttonText: 'submit'.tr,
-                      onPressed: () async {
+                      onPressed: () {
                         if (reviewController.deliveryManRating == 0) {
-                          showCustomSnackBar('give_a_rating'.tr, getXSnackBar: true);
+                          showCustomSnackBar('give_a_rating'.tr);
                         } else if (_controller.text.isEmpty) {
-                          showCustomSnackBar('write_a_review'.tr, getXSnackBar: true);
+                          showCustomSnackBar('write_a_review'.tr);
                         } else {
                           FocusScopeNode currentFocus = FocusScope.of(context);
                           if (!currentFocus.hasPrimaryFocus) {
@@ -110,7 +110,7 @@ class _DeliveryManReviewWidgetState extends State<DeliveryManReviewWidget> {
                             comment: _controller.text,
                             orderId: widget.orderID,
                           );
-                          await reviewController.submitDeliveryManReview(reviewBody).then((value) {
+                          reviewController.submitDeliveryManReview(reviewBody).then((value) {
                             if (value.isSuccess) {
                               showCustomSnackBar(value.message, isError: false);
                               _controller.text = '';

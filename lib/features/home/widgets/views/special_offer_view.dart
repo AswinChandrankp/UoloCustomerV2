@@ -18,35 +18,38 @@ class SpecialOfferView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<ItemController>(builder: (itemController) {
       List<Item>? discountedItemList = itemController.discountedItemList;
+      
+      // print()
 
       return discountedItemList != null ? discountedItemList.isNotEmpty ? Padding(
         padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
         child: Container(
-          color: Theme.of(context).disabledColor.withValues(alpha: 0.1),
+          color: Theme.of(context).disabledColor  ,
           child: Column(children: [
 
             Padding(
-              padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault, left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault),
+              padding: const EdgeInsets.only(left: 10),
               child: TitleWidget(
-                title: 'special_offer'.tr,
-                image: Images.discountOfferIcon,
-                onTap: () => Get.toNamed(RouteHelper.getItemViewAllScreen(false, true)),
+                title: "Offer Zone",
+                // image: Images.discountOfferIcon,
+                onTap: () => Get.toNamed(RouteHelper.getPopularItemRoute(false, true)),
               ),
             ),
 
             SizedBox(
               height: 285, width: Get.width,
-              child: ListView.builder(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => const SizedBox(width: 15),
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(left: Dimensions.paddingSizeDefault),
+                padding: const EdgeInsets.only(left:10 ),
                 itemCount: discountedItemList.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault, top: Dimensions.paddingSizeDefault),
+                    padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault, right: 0, top: Dimensions.paddingSizeDefault),
                     child: ItemCard(item: discountedItemList[index], isPopularItem: false, isFood: isFood, isShop: isShop, index: index),
                   );
-                },
+                  },
               ),
             ),
           ]),
@@ -65,7 +68,7 @@ class ItemShimmerView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
       child: Container(
-        color: Theme.of(context).disabledColor.withValues(alpha: 0.1),
+        color: Theme.of(context).disabledColor  ,
         child: Column(children: [
 
           Padding(

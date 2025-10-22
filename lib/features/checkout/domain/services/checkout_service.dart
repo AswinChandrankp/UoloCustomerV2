@@ -1,7 +1,6 @@
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sixam_mart/api/api_client.dart';
-import 'package:sixam_mart/features/checkout/domain/models/surge_price_model.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
 import 'package:sixam_mart/features/payment/domain/models/offline_method_model.dart';
 import 'package:sixam_mart/features/checkout/domain/models/place_order_body_model.dart';
@@ -119,16 +118,6 @@ class CheckoutService implements CheckoutServiceInterface {
   Future<Response> placePrescriptionOrder(int? storeId, double? distance, String address, String longitude, String latitude, String note,
       List<MultipartBody> orderAttachment, String dmTips, String deliveryInstruction) async {
     return await checkoutRepositoryInterface.placePrescriptionOrder(storeId, distance, address, longitude, latitude, note, orderAttachment, dmTips, deliveryInstruction);
-  }
-
-  @override
-  Future<Response> getOrderTax(PlaceOrderBodyModel placeOrderBody) async {
-    return await checkoutRepositoryInterface.getOrderTax(placeOrderBody);
-  }
-
-  @override
-  Future<SurgePriceModel?> getSurgePrice({required String zoneId, required String moduleId, required String dateTime, String? guestId}) async {
-    return await checkoutRepositoryInterface.getSurgePrice(zoneId: zoneId, moduleId: moduleId, dateTime: dateTime, guestId: guestId);
   }
 
 }

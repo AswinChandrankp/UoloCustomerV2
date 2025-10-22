@@ -38,7 +38,7 @@ class OrderTrackingScreen extends StatefulWidget {
   OrderTrackingScreenState createState() => OrderTrackingScreenState();
 }
 
-class OrderTrackingScreenState extends State<OrderTrackingScreen> with WidgetsBindingObserver {
+class OrderTrackingScreenState extends State<OrderTrackingScreen> {
   GoogleMapController? _controller;
   bool _isLoading = true;
   Set<Marker> _markers = HashSet<Marker>();
@@ -47,57 +47,25 @@ class OrderTrackingScreenState extends State<OrderTrackingScreen> with WidgetsBi
   bool isHovered = false;
 
   void _loadData() async {
+    await Get.find<OrderController>().trackOrder(widget.orderID, null, true, contactNumber: widget.contactNumber);
     await Get.find<LocationController>().getCurrentLocation(true, notify: false, defaultLatLng: LatLng(
       double.parse(AddressHelper.getUserAddressFromSharedPref()!.latitude!),
       double.parse(AddressHelper.getUserAddressFromSharedPref()!.longitude!),
     ));
-    await Get.find<OrderController>().trackOrder(widget.orderID, null, true, contactNumber: widget.contactNumber);
-    _timerTrackOrder();
   }
 
-  void _timerTrackOrder(){
-    if(Get.find<OrderController>().trackModel?.orderStatus != 'delivered' && Get.find<OrderController>().trackModel?.orderStatus != 'failed' && Get.find<OrderController>().trackModel?.orderStatus != 'canceled') {
+  void _startApiCall(){
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       Get.find<OrderController>().timerTrackOrder(widget.orderID.toString(), contactNumber: widget.contactNumber);
-      _timer?.cancel();
-      _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
-        if(Get.currentRoute.contains(RouteHelper.orderDetails) || Get.currentRoute.contains(RouteHelper.orderTracking)){
-          Get.find<OrderController>().timerTrackOrder(widget.orderID.toString(), contactNumber: widget.contactNumber);
-
-          updateMarker(
-            Get.find<OrderController>().trackModel?.store, Get.find<OrderController>().trackModel!.deliveryMan,
-            Get.find<OrderController>().trackModel?.orderType == 'take_away' ? Get.find<LocationController>().position.latitude == 0 ? Get.find<OrderController>().trackModel?.deliveryAddress : AddressModel(
-              latitude: Get.find<LocationController>().position.latitude.toString(),
-              longitude: Get.find<LocationController>().position.longitude.toString(),
-              address: Get.find<LocationController>().address,
-            ) : Get.find<OrderController>().trackModel?.deliveryAddress,
-            Get.find<OrderController>().trackModel?.orderType == 'take_away', Get.find<OrderController>().trackModel?.orderType == 'parcel', Get.find<OrderController>().trackModel?.moduleType == 'food',
-          );
-
-        } else {
-          _timer?.cancel();
-        }
-      });
-    }else{
-      Get.find<OrderController>().timerTrackOrder(widget.orderID.toString(), contactNumber: widget.contactNumber);
-    }
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
 
     _loadData();
-  }
-
-  @override
-  void didChangeAppLifecycleState(final AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _timerTrackOrder();
-    }else if(state == AppLifecycleState.paused){
-      _timer?.cancel();
-      _controller?.dispose();
-    }
+    _startApiCall();
   }
 
   @override
@@ -105,7 +73,6 @@ class OrderTrackingScreenState extends State<OrderTrackingScreen> with WidgetsBi
     super.dispose();
     _controller?.dispose();
     _timer?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
   }
 
   void onEntered(bool isHovered) {
@@ -203,19 +170,12 @@ class OrderTrackingScreenState extends State<OrderTrackingScreen> with WidgetsBi
               Positioned(
                 bottom: Dimensions.paddingSizeSmall, left: Dimensions.paddingSizeSmall, right: Dimensions.paddingSizeSmall,
                 child: TrackDetailsViewWidget(status: track.orderStatus, track: track, showChatPermission: showChatPermission, callback: () async{
-                  bool takeAway = track?.orderType == 'take_away';
                   _timer?.cancel();
                   await Get.toNamed(RouteHelper.getChatRoute(
-                    notificationBody: takeAway ? NotificationBodyModel(restaurantId: track!.store!.id, orderId: int.parse(widget.orderID!))
-                        : NotificationBodyModel(deliverymanId: track!.deliveryMan!.id, orderId: int.parse(widget.orderID!)),
-                    user: User(
-                      id: takeAway ? track.store!.id : track.deliveryMan!.id,
-                      fName: takeAway ? track.store!.name : track.deliveryMan!.fName,
-                      lName: takeAway ? '' : track.deliveryMan!.lName,
-                      imageFullUrl: takeAway ? track.store!.logoFullUrl : track.deliveryMan!.imageFullUrl,
-                    ),
+                    notificationBody: NotificationBodyModel(deliverymanId: track!.deliveryMan!.id, orderId: int.parse(widget.orderID!)),
+                    user: User(id: track.deliveryMan!.id, fName: track.deliveryMan!.fName, lName: track.deliveryMan!.lName, imageFullUrl: track.deliveryMan!.imageFullUrl),
                   ));
-                  _timerTrackOrder();
+                  _startApiCall();
                 }),
               ),
 
@@ -230,14 +190,15 @@ class OrderTrackingScreenState extends State<OrderTrackingScreen> with WidgetsBi
     try {
 
       BitmapDescriptor restaurantImageData = await MarkerHelper.convertAssetToBitmapDescriptor(
-        width: 30, imagePath: parcel ? Images.userMarker : isRestaurant ? Images.restaurantMarker : Images.markerStore,
+        width: (isRestaurant || parcel) ? 50 : 70,
+        imagePath: parcel ? Images.userMarker : isRestaurant ? Images.restaurantMarker : Images.markerStore,
       );
 
       BitmapDescriptor deliveryBoyImageData = await MarkerHelper.convertAssetToBitmapDescriptor(
-        width: 30, imagePath: Images.deliveryManMarker,
+        width: 50, imagePath: Images.deliveryManMarker,
       );
       BitmapDescriptor destinationImageData = await MarkerHelper.convertAssetToBitmapDescriptor(
-        width: 30, imagePath: Images.userMarker,
+        width: 50, imagePath: takeAway ? Images.myLocationMarker : Images.userMarker,
       );
 
       /// Animate to coordinate
@@ -287,99 +248,7 @@ class OrderTrackingScreenState extends State<OrderTrackingScreen> with WidgetsBi
           markerId: const MarkerId('current_location'),
           visible: true,
           draggable: false,
-          zIndexInt: 2,
-          flat: true,
-          anchor: const Offset(0.5, 0.5),
-          position: LatLng(
-            double.parse(currentAddress.latitude!),
-            double.parse(currentAddress.longitude!),
-          ),
-          icon: destinationImageData,
-        ));
-        setState(() {});
-      }
-
-      if(currentAddress == null){
-        addressModel != null ? _markers.add(Marker(
-          markerId: const MarkerId('destination'),
-          position: LatLng(double.parse(addressModel.latitude!), double.parse(addressModel.longitude!)),
-          infoWindow: InfoWindow(
-            title: parcel ? 'sender'.tr : 'Destination'.tr,
-            snippet: addressModel.address,
-          ),
-          icon: destinationImageData,
-        )) : const SizedBox();
-      }
-
-      ///store for normal order , but receiver for parcel order
-      store != null ? _markers.add(Marker(
-        markerId: const MarkerId('store'),
-        position: LatLng(double.parse(store.latitude!), double.parse(store.longitude!)),
-        infoWindow: InfoWindow(
-          title: parcel ? 'receiver'.tr : Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! ? 'store'.tr : 'store'.tr,
-          snippet: store.address,
-        ),
-        icon: restaurantImageData,
-      )) : const SizedBox();
-
-      deliveryMan != null ? _markers.add(Marker(
-        markerId: const MarkerId('delivery_boy'),
-        position: LatLng(double.parse(deliveryMan.lat ?? '0'), double.parse(deliveryMan.lng ?? '0')),
-        infoWindow: InfoWindow(
-          title: 'delivery_man'.tr,
-          snippet: deliveryMan.location,
-        ),
-        rotation: rotation,
-        icon: deliveryBoyImageData,
-      )) : const SizedBox();
-
-    }catch(_) {}
-    setState(() {});
-  }
-
-  void updateMarker(Store? store, DeliveryMan? deliveryMan, AddressModel? addressModel, bool takeAway, bool parcel, bool isRestaurant, {AddressModel? currentAddress, bool fromCurrentLocation = false}) async {
-    try {
-
-      BitmapDescriptor restaurantImageData = await MarkerHelper.convertAssetToBitmapDescriptor(
-        width: 30, imagePath: parcel ? Images.userMarker : isRestaurant ? Images.restaurantMarker : Images.markerStore,
-      );
-
-      BitmapDescriptor deliveryBoyImageData = await MarkerHelper.convertAssetToBitmapDescriptor(
-        width: 30, imagePath: Images.deliveryManMarker,
-      );
-      BitmapDescriptor destinationImageData = await MarkerHelper.convertAssetToBitmapDescriptor(
-        width: 30, imagePath: Images.userMarker,
-      );
-
-      LatLngBounds? bounds;
-      debugPrint(bounds.toString());
-      double rotation = 0;
-      if(_controller != null) {
-        if (double.parse(addressModel!.latitude!) < double.parse(store!.latitude!)) {
-          bounds = LatLngBounds(
-            southwest: LatLng(double.parse(addressModel.latitude!), double.parse(addressModel.longitude!)),
-            northeast: LatLng(double.parse(store.latitude!), double.parse(store.longitude!)),
-          );
-          rotation = 0;
-        }else {
-          bounds = LatLngBounds(
-            southwest: LatLng(double.parse(store.latitude!), double.parse(store.longitude!)),
-            northeast: LatLng(double.parse(addressModel.latitude!), double.parse(addressModel.longitude!)),
-          );
-          rotation = 180;
-        }
-      }
-
-      /// user for normal order , but sender for parcel order
-      _markers = HashSet<Marker>();
-
-      ///current location marker set
-      if(currentAddress != null) {
-        _markers.add(Marker(
-          markerId: const MarkerId('current_location'),
-          visible: true,
-          draggable: false,
-          zIndexInt: 2,
+          zIndex: 2,
           flat: true,
           anchor: const Offset(0.5, 0.5),
           position: LatLng(

@@ -16,7 +16,7 @@ class LandingCardWidget extends StatelessWidget {
       padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+        color: Theme.of(context).primaryColor  ,
       ),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 

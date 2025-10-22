@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
@@ -6,7 +5,6 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:sixam_mart/features/item/controllers/item_controller.dart';
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
 import 'package:sixam_mart/common/widgets/custom_app_bar.dart';
-import 'package:sixam_mart/util/app_constants.dart';
 
 class ImageViewerScreen extends StatelessWidget {
   final Item item;
@@ -36,7 +34,7 @@ class ImageViewerScreen extends StatelessWidget {
               pageController: pageController,
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  imageProvider: kIsWeb ? NetworkImage('${AppConstants.baseUrl}/image-proxy?url=${imageList[index]}') : NetworkImage('${imageList[index]}'),
+                  imageProvider: NetworkImage('${imageList[index]}'),
                   initialScale: PhotoViewComputedScale.contained,
                   heroAttributes: PhotoViewHeroAttributes(tag: index.toString()),
                 );

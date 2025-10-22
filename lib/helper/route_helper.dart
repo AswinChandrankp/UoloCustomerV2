@@ -6,7 +6,6 @@ import 'package:sixam_mart/features/brands/screens/brands_screen.dart';
 import 'package:sixam_mart/features/business/screens/subscription_payment_screen.dart';
 import 'package:sixam_mart/features/business/screens/subscription_success_or_failed_screen.dart';
 import 'package:sixam_mart/features/chat/domain/models/order_chat_model.dart';
-import 'package:sixam_mart/features/item/screens/item_view_all_screen.dart';
 import 'package:sixam_mart/features/loyalty/screens/loyalty_screen.dart';
 import 'package:sixam_mart/features/profile/domain/models/update_user_model.dart';
 import 'package:sixam_mart/features/refer_and_earn/screens/refer_and_earn_screen.dart';
@@ -150,7 +149,6 @@ class RouteHelper {
   static const String subscriptionSuccess = '/subscription-success';
   static const String subscriptionPayment = '/subscription-payment';
   static const String newUserSetupScreen = '/new-user-setup-screen';
-  static const String itemViewAllScreen = '/item-view-all-screen';
 
 
   static String getInitialRoute({bool fromSplash = false}) => '$initial?from-splash=$fromSplash';
@@ -166,6 +164,14 @@ class RouteHelper {
   static String getOnBoardingRoute() => onBoarding;
   static String getSignInRoute(String page) => '$signIn?page=$page';
   static String getSignUpRoute() => signUp;
+  /*static String getVerificationRoute(String? number, String? token, String page, String pass, {String? session}) {
+    String? authSession;
+    if(session != null) {
+      authSession = base64Url.encode(utf8.encode(session));
+    }
+    return '$verification?page=$page&number=$number&token=$token&pass=$pass&session=$authSession';
+  }*/
+
   static String getVerificationRoute(String? number, String? email, String? token, String page, String? pass, String loginType, {String? session, UpdateUserModel? updateUserModel}) {
     String? authSession;
     String? userModel;
@@ -183,8 +189,17 @@ class RouteHelper {
   static String getPickMapRoute(String? page, bool canRoute) => '$pickMap?page=$page&route=${canRoute.toString()}';
   static String getInterestRoute() => interest;
   static String getMainRoute(String page) => '$main?page=$page';
+  /*static String getForgotPassRoute(bool fromSocialLogin, SocialLogInBody? socialLogInBody) {
+    String? data;
+    if(fromSocialLogin) {
+      data = base64Encode(utf8.encode(jsonEncode(socialLogInBody!.toJson())));
+    }
+    return '$forgotPassword?page=${fromSocialLogin ? 'social-login' : 'forgot-password'}&data=${fromSocialLogin ? data : 'null'}';
+  }*/
+
   static String getForgotPassRoute() => forgotPassword;
-  static String getResetPasswordRoute({String? phone, String? email, required String token, required String page}) => '$resetPassword?phone=$phone&token=$token&page=$page&email=$email';
+
+  static String getResetPasswordRoute(String? phone, String token, String page) => '$resetPassword?phone=$phone&token=$token&page=$page';
   static String getSearchRoute({String? queryText}) => '$search?query=${queryText ?? ''}';
   static String getStoreRoute({required int? id, required String page}) {
     return '$store?id=$id&page=$page';
@@ -300,7 +315,6 @@ class RouteHelper {
   static String getNewUserSetupScreen({required String name, required String loginType, required String? phone, required String? email}) {
     return '$newUserSetupScreen?name=$name&login_type=$loginType&phone=$phone&email=$email';
   }
-  static String getItemViewAllScreen(bool isPopular, bool isSpecial) => '$itemViewAllScreen?page=${isPopular ? 'popular' : 'reviewed'}&special=${isSpecial.toString()}';
 
   static List<GetPage> routes = [
     GetPage(name: initial, page: () => getRoute(DashboardScreen(pageIndex: 0, fromSplash: Get.parameters['from-splash'] == 'true'))),
@@ -320,6 +334,19 @@ class RouteHelper {
       fromNotification: Get.parameters['page'] == notification, fromResetPassword: Get.parameters['page'] == resetPassword,
     )),
     GetPage(name: signUp, page: () => const SignUpScreen()),
+    /*GetPage(name: verification, page: () {
+      List<int> decode = base64Decode(Get.parameters['pass']!.replaceAll(' ', '+'));
+      String data = utf8.decode(decode);
+      String? session;
+      if(Get.parameters['session'] != null && Get.parameters['session'] != 'null') {
+        session = utf8.decode(base64Url.decode(Get.parameters['session'] ?? ''));
+      }
+      return VerificationScreen(
+        number: Get.parameters['number'], fromSignUp: Get.parameters['page'] == signUp, token: Get.parameters['token'],
+        password: data, firebaseSession: session,
+      );
+    }),*/
+
     GetPage(name: verification, page: () {
       String? pass;
       if(Get.parameters['pass'] != 'null') {
@@ -355,17 +382,25 @@ class RouteHelper {
         canRoute: Get.parameters['route'] == 'true',
       );
     }),
-    GetPage(name: interest, page: () => const InterestScreen()),
+    // GetPage(name: interest, page: () => const InterestScreen()),
     GetPage(name: main, page: () => getRoute(DashboardScreen(
       pageIndex: Get.parameters['page'] == 'home' ? 0 : Get.parameters['page'] == 'favourite' ? 1
           : Get.parameters['page'] == 'cart' ? 2 : Get.parameters['page'] == 'order' ? 3 : Get.parameters['page'] == 'menu' ? 4 : 0,
     ))),
 
+    /*GetPage(name: forgotPassword, page: () {
+      SocialLogInBody? data;
+      if(Get.parameters['page'] == 'social-login') {
+        List<int> decode = base64Decode(Get.parameters['data']!.replaceAll(' ', '+'));
+        data = SocialLogInBody.fromJson(jsonDecode(utf8.decode(decode)));
+      }
+      return ForgetPassScreen(fromSocialLogin: Get.parameters['page'] == 'social-login', socialLogInBody: data);
+    }),*/
+
     GetPage(name: forgotPassword, page: () => const ForgetPassScreen()),
 
     GetPage(name: resetPassword, page: () => NewPassScreen(
       resetToken: Get.parameters['token'], number: Get.parameters['phone'], fromPasswordChange: Get.parameters['page'] == 'password-change',
-      email: Get.parameters['email'],
     )),
     GetPage(name: search, page: () => getRoute(SearchScreen(queryText: Get.parameters['query']))),
     GetPage(name: store, page: () {
@@ -429,9 +464,10 @@ class RouteHelper {
     }),
     GetPage(name: checkout, page: () {
       CheckoutScreen? checkoutScreen = Get.arguments;
-      // bool fromCart = Get.parameters['page'] == 'cart';
-      return getRoute(checkoutScreen ?? (/*!fromCart ? const NotFound() :*/ CheckoutScreen(
-        cartList: null, fromCart: Get.parameters['page'] == 'cart', storeId: Get.parameters['store-id'] != 'null' ? int.parse(Get.parameters['store-id']!) : null,
+      bool fromCart = Get.parameters['page'] == 'cart';
+      return getRoute(checkoutScreen ?? (!fromCart ? const NotFound() : CheckoutScreen(
+        cartList: null, fromCart: Get.parameters['page'] == 'cart',
+         storeId: Get.parameters['store-id'] != 'null' ? int.parse(Get.parameters['store-id']!) : null,
       )));
     }),
     GetPage(name: orderTracking, page: () => getRoute(OrderTrackingScreen(orderID: Get.parameters['id'], contactNumber: Get.parameters['number'],))),
@@ -476,7 +512,6 @@ class RouteHelper {
     GetPage(name: allStores, page: () => getRoute(AllStoreScreen(
       isPopular: Get.parameters['page'] == 'popular', isFeatured: Get.parameters['page'] == 'featured',
       isTopOfferStore: Get.parameters['page'] == 'topOffer', isNearbyStore: Get.parameters['nearby'] == 'true',
-      isRecommendedStore: Get.parameters['page'] == 'recommended',
     ))),
     GetPage(name: itemImages, page: () => getRoute(ImageViewerScreen(
       item: Item.fromJson(jsonDecode(utf8.decode(base64Url.decode(Get.parameters['item']!.replaceAll(' ', '+'))))),
@@ -492,7 +527,7 @@ class RouteHelper {
     ))),
     GetPage(name: searchStoreItem, page: () => getRoute(StoreItemSearchScreen(storeID: Get.parameters['id']))),
     GetPage(name: order, page: () => getRoute(const OrderScreen())),
-    GetPage(name: itemDetails, page: () => getRoute(Get.arguments ?? ItemDetailsScreen(itemId: int.parse(Get.parameters['id']!), inStorePage: Get.parameters['page'] == 'restaurant'))),
+    GetPage(name: itemDetails, page: () => getRoute(Get.arguments ?? ItemDetailsScreen(item: Item(id: int.parse(Get.parameters['id']!)), inStorePage: Get.parameters['page'] == 'restaurant'))),
     GetPage(name: wallet, page: () {
       return getRoute(WalletScreen(
         fundStatus: Get.parameters['flag'] ?? Get.parameters['payment_status'],
@@ -554,7 +589,6 @@ class RouteHelper {
       phone: Get.parameters['phone'] != '' && Get.parameters['phone'] != 'null' ? Get.parameters['phone']!.replaceAll(' ', '+') : null,
       email: Get.parameters['email'] != '' && Get.parameters['email'] != 'null' ? Get.parameters['email']!.replaceAll(' ', '+') : null,
     )),
-    GetPage(name: itemViewAllScreen, page: () => getRoute(ItemViewAllScreen(isPopular: Get.parameters['page'] == 'popular', isSpecial: Get.parameters['special'] == 'true'))),
   ];
 
   static Widget getRoute(Widget navigateTo, {AccessLocationScreen? locationScreen, bool byPuss = false}) {

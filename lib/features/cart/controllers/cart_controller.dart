@@ -12,6 +12,20 @@ import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/helper/date_converter.dart';
 import 'package:sixam_mart/helper/module_helper.dart';
 import 'package:sixam_mart/helper/price_converter.dart';
+import 'package:get/get.dart';
+import 'package:sixam_mart/features/item/domain/models/item_model.dart';
+import 'package:sixam_mart/common/models/module_model.dart';
+import 'package:sixam_mart/features/cart/domain/models/cart_model.dart';
+import 'package:sixam_mart/features/cart/domain/models/online_cart_model.dart';
+import 'package:sixam_mart/features/cart/domain/services/cart_service_interface.dart';
+import 'package:sixam_mart/features/checkout/domain/models/place_order_body_model.dart';
+import 'package:sixam_mart/features/home/screens/home_screen.dart';
+import 'package:sixam_mart/features/item/controllers/item_controller.dart';
+import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
+import 'package:sixam_mart/helper/auth_helper.dart';
+import 'package:sixam_mart/helper/date_converter.dart';
+import 'package:sixam_mart/helper/module_helper.dart';
+import 'package:sixam_mart/helper/price_converter.dart';
 
 class CartController extends GetxController implements GetxService {
   final CartServiceInterface cartServiceInterface;
@@ -32,6 +46,8 @@ class CartController extends GetxController implements GetxService {
 
   double _addOns = 0;
   double get addOns => _addOns;
+    double _tax = 0;
+  double get tax => _tax;
 
   double _variationPrice = 0;
   double get variationPrice => _variationPrice;
@@ -97,7 +113,19 @@ class CartController extends GetxController implements GetxService {
     }
   }
 
-  double calculationCart() {
+  String getCurrncyForUi(){
+    if(cartList.isEmpty){
+      return Get.find<SplashController>().configModel!.currencySymbol!;
+    }
+       for (var cartModel in cartList) {
+         if(cartModel.item != null && cartModel.item!.currency != null && cartModel.item!.currency!.currencyCode != null){
+           return cartModel.item!.currency!.currencyCode!;
+         }
+       }
+     return Get.find<SplashController>().configModel!.currencySymbol!;
+  }
+
+  double calculationCart() { 
     _addOnsList = [];
     _availableList = [];
     _itemPrice = 0;
@@ -109,9 +137,11 @@ class CartController extends GetxController implements GetxService {
     bool haveVariation = false;
     for (var cartModel in cartList) {
 
-      isFoodVariation = ModuleHelper.getModuleConfig(cartModel.item!.moduleType).newVariation!;
-      double? discount = cartModel.item!.discount;
-      String? discountType = cartModel.item!.discountType;
+      if(isFoodVariation = ModuleHelper.getModuleConfig(cartModel.item!.moduleType).newVariation != null) {
+        isFoodVariation = ModuleHelper.getModuleConfig(cartModel.item!.moduleType).newVariation!;
+      }
+      double? discount = cartModel.item!.storeDiscount == 0 ? cartModel.item!.discount : cartModel.item!.storeDiscount;
+      String? discountType = cartModel.item!.storeDiscount == 0 ? cartModel.item!.discountType : 'percent';
 
       List<AddOns> addOnList = cartServiceInterface.prepareAddonList(cartModel);
 
@@ -145,6 +175,19 @@ class CartController extends GetxController implements GetxService {
     return _subTotal;
   }
 
+ double calculateTax({required bool taxIncluded, required double orderAmount, required double? taxPercent, }) {
+
+    double tax = 0;
+    if(taxIncluded){
+      tax = orderAmount * taxPercent! /(100 + taxPercent);
+    }else{
+      tax = PriceConverter.calculation(orderAmount, taxPercent, 'percent', 1);
+    }
+    _tax = tax;
+    update();
+    return PriceConverter.toFixed(tax);
+    
+  }
   Future<void> addToCart(CartModel cartModel, int? index) async {
     if(index != null && index != -1) {
       _cartList.replaceRange(index, index+1, [cartModel]);
@@ -216,13 +259,12 @@ class CartController extends GetxController implements GetxService {
     bool success = false;
     update();
     List<OnlineCartModel>? onlineCartList = await cartServiceInterface.addToCartOnline(cart);
-    if(onlineCartList != null) {
-      _cartList = [];
-      _cartList.addAll(cartServiceInterface.formatOnlineCartToLocalCart(onlineCartModel: onlineCartList));
-      calculationCart();
-      success = true;
-    }
-    _isLoading = false;
+    _cartList = [];
+    _cartList.addAll(cartServiceInterface.formatOnlineCartToLocalCart(onlineCartModel: onlineCartList??[]));
+    print('cartList: $onlineCartList');
+    calculationCart();
+    success = true;
+      _isLoading = false;
     update();
 
     return success;
@@ -233,13 +275,11 @@ class CartController extends GetxController implements GetxService {
     bool success = false;
     update();
     List<OnlineCartModel>? onlineCartList = await cartServiceInterface.updateCartOnline(cart);
-    if(onlineCartList != null) {
-      _cartList = [];
-      _cartList.addAll(cartServiceInterface.formatOnlineCartToLocalCart(onlineCartModel: onlineCartList));
-      calculationCart();
-      success = true;
-    }
-    _isLoading = false;
+    _cartList = [];
+    _cartList.addAll(cartServiceInterface.formatOnlineCartToLocalCart(onlineCartModel: onlineCartList??[]));
+    calculationCart();
+    success = true;
+      _isLoading = false;
     update();
 
     return success;
@@ -262,12 +302,10 @@ class CartController extends GetxController implements GetxService {
     if(ModuleHelper.getModule() != null || ModuleHelper.getCacheModule() != null) {
       _isLoading = true;
       List<OnlineCartModel>? onlineCartList = await cartServiceInterface.getCartDataOnline();
-      if(onlineCartList != null) {
-        _cartList = [];
-        _cartList.addAll(cartServiceInterface.formatOnlineCartToLocalCart(onlineCartModel: onlineCartList));
-        calculationCart();
-      }
-      _isLoading = false;
+      _cartList = [];
+      _cartList.addAll(cartServiceInterface.formatOnlineCartToLocalCart(onlineCartModel: onlineCartList??[]));
+      calculationCart();
+          _isLoading = false;
       update();
     }
   }
@@ -286,6 +324,7 @@ class CartController extends GetxController implements GetxService {
     update();
     return success;
   }
+
 
   Future<bool> clearCartOnline() async {
     _isLoading = true;

@@ -21,6 +21,7 @@ class ConfigModel {
   bool? digitalPayment;
   double? perKmShippingCharge;
   double? minimumShippingCharge;
+  double? freeDeliveryOver;
   bool? demo;
   bool? maintenanceMode;
   String? orderConfirmationModel;
@@ -56,6 +57,7 @@ class ConfigModel {
   int? cancellationPolicyStatus;
   int? shippingPolicyStatus;
   bool? prescriptionStatus;
+  int? taxIncluded;
   String? cookiesText;
   int? homeDeliveryStatus;
   int? takeawayStatus;
@@ -69,6 +71,7 @@ class ConfigModel {
   bool? addFundStatus;
   bool? offlinePaymentStatus;
   bool? guestCheckoutStatus;
+
   double? adminCommission;
   int? subscriptionFreeTrialDays;
   bool? subscriptionFreeTrialStatus;
@@ -78,15 +81,6 @@ class ConfigModel {
   bool? countryPickerStatus;
   bool? firebaseOtpVerification;
   CentralizeLoginSetup? centralizeLoginSetup;
-  double? vehicleDistanceMinPrice;
-  double? vehicleHourlyMinPrice;
-  double? vehicleDayWiseMinPrice;
-  AdminFreeDelivery? adminFreeDelivery;
-  bool? isSmsActive;
-  bool? isMailActive;
-  int? parcelCancellationStatus;
-  ParcelCancellationBasicSetup? parcelCancellationBasicSetup;
-  ParcelReturnTimeFee? parcelReturnTimeFee;
 
   ConfigModel({
     this.businessName,
@@ -109,6 +103,7 @@ class ConfigModel {
     this.digitalPayment,
     this.perKmShippingCharge,
     this.minimumShippingCharge,
+    this.freeDeliveryOver,
     this.demo,
     this.maintenanceMode,
     this.orderConfirmationModel,
@@ -144,6 +139,7 @@ class ConfigModel {
     this.cancellationPolicyStatus,
     this.shippingPolicyStatus,
     this.prescriptionStatus,
+    this.taxIncluded,
     this.cookiesText,
     this.homeDeliveryStatus,
     this.takeawayStatus,
@@ -165,15 +161,6 @@ class ConfigModel {
     this.countryPickerStatus,
     this.firebaseOtpVerification,
     this.centralizeLoginSetup,
-    this.vehicleDistanceMinPrice,
-    this.vehicleHourlyMinPrice,
-    this.vehicleDayWiseMinPrice,
-    this.adminFreeDelivery,
-    this.isSmsActive,
-    this.isMailActive,
-    this.parcelCancellationStatus,
-    this.parcelCancellationBasicSetup,
-    this.parcelReturnTimeFee,
   });
 
   ConfigModel.fromJson(Map<String, dynamic> json) {
@@ -197,6 +184,7 @@ class ConfigModel {
     digitalPayment = json['digital_payment'];
     perKmShippingCharge = json['per_km_shipping_charge']?.toDouble();
     minimumShippingCharge = json['minimum_shipping_charge']?.toDouble();
+    freeDeliveryOver = json['free_delivery_over']?.toDouble();
     demo = json['demo'];
     maintenanceMode = json['maintenance_mode'];
     orderConfirmationModel = json['order_confirmation_model'];
@@ -252,6 +240,7 @@ class ConfigModel {
     cancellationPolicyStatus = json['cancelation_policy'];
     shippingPolicyStatus = json['shipping_policy'];
     prescriptionStatus = json['prescription_order_status'];
+    taxIncluded = json['tax_included'];
     cookiesText = json['cookies_text'];
     homeDeliveryStatus = json['home_delivery_status'];
     takeawayStatus = json['takeaway_status'];
@@ -279,15 +268,6 @@ class ConfigModel {
     countryPickerStatus = json['country_picker_status'] == 1;
     firebaseOtpVerification = json['firebase_otp_verification'] == 1;
     centralizeLoginSetup = json['centralize_login'] != null ? CentralizeLoginSetup.fromJson(json['centralize_login']) : null;
-    vehicleDistanceMinPrice = json['vehicle_distance_min']?.toDouble();
-    vehicleHourlyMinPrice = json['vehicle_hourly_min']?.toDouble();
-    vehicleDayWiseMinPrice = json['vehicle_day_wise_min']?.toDouble();
-    adminFreeDelivery = json['admin_free_delivery'] != null ? AdminFreeDelivery.fromJson(json['admin_free_delivery']) : null;
-    isSmsActive = json['is_sms_active'];
-    isMailActive = json['is_mail_active'];
-    parcelCancellationStatus = json['parcel_cancellation_status'];
-    parcelCancellationBasicSetup = json['parcel_cancellation_basic_setup'] != null ? ParcelCancellationBasicSetup.fromJson(json['parcel_cancellation_basic_setup']) : null;
-    parcelReturnTimeFee = json['parcel_return_time_fee'] != null ? ParcelReturnTimeFee.fromJson(json['parcel_return_time_fee']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -314,6 +294,7 @@ class ConfigModel {
     data['digital_payment'] = digitalPayment;
     data['per_km_shipping_charge'] = perKmShippingCharge;
     data['minimum_shipping_charge'] = minimumShippingCharge;
+    data['free_delivery_over'] = freeDeliveryOver;
     data['demo'] = demo;
     data['maintenance_mode'] = maintenanceMode;
     data['order_confirmation_model'] = orderConfirmationModel;
@@ -361,6 +342,7 @@ class ConfigModel {
     if (appleLogin != null) {
       data['apple_login'] = appleLogin!.map((v) => v.toJson()).toList();
     }
+    data['tax_included'] = taxIncluded;
     data['cookies_text'] = cookiesText;
     data['home_delivery_status'] = homeDeliveryStatus;
     data['takeaway_status'] = takeawayStatus;
@@ -388,21 +370,6 @@ class ConfigModel {
     data['firebase_otp_verification'] = firebaseOtpVerification;
     if (centralizeLoginSetup != null) {
       data['centralize_login'] = centralizeLoginSetup!.toJson();
-    }
-    data['vehicle_distance_min'] = vehicleDistanceMinPrice;
-    data['vehicle_hourly_min'] = vehicleHourlyMinPrice;
-    data['vehicle_day_wise_min'] = vehicleDayWiseMinPrice;
-    if (adminFreeDelivery != null) {
-      data['admin_free_delivery'] = adminFreeDelivery!.toJson();
-    }
-    data['is_sms_active'] = isSmsActive;
-    data['is_mail_active'] = isMailActive;
-    data['parcel_cancellation_status'] = parcelCancellationStatus;
-    if (parcelCancellationBasicSetup != null) {
-      data['parcel_cancellation_basic_setup'] = parcelCancellationBasicSetup!.toJson();
-    }
-    if (parcelReturnTimeFee != null) {
-      data['parcel_return_time_fee'] = parcelReturnTimeFee!.toJson();
     }
     return data;
   }
@@ -605,7 +572,7 @@ class Module {
     orderAttachment = json['order_attachment'];
     showRestaurantText = json['show_restaurant_text'];
     isParcel = json['is_parcel'];
-    isTaxi = json['is_taxi']?? false;
+    isTaxi = json['is_taxi'];
     newVariation = json['new_variation'];
     description = json['description'];
   }
@@ -852,75 +819,6 @@ class CentralizeLoginSetup {
     data['apple_login_status'] = appleLoginStatus;
     data['email_verification_status'] = emailVerificationStatus;
     data['phone_verification_status'] = phoneVerificationStatus;
-    return data;
-  }
-}
-
-class AdminFreeDelivery {
-  bool? status;
-  String? type;
-  double? freeDeliveryOver;
-
-  AdminFreeDelivery({this.status, this.type, this.freeDeliveryOver});
-
-  AdminFreeDelivery.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    type = json['type'];
-    freeDeliveryOver = json['free_delivery_over']?.toDouble();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = status;
-    data['type'] = type;
-    data['free_delivery_over'] = freeDeliveryOver;
-    return data;
-  }
-}
-
-class ParcelCancellationBasicSetup {
-  String? returnFeeStatus;
-  String? returnFee;
-  //String? doNotChargeReturnFeeOnDeliverymanCancel;
-
-  ParcelCancellationBasicSetup({this.returnFeeStatus, this.returnFee, /*this.doNotChargeReturnFeeOnDeliverymanCancel*/});
-
-  ParcelCancellationBasicSetup.fromJson(Map<String, dynamic> json) {
-    returnFeeStatus = json['return_fee_status'];
-    returnFee = json['return_fee'];
-    //doNotChargeReturnFeeOnDeliverymanCancel = json['do_not_charge_return_fee_on_deliveryman_cancel'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['return_fee_status'] = returnFeeStatus;
-    data['return_fee'] = returnFee;
-    //data['do_not_charge_return_fee_on_deliveryman_cancel'] = doNotChargeReturnFeeOnDeliverymanCancel;
-    return data;
-  }
-}
-
-class ParcelReturnTimeFee {
-  String? status;
-  String? parcelReturnTime;
-  String? returnTimeType;
-  String? returnFeeForDm;
-
-  ParcelReturnTimeFee({this.status, this.parcelReturnTime, this.returnTimeType, this.returnFeeForDm});
-
-  ParcelReturnTimeFee.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    parcelReturnTime = json['parcel_return_time'];
-    returnTimeType = json['return_time_type'];
-    returnFeeForDm = json['return_fee_for_dm'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = status;
-    data['parcel_return_time'] = parcelReturnTime;
-    data['return_time_type'] = returnTimeType;
-    data['return_fee_for_dm'] = returnFeeForDm;
     return data;
   }
 }

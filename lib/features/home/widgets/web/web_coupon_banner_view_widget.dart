@@ -47,7 +47,7 @@ class _WebCouponBannerViewWidgetState extends State<WebCouponBannerViewWidget> {
                 height: 135, width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeSmall),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                  color: Theme.of(context).primaryColor  ,
                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
                   image: const DecorationImage(
                     image: AssetImage(Images.promoCodeBg),
@@ -68,7 +68,7 @@ class _WebCouponBannerViewWidgetState extends State<WebCouponBannerViewWidget> {
                           children: [
                             Text(
                               couponController.couponList![itemIndex].title ?? '',
-                              style: robotoBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: Theme.of(context).textTheme.bodyLarge!.color!.withValues(alpha: 0.8)),
+                              style: robotoBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: Theme.of(context).textTheme.bodyLarge!.color!),
                             ),
                             const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
@@ -76,13 +76,13 @@ class _WebCouponBannerViewWidgetState extends State<WebCouponBannerViewWidget> {
                               children: [
                                 Text(
                                   'min_order_of'.tr,
-                                  style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyLarge!.color!.withValues(alpha: 0.8)),
+                                  style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyLarge!.color!   ),
                                 ),
                                 const SizedBox(width: Dimensions.paddingSizeExtraSmall),
 
                                 Text(
                                   PriceConverter.convertPrice(couponController.couponList![itemIndex].minPurchase),
-                                  style: robotoBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: Theme.of(context).textTheme.bodyLarge!.color!.withValues(alpha: 0.8)),
+                                  style: robotoBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: Theme.of(context).textTheme.bodyLarge!.color!   ),
                                 ),
                               ],
                             ),
@@ -96,14 +96,14 @@ class _WebCouponBannerViewWidgetState extends State<WebCouponBannerViewWidget> {
                   const Spacer(),
 
                   DottedBorder(
-                    options: RoundedRectDottedBorderOptions(
-                      color: Theme.of(context).primaryColor,
-                      strokeWidth: 1,
-                      strokeCap: StrokeCap.butt,
-                      dashPattern: const [5, 5],
-                      padding: const EdgeInsets.all(0),
-                      radius: const Radius.circular(50),
-                    ),
+               options: RoundedRectDottedBorderOptions(
+    color: Theme.of(context).primaryColor,
+    strokeWidth: 1,
+    strokeCap: StrokeCap.butt,
+    dashPattern: [5, 5],
+    padding: EdgeInsets.all(0),
+    radius: Radius.circular(50),
+  ),
                     child: InkWell(
                       onTap: () {
                         if(couponController.couponList![itemIndex].code != null){

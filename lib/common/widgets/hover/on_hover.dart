@@ -17,15 +17,15 @@ class _OnHoverState extends State<OnHover> {
   bool isHovered = false;
   @override
   Widget build(BuildContext context) {
-    final hoverTransformed = Matrix4.identity()..scaleByDouble(1.05, 1.03, 1.0, 1.0);
+    final hoverTransformed = Matrix4.identity()..scale(1.05, 1.03);
     final transform = isHovered ? hoverTransformed : Matrix4.identity();
     final shadow1 = BoxDecoration(
       borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
-      color: widget.fromMenu ? Theme.of(context).primaryColor.withValues(alpha: 0.10) : Theme.of(context).cardColor,
+      color: widget.fromMenu ? Theme.of(context).primaryColor   : Theme.of(context).cardColor,
       boxShadow: [
         widget.fromMenu ? const BoxShadow(color: Colors.transparent) :
         BoxShadow(
-          color: Get.find<ThemeController>().darkTheme ? const Color(0xFFBDBDBD).withValues(alpha: 0.1) : Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          color: Get.find<ThemeController>().darkTheme ? const Color(0xFFBDBDBD)   : Theme.of(context).primaryColor  ,
           blurRadius: 10,
           offset: const Offset(0, 10),
         ),

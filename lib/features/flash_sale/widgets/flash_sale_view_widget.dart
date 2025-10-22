@@ -42,34 +42,30 @@ class _FlashSaleViewWidgetState extends State<FlashSaleViewWidget> {
         width: Get.width,
         margin: const EdgeInsets.all(Dimensions.paddingSizeDefault),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          color: Theme.of(context).primaryColor  ,
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-          border: Border.all(color: Theme.of(context).primaryColor.withValues(alpha: 0.2)),
         ),
         child: Column(children: [
 
           Padding(
             padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-            child: CustomInkWell(
-              onTap: () => Get.toNamed(RouteHelper.getFlashSaleDetailsScreen(flashSaleController.flashSaleModel!.activeProducts![0].flashSaleId!)),
-              radius: Dimensions.paddingSizeSmall,
-              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('flash_sale'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
-                  const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+            child: FittedBox(
+              child: CustomInkWell(
+                onTap: () => Get.toNamed(RouteHelper.getFlashSaleDetailsScreen(flashSaleController.flashSaleModel!.activeProducts![0].flashSaleId!)),
+                radius: Dimensions.paddingSizeSmall,
+                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('flash_sale'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
-                  Text('limited_time_offer'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
+                    Text('limited_time_offer'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
+                  ]),
+
+                  FlashSaleTimerView(eventDuration: flashSaleController.duration)
                 ]),
-
-                Text('see_all'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor, decoration: TextDecoration.underline, decorationColor: Theme.of(context).disabledColor, decorationThickness: 1.5)),
-
-              ]),
+              ),
             ),
           ),
-
-          Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-            FlashSaleTimerView(eventDuration: flashSaleController.duration),
-          ]),
 
           flashSaleController.flashSaleModel!.activeProducts != null
             ? FlashSaleCard(
@@ -123,7 +119,7 @@ class _FlashSaleViewWidgetState extends State<FlashSaleViewWidget> {
                       minHeight: 15,
                       value: bothZero ? 0 : remaining / stock,
                       valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                      backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.25),
+                      backgroundColor: Theme.of(context).primaryColor   ,
                     );
                   }
                 ),
@@ -155,7 +151,7 @@ class FlashSaleShimmerView extends StatelessWidget {
       width: Get.width, height: ResponsiveHelper.isDesktop(context) ? 330 : 350,
       margin: const EdgeInsets.all(Dimensions.paddingSizeDefault),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+        color: Theme.of(context).primaryColor  ,
         borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
       ),
       child: Shimmer(

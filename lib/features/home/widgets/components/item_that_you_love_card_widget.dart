@@ -26,17 +26,15 @@ class ItemThatYouLoveCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    double? discount = item.discount;
-    String? discountType = item.discountType;
-
+    double? discount = item.storeDiscount == 0 ? item.discount : item.storeDiscount;
+    String? discountType = item.storeDiscount == 0 ? item.discountType : 'percent';
     return OnHover(
       isItem: true,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
           color: Theme.of(context).cardColor,
-          boxShadow: ResponsiveHelper.isMobile(context) ? [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))] : null,
+          boxShadow: ResponsiveHelper.isMobile(context) ? [const BoxShadow(color: Colors.grey  , spreadRadius: 1, blurRadius: 5, offset: Offset(0, 1))] : null,
         ),
         child: CustomInkWell(
           onTap: () => Get.find<ItemController>().navigateToItemPage(item, context),
@@ -93,7 +91,7 @@ class ItemThatYouLoveCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(112),
                               color: Theme.of(context).primaryColor,
-                              boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))],
+                              boxShadow: [BoxShadow(color: Theme.of(context).primaryColor  , spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))],
                             ),
                             child: Text("add".tr, style: robotoBold.copyWith(color: Theme.of(context).cardColor)),
                           ),

@@ -28,15 +28,15 @@ class GuestDeliveryAddress extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.05), blurRadius: 10)],
+        boxShadow: [BoxShadow(color: Theme.of(context).primaryColor  , blurRadius: 10)],
       ),
       padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge, vertical: Dimensions.paddingSizeSmall),
       child: Column(children: [
         Row(children: [
-          Image.asset(Images.truck, height: 14, width: 14, color: Theme.of(context).textTheme.bodyLarge!.color),
+          Image.asset(Images.truck, height: 14, width: 14, color: Theme.of(context).primaryColor),
           const SizedBox(width: Dimensions.paddingSizeSmall),
 
-          Text(takeAway ? 'contact_information'.tr : 'delivery_information'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).textTheme.bodyLarge!.color)),
+          Text(takeAway ? 'contact_information'.tr : 'delivery_information'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).primaryColor)),
           const Spacer(),
 
           takeAway ? const SizedBox() : InkWell(
@@ -112,42 +112,33 @@ class GuestDeliveryAddress extends StatelessWidget {
               Text('please_update_your_delivery_info'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor)),
             ]),
           ),
-        ) : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ) : Column(children: [
           const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).disabledColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeExtraSmall),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Icon(Icons.location_on, size: 16, color: Theme.of(context).primaryColor  ),
+            const SizedBox(width: Dimensions.paddingSizeSmall),
 
-              Image.asset(Images.guestLocationIcon, height: 15, color: Theme.of(context).primaryColor),
-              Text(' ${checkoutController.guestAddress!.addressType!.tr}:', style: robotoMedium.copyWith(color: Theme.of(context).primaryColor)),
-              const SizedBox(width: Dimensions.paddingSizeSmall),
-
-              Flexible(child: Text(
-                checkoutController.guestAddress!.address!,
-                style: robotoRegular, maxLines: 1, overflow: TextOverflow.ellipsis,
-              )),
-            ]),
-          ),
+            Flexible(child: Text(
+              checkoutController.guestAddress!.address!,
+              style: robotoRegular, maxLines: 1, overflow: TextOverflow.ellipsis,
+            )),
+          ]),
           const SizedBox(height: Dimensions.paddingSizeSmall),
 
-          addressInfo('name'.tr, checkoutController.guestAddress!.contactPersonName!),
-          addressInfo('phone'.tr, checkoutController.guestAddress!.contactPersonNumber!),
-          addressInfo('email'.tr, checkoutController.guestAddress!.email!),
-
-          Row(mainAxisSize: MainAxisSize.min, spacing: Dimensions.paddingSizeLarge, children: [
-            if(checkoutController.guestAddress!.streetNumber != null && checkoutController.guestAddress!.streetNumber!.isNotEmpty)
-              Flexible(child: addressInfo('street'.tr, checkoutController.guestAddress!.streetNumber!)),
-            if(checkoutController.guestAddress!.house != null && checkoutController.guestAddress!.house!.isNotEmpty)
-              Flexible(child: addressInfo('house'.tr, checkoutController.guestAddress!.house!)),
-            if(checkoutController.guestAddress!.floor != null && checkoutController.guestAddress!.floor!.isNotEmpty)
-              Flexible(child: addressInfo('floor'.tr, checkoutController.guestAddress!.floor!)),
-          ]),
-
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Expanded(flex: 6, child: Column(children: [
+              addressInfo('address_type'.tr, checkoutController.guestAddress!.addressType!),
+              addressInfo('name'.tr, checkoutController.guestAddress!.contactPersonName!),
+              addressInfo('phone'.tr, checkoutController.guestAddress!.contactPersonNumber!),
+              addressInfo('email'.tr, checkoutController.guestAddress!.email!),
+            ])),
+            Expanded(flex: 4, child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              addressInfo('street'.tr, checkoutController.guestAddress!.streetNumber!),
+              addressInfo('house'.tr, checkoutController.guestAddress!.house!),
+              addressInfo('floor'.tr, checkoutController.guestAddress!.floor!),
+            ])),
+          ])
         ]),
 
       ]),
@@ -157,8 +148,8 @@ class GuestDeliveryAddress extends StatelessWidget {
   Widget addressInfo(String key, String value) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Text('$key: ', style: robotoRegular),
+      child: Row(children: [
+        Text('$key: ', style: robotoRegular.copyWith(color: Theme.of(Get.context!).disabledColor)),
         Flexible(child: Text(value, style: robotoRegular, maxLines: 1, overflow: TextOverflow.ellipsis)),
       ]),
     );

@@ -80,14 +80,14 @@ class PaymentFailedDialog extends StatelessWidget {
 
               TextButton(
                 onPressed: () {
-                  Get.find<OrderController>().cancelOrder(orderID: int.parse(orderID!), reason: 'Digital payment issue', isParcel: false, guestId: guestId.isNotEmpty ? guestId : null).then((success) {
+                  Get.find<OrderController>().cancelOrder(int.parse(orderID!), 'Digital payment issue', guestId: guestId.isNotEmpty ? guestId : null).then((success) {
                     if(success){
                       Get.offAllNamed(RouteHelper.getInitialRoute());
                     }
                   });
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).disabledColor.withValues(alpha: 0.3), minimumSize: const Size(Dimensions.webMaxWidth, 40), padding: EdgeInsets.zero,
+                  backgroundColor: Theme.of(context).disabledColor  , minimumSize: const Size(Dimensions.webMaxWidth, 40), padding: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
                 ),
                 child: Text('cancel_order'.tr, textAlign: TextAlign.center, style: robotoBold.copyWith(color: Theme.of(context).textTheme.bodyLarge!.color)),

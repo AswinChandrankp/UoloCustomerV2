@@ -1,10 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
-import 'package:path/path.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:sixam_mart/api/api_checker.dart';
 import 'package:sixam_mart/features/address/domain/models/address_model.dart';
 import 'package:sixam_mart/common/models/error_response.dart';
@@ -15,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart';
 
 class ApiClient extends GetxService {
   final String appBaseUrl;
@@ -73,9 +68,10 @@ class ApiClient extends GetxService {
   Map<String, String> getHeader() => _mainHeaders;
 
   Future<Response> getData(String uri, {Map<String, dynamic>? query, Map<String, String>? headers, bool handleError = true}) async {
+    print('Headers: $uri');
     try {
       if (kDebugMode) {
-        log('====> API Call: $uri\nHeader: ${headers ?? _mainHeaders}');
+        print('====> API Call: $uri\nHeader: ${headers ?? _mainHeaders}');
       }
       http.Response response = await http.get(
         Uri.parse(appBaseUrl+uri),
@@ -96,19 +92,9 @@ class ApiClient extends GetxService {
         print('====> API Call: $uri\nHeader: ${headers ?? _mainHeaders}');
         print('====> API Body: $body');
       }
-
-      Map<dynamic, dynamic> newBody = {};
-      if(body != null) {
-        body.forEach((key, value) {
-          if (value != null && value.toString().isNotEmpty) {
-            newBody.addAll({key: value});
-          }
-        });
-      }
-
       http.Response response = await http.post(
         Uri.parse(appBaseUrl+uri),
-        body: jsonEncode(newBody),
+        body: jsonEncode(body),
         headers: headers ?? _mainHeaders,
       ).timeout(Duration(seconds: timeout ?? timeoutInSeconds));
       return handleResponse(response, uri, handleError);
@@ -117,50 +103,23 @@ class ApiClient extends GetxService {
     }
   }
 
-  Future<Response> postMultipartData(String uri, Map<String, String> body, List<MultipartBody> multipartBody, {List<MultipartDocument>? multipartDoc, Map<String, String>? headers, bool handleError = true}) async {
+  Future<Response> postMultipartData(String uri, Map<String, String> body, List<MultipartBody> multipartBody, {Map<String, String>? headers, bool handleError = true}) async {
     try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body with ${multipartBody.length} and multipart ${multipartDoc?.length}');
+      if(kDebugMode) {
+        print('====> API Call: $uri\nHeader: ${headers ?? _mainHeaders}');
+        print('====> API Body: $body with ${multipartBody.length} picture');
+      }
       http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(appBaseUrl+uri));
       request.headers.addAll(headers ?? _mainHeaders);
       for(MultipartBody multipart in multipartBody) {
         if(multipart.file != null) {
-          if(kIsWeb) {
-            Uint8List list = await multipart.file!.readAsBytes();
-            http.MultipartFile part = http.MultipartFile(
-              multipart.key, multipart.file!.readAsBytes().asStream(), list.length,
-              filename: basename(multipart.file!.path), contentType: MediaType('image', 'jpg'),
-            );
-            request.files.add(part);
-          }else {
-            File file = File(multipart.file!.path);
-            request.files.add(http.MultipartFile(
-              multipart.key, file.readAsBytes().asStream(), file.lengthSync(), filename: file.path.split('/').last,
-            ));
-          }
+          Uint8List list = await multipart.file!.readAsBytes();
+          request.files.add(http.MultipartFile(
+            multipart.key, multipart.file!.readAsBytes().asStream(), list.length,
+            filename: '${DateTime.now().toString()}.png',
+          ));
         }
       }
-
-      if(multipartDoc != null && multipartDoc.isNotEmpty){
-        for(MultipartDocument file in multipartDoc){
-          if(kIsWeb) {
-            PlatformFile platformFile = file.file!.files.first;
-            request.files.add(
-              http.MultipartFile.fromBytes(
-                file.key,
-                platformFile.bytes!,
-                filename: platformFile.name,
-              ),
-            );
-          } else {
-            File other = File(file.file!.files.single.path!);
-            Uint8List list0 = await other.readAsBytes();
-            var part = http.MultipartFile(file.key, other.readAsBytes().asStream(), list0.length, filename: basename(other.path));
-            request.files.add(part);
-          }
-        }
-      }
-
       request.fields.addAll(body);
       http.Response response = await http.Response.fromStream(await request.send());
       return handleResponse(response, uri, handleError);
@@ -245,10 +204,4 @@ class MultipartBody {
   XFile? file;
 
   MultipartBody(this.key, this.file);
-}
-
-class MultipartDocument {
-  String key;
-  FilePickerResult? file;
-  MultipartDocument(this.key, this.file);
 }

@@ -45,21 +45,21 @@ class _ProductWithCategoriesViewState extends State<ProductWithCategoriesView> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
           Padding(
-            padding: const EdgeInsets.only(left: Dimensions.paddingSizeSmall, bottom: Dimensions.paddingSizeDefault),
+            padding: const EdgeInsets.only(left: Dimensions.paddingSizeSmall, bottom: Dimensions.paddingSizeLarge),
             child: Text(widget.fromShop ? 'best_reviewed_products'.tr : 'basic_medicine_nearby'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
           ),
 
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Column(children: [
             SizedBox(
               height: 50,
               child: Container(
                 height: 40,
-                color: widget.fromShop ? Theme.of(context).disabledColor.withValues(alpha: 0.1) : Colors.transparent,
+                color: widget.fromShop ? Theme.of(context).disabledColor   : Theme.of(context).primaryColor  ,
                 child: ListView.builder(
                   itemCount: categories.length,
                   shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.zero,
                   itemBuilder: (context, index) {
                     bool isSelected = selectedCategory == index;
                     return InkWell(
@@ -68,29 +68,31 @@ class _ProductWithCategoriesViewState extends State<ProductWithCategoriesView> {
                           selectedCategory = index;
                         });
                       },
-                      child: Column(children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: 5),
-                          child: Text(
-                            '${categories[index].name}',
-                            style: robotoMedium.copyWith(
-                              color: isSelected ? Theme.of(context).textTheme.bodyLarge?.color : Theme.of(context).disabledColor,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                            ),
-                          ),
-                        ),
-
-                        isSelected ? SizedBox(
-                          height: 6, width: 30,
-                          child: Container(
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: 5),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(5),
+                              color: Theme.of(context).cardColor,
                             ),
+                            child: Text('${categories[index].name}', style: robotoMedium.copyWith(color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).disabledColor)),
                           ),
-                        ) : const SizedBox(),
-                      ]),
+
+                          isSelected ? Container(
+                            height: 15, width: 35,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(50)),
+                              color: Theme.of(context).cardColor
+                            ),
+                            padding: const EdgeInsets.only(bottom: 5),
+                            child: Container(
+                              decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColor),
+                            ),
+                          ) : const SizedBox(),
+                        ],
+                      ),
                     );
+
                   },
                 ),
               ),
@@ -98,7 +100,7 @@ class _ProductWithCategoriesViewState extends State<ProductWithCategoriesView> {
 
             Container(
               decoration: BoxDecoration(
-                color: widget.fromShop ? Theme.of(context).disabledColor.withValues(alpha: 0.1) : Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                color: widget.fromShop ? Theme.of(context).disabledColor   : Theme.of(context).primaryColor  ,
               ),
               child: SizedBox(
                 height: ResponsiveHelper.isDesktop(context) ? widget.fromShop ? 290 : 260 : widget.fromShop ? 292 : 250, width: Get.width,

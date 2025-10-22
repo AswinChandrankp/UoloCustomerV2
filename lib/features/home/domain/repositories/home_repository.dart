@@ -45,9 +45,11 @@ class HomeRepository implements HomeRepositoryInterface {
 
   @override
   Future<CashBackModel?> getCashBackData(double amount) async {
+    //double cashbackAmount = 0;
     CashBackModel? cashBackModel;
     Response response = await apiClient.getData('${AppConstants.getCashBackAmountUri}?amount=$amount');
     if(response.statusCode == 200) {
+      //cashbackAmount = response.body['cashback_amount'] != null ? double.parse(response.body['cashback_amount'].toString()) : 0;
       cashBackModel = CashBackModel.fromJson(response.body);
     }
     return cashBackModel;

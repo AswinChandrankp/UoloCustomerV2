@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sixam_mart/features/home/widgets/brands_view_widget.dart';
 import 'package:sixam_mart/features/home/widgets/highlight_widget.dart';
-import 'package:sixam_mart/features/home/widgets/views/recommended_store_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/top_offers_near_me.dart';
 import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/features/flash_sale/widgets/flash_sale_view_widget.dart';
+import 'package:sixam_mart/features/home/widgets/bad_weather_widget.dart';
 import 'package:sixam_mart/features/home/widgets/views/product_with_categories_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/featured_categories_view.dart';
 import 'package:sixam_mart/features/home/widgets/views/popular_store_view.dart';
@@ -38,6 +38,8 @@ class ShopHomeScreen extends StatelessWidget {
         ),
         child: const Column(
           children: [
+            BadWeatherWidget(),
+
             BannerView(isFeatured: false),
             SizedBox(height: 12),
           ],
@@ -46,7 +48,6 @@ class ShopHomeScreen extends StatelessWidget {
 
       const CategoryView(),
       isLoggedIn ? const VisitAgainView() : const SizedBox(),
-      const RecommendedStoreView(),
       const MostPopularItemView(isFood: false, isShop: true),
       const FlashSaleViewWidget(),
       const MiddleSectionBannerView(),
@@ -58,6 +59,7 @@ class ShopHomeScreen extends StatelessWidget {
       const JustForYouView(),
       const TopOffersNearMe(),
       const FeaturedCategoriesView(),
+      // const StoreWiseBannerView(),
       const ItemThatYouLoveView(forShop: true,),
       const NewOnMartView(isShop: true,isPharmacy: false),
       const PromotionalBannerView(),

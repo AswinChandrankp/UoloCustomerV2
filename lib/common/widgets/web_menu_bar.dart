@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:sixam_mart/common/enums/data_source_enum.dart';
 import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
 import 'package:sixam_mart/common/widgets/hover/text_hover.dart';
 import 'package:sixam_mart/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart/features/auth/widgets/auth_dialog_widget.dart';
 import 'package:sixam_mart/features/cart/controllers/cart_controller.dart';
-import 'package:sixam_mart/features/item/controllers/item_controller.dart';
 import 'package:sixam_mart/features/language/controllers/language_controller.dart';
 import 'package:sixam_mart/features/location/controllers/location_controller.dart';
 import 'package:sixam_mart/common/controllers/theme_controller.dart';
@@ -30,7 +28,7 @@ class WebMenuBar extends StatelessWidget implements PreferredSizeWidget {
 
         Container(
           height: 40, width: double.infinity,
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          color: Theme.of(context).primaryColor  ,
           child: Center(
             child: SizedBox(
               width: Dimensions.webMaxWidth,
@@ -233,11 +231,6 @@ class WebMenuBar extends StatelessWidget implements PreferredSizeWidget {
                 MenuButton(title: 'home'.tr, onTap: () {
                   if(AddressHelper.getUserAddressFromSharedPref() != null) {
                     Get.toNamed(RouteHelper.getInitialRoute());
-                    Get.find<ItemController>().resetFilters(isPopular: false, isSpecial: false);
-                    Get.find<ItemController>().clearSearch();
-                    Get.find<ItemController>().getPopularItemList(offset: '1', dataSource: DataSourceEnum.client);
-                    Get.find<ItemController>().getDiscountedItemList(offset: '1', dataSource: DataSourceEnum.client);
-                    Get.find<ItemController>().getReviewedItemList(offset: '1', dataSource: DataSourceEnum.client);
                   } else {
                     showCustomSnackBar('please_select_address_first'.tr,);
                   }

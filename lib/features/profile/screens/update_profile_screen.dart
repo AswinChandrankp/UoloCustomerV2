@@ -128,7 +128,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 onTap: () => profileController.pickImage(),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.3), shape: BoxShape.circle,
+                    color: Colors.black  , shape: BoxShape.circle,
                     border: Border.all(width: 1, color: Theme.of(context).primaryColor),
                   ),
                   child: Container(
@@ -223,13 +223,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ]))),
             )),
 
-            SafeArea(
-              child: CustomButton(
-                isLoading: profileController.isLoading,
-                onPressed: () => _updateProfile(profileController: profileController, fromButton: true, fromPhone: false),
-                margin: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                buttonText: 'update'.tr,
-              ),
+            CustomButton(
+              isLoading: profileController.isLoading,
+              onPressed: () => _updateProfile(profileController: profileController, fromButton: true, fromPhone: false),
+              margin: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+              buttonText: 'update'.tr,
             ),
 
           ]),
@@ -277,7 +275,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(Dimensions.radiusExtraLarge), bottom: Radius.circular(Dimensions.radiusDefault)),
-                    boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
+                    boxShadow: const [BoxShadow(color: Colors.grey  , spreadRadius: 1, blurRadius: 10, offset: Offset(0, 1))],
                   ),
                 ),
 
@@ -299,8 +297,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         child: InkWell(
                           onTap: () => profileController.pickImage(),
                           child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.3), shape: BoxShape.circle,
+                            decoration: const BoxDecoration(
+                              color: Colors.black  , shape: BoxShape.circle,
                             ),
                             child: Container(
                               margin: const EdgeInsets.all(25),

@@ -40,52 +40,52 @@ class _CircleListViewState extends State<CircleListView> {
       }
 
       return campaignController.itemCampaignList != null ? itemCampaignList.isNotEmpty ? SizedBox(
-        height: 200,
-        width: MediaQuery.of(context).size.width,
-        child: PageView.builder(
-          controller: PageController(),
-          itemCount: itemCampaignList.length,
-          itemBuilder: ((context, index) {
-            return Column(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Gallery3D(
-                    controller: Gallery3DController(itemCount: itemCampaignList.length),
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    isClip: true,
-                    onItemChanged: (index) {
-                      setState(() {
-                        currentIndex = index;
-                      });
-                    },
-                    itemConfig: const GalleryItemConfig(
-                      width: 220,
-                      height: 200,
-                      radius: 10,
-                      isShowTransformMask: false,
-                    ),
-                    onClickItem: (index) {
-                      if (kDebugMode) print("currentIndex:$index");
-                    },
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () => Get.find<ItemController>().navigateToItemPage(itemCampaignList[index], context, isCampaign: true),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                          child: CustomImage(
-                            image: '${itemCampaignList[index].imageFullUrl}',
-                            fit: BoxFit.cover,
-                          ),
+            height: 200,
+            width: MediaQuery.of(context).size.width,
+            child: PageView.builder(
+              controller: PageController(),
+              itemCount: itemCampaignList.length,
+              itemBuilder: ((context, index) {
+                return Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Gallery3D(
+                        controller: Gallery3DController(itemCount: itemCampaignList.length),
+                        width: MediaQuery.of(context).size.width,
+                        height: 200,
+                        isClip: true,
+                        onItemChanged: (index) {
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        },
+                        itemConfig: const GalleryItemConfig(
+                          width: 220,
+                          height: 200,
+                          radius: 10,
+                          isShowTransformMask: false,
                         ),
-                      );
-                    }),
-              )],
-            );
-          }),
-        ),
-      ) : const SizedBox.shrink() : const CircleListViewShimmerView();
+                        onClickItem: (index) {
+                          if (kDebugMode) print("currentIndex:$index");
+                        },
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () => Get.find<ItemController>().navigateToItemPage(itemCampaignList[index], context, isCampaign: true),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                              child: CustomImage(
+                                image: '${itemCampaignList[index].imageFullUrl}',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        }),
+                  )],
+                );
+              }),
+            ),
+          ) : const SizedBox.shrink() : const CircleListViewShimmerView();
     });
   }
 }

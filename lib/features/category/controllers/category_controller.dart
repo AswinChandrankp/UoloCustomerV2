@@ -1,9 +1,12 @@
 import 'package:sixam_mart/common/enums/data_source_enum.dart';
+import 'package:sixam_mart/common/models/module_model.dart';
 import 'package:sixam_mart/features/category/domain/models/category_model.dart';
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
+import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart/features/category/domain/services/category_service_interface.dart';
+import 'package:sixam_mart/util/app_constants.dart';
 
 class CategoryController extends GetxController implements GetxService {
   final CategoryServiceInterface categoryServiceInterface;
@@ -11,6 +14,14 @@ class CategoryController extends GetxController implements GetxService {
 
   List<CategoryModel>? _categoryList;
   List<CategoryModel>? get categoryList => _categoryList;
+
+
+   List<CategoryModel>? _GroccerycategoryList;
+  List<CategoryModel>? get GrocerycategoryList => _GroccerycategoryList;
+
+   List<ItemModel?> _GroccerycategoryitemList = [];
+  List<ItemModel?> get GrocerycategoritemyList => _GroccerycategoryitemList;
+
 
   List<CategoryModel>? _subCategoryList;
   List<CategoryModel>? get subCategoryList => _subCategoryList;
@@ -30,6 +41,10 @@ class CategoryController extends GetxController implements GetxService {
   List<bool>? _interestSelectedList;
   List<bool>? get interestSelectedList => _interestSelectedList;
 
+
+  List<bool>? _interestfoodSelectedList;
+  List<bool>? get interestfoodSelectedList => _interestfoodSelectedList;
+   
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
@@ -68,18 +83,75 @@ class CategoryController extends GetxController implements GetxService {
       }
       List<CategoryModel>? categoryList;
       if(dataSource == DataSourceEnum.local) {
-        categoryList = await categoryServiceInterface.getCategoryList(allCategory, source: DataSourceEnum.local);
+        categoryList = await categoryServiceInterface.getCategoryList(allCategory,  Get.find<SplashController>().module!, source: DataSourceEnum.local);
         _prepareCategoryList(categoryList);
         getCategoryList(false, fromRecall: true, allCategory: allCategory, dataSource: DataSourceEnum.client);
       } else {
-        categoryList = await categoryServiceInterface.getCategoryList(allCategory, source: DataSourceEnum.client);
+        categoryList = await categoryServiceInterface.getCategoryList(allCategory,Get.find<SplashController>().module!, source: DataSourceEnum.client);
         _prepareCategoryList(categoryList);
       }
 
     }
   }
 
-  void _prepareCategoryList(List<CategoryModel>? categoryList) {
+
+   Future<void> getGrocceryCategoryList(bool reload, {bool allCategory = false, DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
+    _isLoading = true;
+    update();
+    if(_GroccerycategoryList == null || reload || fromRecall) {
+      if(reload) {
+        _categoryList = null;
+      }
+      ModuleModel? module = Get.find<SplashController>().moduleList!.where((element) => element.moduleType ==   AppConstants.grocery).first;
+
+      List<CategoryModel>? GrocerycategoryList;
+      if(dataSource == DataSourceEnum.local) {
+        GrocerycategoryList = await categoryServiceInterface.getCategoryList(allCategory,module,   source: DataSourceEnum.local);
+        _prepareGrocceryCategoryList(GrocerycategoryList);
+         for(int i = 0; i < GrocerycategoryList!.length; i++) {
+        // _interestfoodSelectedList!.add(false);
+        //  getCategoryItemList(_GroccerycategoryList![i].id.toString(), 1, 'all', false);
+        print(' fettching data on category id ${GrocerycategoryList![i].id.toString()}   ${GrocerycategoryList![i].name}');
+       ItemModel? itemdata =   await categoryServiceInterface.getCategoryItemList(GrocerycategoryList![i].id.toString(), offset, type);
+        if (itemdata != Null) {
+              _GroccerycategoryitemList.add(itemdata);
+
+              update();
+
+        }
+// _GroccerycategoryitemList.removeWhere((element) => element!.);
+
+
+      }
+        // getGrocceryCategoryList(false, fromRecall: true, allCategory: allCategory, dataSource: DataSourceEnum.client);
+
+      } else {
+        GrocerycategoryList = await categoryServiceInterface.getCategoryList(allCategory, module, source: DataSourceEnum.client);
+        // _prepareGrocceryCategoryList(GrocerycategoryList);
+         for(int i = 0; i < GrocerycategoryList!.length; i++) {
+        // _interestfoodSelectedList!.add(false);
+        //  getCategoryItemList(_GroccerycategoryList![i].id.toString(), 1, 'all', false);
+        print(' fettching data on category id ${GrocerycategoryList![i].id.toString()}   ${GrocerycategoryList![i].name}');
+       ItemModel? itemdata =   await categoryServiceInterface.getCategoryItemList(GrocerycategoryList![i].id.toString(), offset, type);
+        if (itemdata != Null) {
+              _GroccerycategoryitemList.add(itemdata);
+
+              update();
+
+        }
+// _GroccerycategoryitemList.removeWhere((element) => element!.);
+
+
+      }
+      }
+
+    
+    }
+
+    _isLoading = false;
+    update();
+  }
+  _prepareCategoryList(List<CategoryModel>? categoryList) {
     if (categoryList != null) {
       _categoryList = [];
       _interestSelectedList = [];
@@ -91,10 +163,23 @@ class CategoryController extends GetxController implements GetxService {
     update();
   }
 
+  _prepareGrocceryCategoryList(List<CategoryModel>? GrocerycategoryList) {
+    if (GrocerycategoryList != null) {
+      _GroccerycategoryList = [];
+      _interestfoodSelectedList = [];
+      _GroccerycategoryList!.addAll(GrocerycategoryList);
+      for(int i = 0; i < _GroccerycategoryList!.length; i++) {
+        _interestfoodSelectedList!.add(false);
+      }
+    }
+    update();
+  }
   void getSubCategoryList(String? categoryID) async {
+     _isLoading = true;
     _subCategoryIndex = 0;
     _subCategoryList = null;
     _categoryItemList = null;
+    //  getCategoryItemList(categoryID, 1, 'all', false);
     List<CategoryModel>? subCategoryList = await categoryServiceInterface.getSubCategoryList(categoryID);
     if (subCategoryList != null) {
       _subCategoryList= [];
@@ -102,6 +187,9 @@ class CategoryController extends GetxController implements GetxService {
       _subCategoryList!.addAll(subCategoryList);
       getCategoryItemList(categoryID, 1, 'all', false);
     }
+
+     _isLoading = false;
+    update();
   }
 
   void setSubCategoryIndex(int index, String? categoryID) {
@@ -114,6 +202,7 @@ class CategoryController extends GetxController implements GetxService {
   }
 
   void getCategoryItemList(String? categoryID, int offset, String type, bool notify) async {
+   
     _offset = offset;
     if(offset == 1) {
       if(_type == type) {
@@ -130,10 +219,12 @@ class CategoryController extends GetxController implements GetxService {
       if (offset == 1) {
         _categoryItemList = [];
       }
+      categoryItem.items!.removeWhere((element) =>  element.store!.noservicerestriction == 0 &&  element.store!.distancelimit == 0  );
       _categoryItemList!.addAll(categoryItem.items!);
       _pageSize = categoryItem.totalSize;
       _isLoading = false;
     }
+   
     update();
   }
 
@@ -220,5 +311,70 @@ class CategoryController extends GetxController implements GetxService {
     _isStore = isRestaurant;
     update();
   }
+
+
+// Future<ItemModel?> categoryitembyId( String categoryID, int offset, String type) async {
+//   // Fetch data from the service
+//   final data = await categoryServiceInterface.getCategoryItemList(categoryID, offset, type);
+  
+//   // Check if data is null
+//   if (data == null) {
+//   // Get.snackbar(
+//   //     "Error",
+//   //     "Failed to load data for ID $categoryID: Data is null",
+//   //     snackPosition: SnackPosition.TOP,
+//   //   );
+//     throw Exception('Failed to load data for ID $categoryID: Data is null');
+//   }
+
+//   // Check if categories are not empty
+//   if (data.items != null && data.items!.isNotEmpty) {
+//   //  Get.snackbar(
+//   //     "Success",
+//   //     "successfully to load data for ID $categoryID: ${data.items!.length} categories found",
+//   //     snackPosition: SnackPosition.TOP,
+//   //   );
+//     return data;
+//   } else {
+//   //  Get.snackbar(
+//   //     "Error",
+//   //     "Failed to load data for ID $categoryID:  No categories found",
+//   //     snackPosition: SnackPosition.TOP,
+//   //   );
+//     throw Exception('Failed to load data for ID $categoryID: No categories found' " $data and ${data.items!.first.name}");
+//   }
+// }
+
+Future<ItemModel?> categoryitembyId( String categoryID, int offset, String type) async {
+  // Fetch data from the service
+  final data = await categoryServiceInterface.getCategoryItemList(categoryID, offset, type);
+  
+  // Check if data is null
+  if (data == null) {
+  // Get.snackbar(
+  //     "Error",
+  //     "Failed to load data for ID $categoryID: Data is null",
+  //     snackPosition: SnackPosition.TOP,
+  //   );
+    throw Exception('Failed to load data for ID $categoryID: Data is null');
+  }
+
+  // Check if categories are not empty
+  if (data.items != null && data.items!.isNotEmpty) {
+  //  Get.snackbar(
+  //     "Success",
+  //     "successfully to load data for ID $categoryID: ${data.items!.length} categories found",
+  //     snackPosition: SnackPosition.TOP,
+  //   );
+    return data;
+  } else {
+  //  Get.snackbar(
+  //     "Error",
+  //     "Failed to load data for ID $categoryID:  No categories found",
+  //     snackPosition: SnackPosition.TOP,
+  //   );
+    throw Exception('Failed to load data for ID $categoryID: No categories found' " $data and ${data.items!.first.name}");
+  }
+}
 
 }

@@ -33,8 +33,8 @@ class StoreService implements StoreServiceInterface {
   }
 
   @override
-  Future<List<Store>?> getTopOfferStoreList({required DataSourceEnum source, String? filterBy, String? sortBy}) async {
-    return await storeRepositoryInterface.getList(isTopOfferStoreList: true, source: source, filterBy: filterBy, type: sortBy);
+  Future<List<Store>?> getTopOfferStoreList({required DataSourceEnum source}) async {
+    return await storeRepositoryInterface.getList(isTopOfferStoreList: true, source: source);
   }
 
   @override
@@ -53,10 +53,8 @@ class StoreService implements StoreServiceInterface {
   }
 
   @override
-  Future<ItemModel?> getStoreItemList({int? storeID, required int offset, int? categoryID, String? type, List<String>? filter, int? rating, double? lowerValue, double? upperValue}) async {
-    return await storeRepositoryInterface.getStoreItemList(
-      storeID: storeID, offset: offset, categoryID: categoryID, type: type, filter: filter, rating: rating, lowerValue: lowerValue, upperValue: upperValue
-    );
+  Future<ItemModel?> getStoreItemList(int? storeID, int offset, int? categoryID, String type) async {
+    return await storeRepositoryInterface.getStoreItemList(storeID, offset, categoryID, type);
   }
 
   @override

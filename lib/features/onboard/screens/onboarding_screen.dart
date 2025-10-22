@@ -101,7 +101,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         buttonText: onBoardingController.selectedIndex != 2 ? 'next'.tr : 'get_started'.tr,
                         onPressed: () {
                           if(onBoardingController.selectedIndex != 2) {
-                           _pageController.nextPage(duration: const Duration(seconds: 1), curve: Curves.easeInOut);
+                            _pageController.nextPage(duration: const Duration(seconds: 1), curve: Curves.ease);
                           } else {
                             _configureToRouteInitialPage();
                           }

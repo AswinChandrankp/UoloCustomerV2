@@ -1,5 +1,4 @@
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
-import 'package:sixam_mart/features/order/domain/models/order_model.dart';
 
 class OrderDetailsModel {
   int? id;
@@ -21,7 +20,6 @@ class OrderDetailsModel {
   double? totalAddOnPrice;
   String? imageFullUrl;
   int? isGuest;
-  ParcelCancellation? parcelCancellation;
 
   OrderDetailsModel({
     this.id,
@@ -43,7 +41,6 @@ class OrderDetailsModel {
     this.totalAddOnPrice,
     this.imageFullUrl,
     this.isGuest,
-    this.parcelCancellation,
   });
 
   OrderDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -82,7 +79,6 @@ class OrderDetailsModel {
     totalAddOnPrice = json['total_add_on_price']?.toDouble();
     imageFullUrl = json['image_full_url'];
     isGuest = json['is_guest'];
-    parcelCancellation = json['parcel_cancellation'] != null ? ParcelCancellation.fromJson(json['parcel_cancellation']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -113,9 +109,6 @@ class OrderDetailsModel {
     data['total_add_on_price'] = totalAddOnPrice;
     data['image_full_url'] = imageFullUrl;
     data['is_guest'] = isGuest;
-    if (parcelCancellation != null) {
-      data['parcel_cancellation'] = parcelCancellation!.toJson();
-    }
     return data;
   }
 }

@@ -17,7 +17,7 @@ class ProfileCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
         color: Theme.of(context).cardColor,
         border: Border.all(color: Theme.of(context).primaryColor, width: 0.1),
-        boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.1), blurRadius: 5, spreadRadius: 1)],
+        // boxShadow: [BoxShadow(color: Theme.of(context).primaryColor  , blurRadius: 5, spreadRadius: 1)],
       ),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Image.asset(image, height: 30, width: 30),
@@ -25,10 +25,9 @@ class ProfileCardWidget extends StatelessWidget {
 
         Text(
           data, textDirection: TextDirection.ltr,
-          style: robotoBold,
+          style: robotoMedium.copyWith(fontSize: ResponsiveHelper.isDesktop(context) ? Dimensions.fontSizeDefault : Dimensions.fontSizeExtraLarge),
         ),
         const SizedBox(height: Dimensions.paddingSizeSmall),
-
         Text(title, style: robotoRegular.copyWith(
           fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor,
         )),

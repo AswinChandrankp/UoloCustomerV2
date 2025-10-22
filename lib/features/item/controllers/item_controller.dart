@@ -1,5 +1,6 @@
 import 'package:sixam_mart/common/enums/data_source_enum.dart';
 import 'package:sixam_mart/features/cart/controllers/cart_controller.dart';
+import 'package:sixam_mart/features/home/widgets/views/GrocceryItemBottomSheet.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/checkout/domain/models/place_order_body_model.dart';
 import 'package:sixam_mart/features/item/domain/models/basic_medicine_model.dart';
@@ -44,19 +45,18 @@ class ItemController extends GetxController implements GetxService {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  int? _pageSize = 0;
-  int? get pageSize => _pageSize;
-
-  List<String> _offsetList = [];
-
-  int _offset = 1;
-  int get offset => _offset;
+    bool _isAdding = false;
+  bool get isAdding => _isAdding;
   
   List<int>? _variationIndex;
   List<int>? get variationIndex => _variationIndex;
   
   List<List<bool?>> _selectedVariations = [];
   List<List<bool?>> get selectedVariations => _selectedVariations;
+  set selectedVariations(List<List<bool?>> variations) {
+    _selectedVariations = variations;
+    update();
+  }
   
   int? _quantity = 1;
   int? get quantity => _quantity;
@@ -67,13 +67,13 @@ class ItemController extends GetxController implements GetxService {
   List<int?> _addOnQtyList = [];
   List<int?> get addOnQtyList => _addOnQtyList;
   
-  final String _popularType = 'all';
+  String _popularType = 'all';
   String get popularType => _popularType;
   
-  final String _reviewedType = 'all';
+  String _reviewedType = 'all';
   String get reviewType => _reviewedType;
 
-  final String _discountedType = 'all';
+  String _discountedType = 'all';
   String get discountedType => _discountedType;
   
   static final List<String> _itemTypeList = ['all', 'veg', 'non_veg'];
@@ -117,224 +117,13 @@ class ItemController extends GetxController implements GetxService {
   
   ItemModel? _featuredCategoriesItem;
   ItemModel? get featuredCategoriesItem => _featuredCategoriesItem;
-
+  
   int _selectedCategory = 0;
   int get selectedCategory => _selectedCategory;
-
-  static final List<String> _sortOptions = ['default', 'a_to_z', 'z_to_a', 'high', 'low'];
-  List<String> get sortOptions => _sortOptions;
-
-  String _selectedSortOption = 'default';
-  String get selectedSortOption => _selectedSortOption;
-
-  final List<String> _filter = [];
-  List<String>? get filter => _filter;
-
-  int? _rating;
-  int? get rating => _rating;
-
-  final List<int> _selectedCategoryIds = [];
-  List<int> get selectedCategoryIds => _selectedCategoryIds;
-
-  double _selectedMinPrice = 0;
-  double get selectedMinPrice => _selectedMinPrice;
-
-  double _selectedMaxPrice = 9999999999;
-  double get selectedMaxPrice => _selectedMaxPrice;
-
-  List<Categories>? _categoryList = [];
-  List<Categories>? get categoryList => _categoryList;
-
-  bool _isAvailableItems = false;
-  bool get isAvailableItems => _isAvailableItems;
-
-  bool _isUnAvailableItems = false;
-  bool get isUnAvailableItems => _isUnAvailableItems;
-
-  bool _isTopRated = false;
-  bool get isTopRated => _isTopRated;
-
-  bool _isMostLoved = false;
-  bool get isMostLoved => _isMostLoved;
-
-  bool _isPopular = false;
-  bool get isPopular => _isPopular;
-
-  bool _isLatest = false;
-  bool get isLatest => _isLatest;
-
-  bool _isSearching = false;
-  bool get isSearching => _isSearching;
-
-  final TextEditingController _searchController = TextEditingController(text: '');
-  TextEditingController get searchController => _searchController;
-
-  void clearSearch({bool withUpdate = true}) {
-    _searchController.text = '';
-    _isSearching = false;
-    if(withUpdate) {
-      update();
-    }
-  }
-
-  void toggleCategory(int? categoryId) {
-    if (_selectedCategoryIds.contains(categoryId)) {
-      _selectedCategoryIds.remove(categoryId);
-    } else {
-      _selectedCategoryIds.add(categoryId!);
-    }
-    update();
-  }
-
-  void setMinAndMaxPrice(double min, double max, {bool withUpdate = true}) {
-    _selectedMinPrice = min;
-    _selectedMaxPrice = max;
-    if(withUpdate) {
-      update();
-    }
-  }
-
-  void toggleAvailableItems() {
-    _isAvailableItems = !_isAvailableItems;
-    if(_isAvailableItems) {
-      _filter.add("available_now");
-    } else {
-      _filter.remove("available_now");
-    }
-    update();
-  }
-
-  void toggleUnavailableItems() {
-    _isUnAvailableItems = !_isUnAvailableItems;
-    if(_isUnAvailableItems) {
-      _filter.add("un_available_now");
-    } else {
-      _filter.remove("un_available_now");
-    }
-    update();
-  }
-
-  void toggleTopRated() {
-    _isTopRated = !_isTopRated;
-    if(_isTopRated) {
-      _filter.add("top_rated");
-    } else {
-      _filter.remove("top_rated");
-    }
-    update();
-  }
-
-  void toggleMostLoved() {
-    _isMostLoved = !_isMostLoved;
-    if(_isMostLoved) {
-      _filter.add("most_loved");
-    } else {
-      _filter.remove("most_loved");
-    }
-    update();
-  }
-
-  void togglePopular() {
-    _isPopular = !_isPopular;
-    if(_isPopular) {
-      _filter.add("popular");
-    } else {
-      _filter.remove("popular");
-    }
-    update();
-  }
-
-  void toggleLatest() {
-    _isLatest = !_isLatest;
-    if(_isLatest) {
-      _filter.add("latest");
-    } else {
-      _filter.remove("latest");
-    }
-    update();
-  }
-
-  void setSelectedRating(int rating) {
-    _rating = rating;
-    update();
-  }
-
-  void setSelectedSortOption(String option) {
-    _selectedSortOption = option;
-
-    for (var element in _sortOptions) {
-      if(_filter.contains(element)) {
-        _filter.remove(element);
-      }else if(element == _selectedSortOption) {
-        _filter.add(element);
-      }
-    }
-    update();
-  }
 
   void selectCategory(int index) {
     _selectedCategory = index;
     update();
-  }
-
-  void applyFilters({bool isPopular = false, bool isSpecial = false}) {
-    if(isPopular){
-      getPopularItemList(notify: true, offset: '1', dataSource: DataSourceEnum.client);
-    }else if(isSpecial){
-      getDiscountedItemList(notify: true, offset: '1', dataSource: DataSourceEnum.client);
-    }else{
-      getReviewedItemList(notify: true, offset: '1', dataSource: DataSourceEnum.client);
-    }
-  }
-
-  void resetFilters({bool isPopular = false, bool isSpecial = false}) {
-    _selectedCategoryIds.clear();
-    _filter.clear();
-    _rating = null;
-    _selectedMinPrice = 0;
-    _selectedMaxPrice = 9999999999;
-    _isAvailableItems = false;
-    _isUnAvailableItems = false;
-    _isTopRated = false;
-    _isMostLoved = false;
-    _isPopular = false;
-    _isLatest = false;
-    _selectedSortOption = 'default';
-    _searchController.text = '';
-
-    if (isPopular) {
-      getPopularItemList(offset: '1', dataSource: DataSourceEnum.client);
-    } else if(isSpecial) {
-      getDiscountedItemList(offset: '1', dataSource: DataSourceEnum.client);
-    } else {
-      getReviewedItemList(offset: '1', dataSource: DataSourceEnum.client);
-    }
-
-    update();
-  }
-
-  void clearFilters({bool isPopular = false, bool isSpecial = false}) {
-    _selectedCategoryIds.clear();
-    _filter.clear();
-    _rating = null;
-    _selectedMinPrice = 0;
-    _selectedMaxPrice = 9999999999;
-    _isAvailableItems = false;
-    _isUnAvailableItems = false;
-    _isTopRated = false;
-    _isMostLoved = false;
-    _isPopular = false;
-    _isLatest = false;
-    _selectedSortOption = 'default';
-    _searchController.text = '';
-
-    if (isPopular) {
-      getPopularItemList(offset: '1', dataSource: DataSourceEnum.client, firstTimeCategoryLoad: true);
-    } else if (isSpecial) {
-      getDiscountedItemList(offset: '1', dataSource: DataSourceEnum.client, firstTimeCategoryLoad: true);
-    } else {
-      getReviewedItemList(offset: '1', dataSource: DataSourceEnum.client, firstTimeCategoryLoad: true);
-    }
   }
 
   void selectCommonCondition(int index) {
@@ -363,185 +152,129 @@ class ItemController extends GetxController implements GetxService {
     _recommendedItemList = null;
   }
 
-  void showBottomLoader() {
-    _isLoading = true;
-    update();
-  }
-
-  void setOffset(int offset) {
-    _offset = offset;
-  }
-
-  bool hasMoreData({bool isPopular = false, bool isSpecial = false}) {
-    if(isPopular){
-      return _popularItemList != null && _popularItemList!.length < _pageSize!;
-    }else if(isSpecial){
-      return _discountedItemList != null && _discountedItemList!.length < _pageSize!;
-    }else{
-      return _reviewedItemList != null && _reviewedItemList!.length < _pageSize!;
-    }
-  }
-
-  Future<void> getPopularItemList({required String offset, DataSourceEnum dataSource = DataSourceEnum.local, bool notify = false, bool firstTimeCategoryLoad = false}) async {
-
-    if(_searchController.text.isEmpty) {
-      _isSearching = false;
-      if(notify) update();
-    }else{
-      _isSearching = true;
-      if(notify) update();
-    }
-
-    if(offset == '1') {
-      _offsetList = [];
-      _offset = 1;
+  Future<void> getPopularItemList(bool reload, String type, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
+    _popularType = type;
+    if(reload) {
       _popularItemList = null;
-      if(firstTimeCategoryLoad) _categoryList = null;
-      if(notify) update();
     }
-
-    if (!_offsetList.contains(offset)) {
-      _offsetList.add(offset);
-
-      ItemModel? itemModel = await itemServiceInterface.getPopularItemList(
-        type: _popularType, source: dataSource, offset: _offset, search: _searchController.text, categoryIds: _selectedCategoryIds, filter: _filter,
-        rating: _rating, minPrice: _selectedMinPrice, maxPrice: _selectedMaxPrice,
-      );
-
-      _preparePopularItems(itemModel, offset, firstTimeCategoryLoad);
-
+    if(notify) {
+      update();
+    }
+    if(_popularItemList == null || reload || fromRecall) {
+      List<Item>? items;
       if(dataSource == DataSourceEnum.local) {
-        getPopularItemList(notify : notify, dataSource: DataSourceEnum.client, offset: '1');
+        items = await itemServiceInterface.getPopularItemList(type, dataSource);
+        // items!.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
+        _preparePopularItems(items);
+        getPopularItemList(false, type, notify, dataSource: DataSourceEnum.client, fromRecall: true);
+      } else {
+        items = await itemServiceInterface.getPopularItemList(type, dataSource);
+        // items!.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
+        _preparePopularItems(items);
       }
-    } else {
-      if(isLoading) {
-        _isLoading = false;
-        update();
-      }
+
     }
   }
 
-  void _preparePopularItems(ItemModel? itemModel, String offset, bool firstTimeCategoryLoad) {
-    if (itemModel != null) {
-      if (offset == '1') {
-        _popularItemList = [];
-        if(firstTimeCategoryLoad) _categoryList = [];
-      }
-      _popularItemList!.addAll(itemModel.items!);
-      if(firstTimeCategoryLoad) _categoryList!.addAll(itemModel.categories!);
-      _pageSize = itemModel.totalSize;
-      _isLoading = false;
-    }
-    update();
+  // _preparePopularItems(List<Item>? items) {
+  //   if (items != null) {
+  //     _popularItemList = [];
+  //         items!.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
+  //     _popularItemList!.addAll(items);
+  //     _isLoading = false;
+  //   }
+  //   update();
+  // }
+void _preparePopularItems(List<Item>? items) {
+  // Initialize _popularItemList if null
+  _popularItemList ??= [];
+
+  // Clear previous items
+  _popularItemList!.clear();
+
+  if (items != null && items.isNotEmpty) {
+    // Filter items without modifying the input list
+    final filteredItems = items.where((item) {
+      // Safely check if store is non-null and conditions are met
+      if (item.store == null) return false;
+      return !(item.store!.noservicerestriction == 0 && item.store!.distancelimit == 0);
+    }).toList();
+
+    // Add filtered items to _popularItemList
+    _popularItemList!.addAll(filteredItems);
   }
 
-  Future<void> getReviewedItemList({required String offset, DataSourceEnum dataSource = DataSourceEnum.local, bool notify = false, bool firstTimeCategoryLoad = false}) async {
+  // Always set loading state
+  _isLoading = false;
 
-    if (_searchController.text.isEmpty) {
-      _isSearching = false;
-      if (notify) update();
-    } else {
-      _isSearching = true;
-      if (notify) update();
-    }
-
-    if (offset == '1') {
-      _offsetList = [];
-      _offset = 1;
+  // Notify listeners
+  update();
+}
+  Future<void> getReviewedItemList(bool reload, String type, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
+    _reviewedType = type;
+    if(reload) {
       _reviewedItemList = null;
-      _reviewedCategoriesList = null;
-      if(firstTimeCategoryLoad) _categoryList = null;
-      if (notify) update();
     }
-
-    if (!_offsetList.contains(offset)) {
-      _offsetList.add(offset);
-
-      ItemModel? itemModel  = await itemServiceInterface.getReviewedItemList(
-        type: _reviewedType, source: dataSource, offset: _offset, search: _searchController.text, categoryIds: _selectedCategoryIds,
-        filter: _filter, rating: _rating, minPrice: _selectedMinPrice, maxPrice: _selectedMaxPrice,
-      );
-
-      _preparedReviewedItems(itemModel, offset, firstTimeCategoryLoad);
-
-      if (dataSource == DataSourceEnum.local) {
-        getReviewedItemList(notify: notify, dataSource: DataSourceEnum.client, offset: '1');
+    if(notify) {
+      update();
+    }
+    if(_reviewedItemList == null || reload || fromRecall) {
+      ItemModel? itemModel;
+      if(dataSource == DataSourceEnum.local) {
+        itemModel = await itemServiceInterface.getReviewedItemList(type, dataSource);
+        _preparedReviewedItems(itemModel);
+        getReviewedItemList(false, type, notify, dataSource: DataSourceEnum.client, fromRecall: true);
+      } else {
+        itemModel = await itemServiceInterface.getReviewedItemList(type, dataSource);
+        _preparedReviewedItems(itemModel);
       }
-    } else {
-      if (_isLoading) {
-        _isLoading = false;
-        update();
-      }
+
     }
   }
 
-  void _preparedReviewedItems(ItemModel? itemModel, String offset, bool firstTimeCategoryLoad) {
+  _preparedReviewedItems(ItemModel? itemModel) {
     if (itemModel != null) {
-      if (offset == '1') {
-        _reviewedItemList = [];
-        _reviewedCategoriesList = [];
-        if(firstTimeCategoryLoad) _categoryList = [];
-      }
+      _reviewedItemList = [];
+      _reviewedCategoriesList = [];
       _reviewedItemList!.addAll(itemModel.items!);
       _reviewedCategoriesList!.addAll(itemModel.categories!);
-      if(firstTimeCategoryLoad) _categoryList!.addAll(itemModel.categories!);
-      _pageSize = itemModel.totalSize;
       _isLoading = false;
     }
     update();
   }
 
-  Future<void> getDiscountedItemList({required String offset, DataSourceEnum dataSource = DataSourceEnum.local, bool notify = false, bool firstTimeCategoryLoad = false}) async {
-
-    if (_searchController.text.isEmpty) {
-      _isSearching = false;
-      if (notify) update();
-    } else {
-      _isSearching = true;
-      if (notify) update();
-    }
-
-    if(offset == '1') {
-      _offsetList = [];
-      _offset = 1;
+  Future<void> getDiscountedItemList(bool reload, bool notify, String type, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
+    _discountedType = type;
+    if(reload) {
       _discountedItemList = null;
-      if(firstTimeCategoryLoad) _categoryList = null;
-      if (notify) update();
     }
+    if(notify) {
+      update();
+    }
+    if(_discountedItemList == null || reload || fromRecall) {
 
-    if (!_offsetList.contains(offset)) {
-      _offsetList.add(offset);
-
-      ItemModel? itemModel = await itemServiceInterface.getDiscountedItemList(
-        type: _discountedType, source: dataSource, offset: _offset, search: _searchController.text, categoryIds: _selectedCategoryIds, filter: _filter,
-        rating: _rating, minPrice: _selectedMinPrice, maxPrice: _selectedMaxPrice,
-      );
-
-      _prepareDiscountedItems(itemModel, offset, firstTimeCategoryLoad);
-
+      List<Item>? items;
       if(dataSource == DataSourceEnum.local) {
-        getDiscountedItemList(notify: notify, dataSource: DataSourceEnum.client, offset: '1');
-      }
-    } else {
-      if(isLoading) {
-        _isLoading = false;
+        items = await itemServiceInterface.getDiscountedItemList(type, dataSource);
+        if (items != null) {
+          _discountedItemList = [];
+          items.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
+          _discountedItemList!.addAll(items);
+          _isLoading = false;
+        }
+        update();
+        getDiscountedItemList(false, notify, type, dataSource: DataSourceEnum.client, fromRecall: true);
+      } else {
+        items = await itemServiceInterface.getDiscountedItemList(type, dataSource);
+        if (items != null) {
+          _discountedItemList = [];
+          items.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
+          _discountedItemList!.addAll(items);
+          _isLoading = false;
+        }
         update();
       }
     }
-  }
-
-  void _prepareDiscountedItems(ItemModel? itemModel, String offset, bool firstTimeCategoryLoad) {
-    if (itemModel != null) {
-      if (offset == '1') {
-        _discountedItemList = [];
-        if(firstTimeCategoryLoad) _categoryList = [];
-      }
-      _discountedItemList!.addAll(itemModel.items!);
-      if(firstTimeCategoryLoad) _categoryList!.addAll(itemModel.categories!);
-      _pageSize = itemModel.totalSize;
-      _isLoading = false;
-    }
-    update();
   }
 
   Future<void> getFeaturedCategoriesItemList(bool reload, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
@@ -585,7 +318,7 @@ class ItemController extends GetxController implements GetxService {
     }
   }
 
-  void _prepareRecommendedItems(List<Item>? items) {
+  _prepareRecommendedItems(List<Item>? items) {
     if (items != null) {
       _recommendedItemList = [];
       _recommendedItemList!.addAll(items);
@@ -642,20 +375,21 @@ class ItemController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> getItemDetails({required int itemId, CartModel? cart, Item? item}) async {
+  Future<void> getProductDetails(Item item) async {
     _item = null;
-    if(item?.name != null) {
+    if(item.name != null) {
       _item = item;
     }else {
       _item = null;
-      _item = await itemServiceInterface.getItemDetails(itemId);
+      _item = await itemServiceInterface.getItemDetails(item.id);
     }
+    initData(_item, null);
+    setExistInCart(_item, _selectedVariations, /*notify: !ResponsiveHelper.isDesktop(Get.context)*/);
+  }
 
-    if(_item != null) {
-      initData(_item, cart);
-      setExistInCart(_item, _selectedVariations);
-    }
-    if(item == null) update();
+  void showBottomLoader() {
+    _isLoading = true;
+    update();
   }
 
   void initData(Item? item, CartModel? cart) {
@@ -739,7 +473,7 @@ class ItemController extends GetxController implements GetxService {
     update();
   }
 
-  void setNewCartVariationIndex(int index, int i, Item item) {
+  void setNewCartVariationIndex(int index, int i, Item item, {bool notify = false}) {
     _selectedVariations = itemServiceInterface.setNewCartVariationIndex(index, i, item.foodVariations!, _selectedVariations);
     setExistInCart(item, _selectedVariations);
     // if(!item.foodVariations![index].multiSelect!) {
@@ -764,7 +498,10 @@ class ItemController extends GetxController implements GetxService {
     //     _selectedVariations[index][i] = !_selectedVariations[index][i]!;
     //   }
     // }
-    update();
+    if(notify) {
+      update();
+    }
+    // update();
   }
 
   int selectedVariationLength(List<List<bool?>> selectedVariations, int index) {
@@ -803,75 +540,137 @@ class ItemController extends GetxController implements GetxService {
     return DateConverter.isAvailable(item.availableTimeStarts, item.availableTimeEnds);
   }
 
-  double? getDiscount(Item item) => item.discount;
+  double? getDiscount(Item item) => item.storeDiscount == 0 ? item.discount : item.storeDiscount;
 
-  String? getDiscountType(Item item) => item.discountType;
+  String? getDiscountType(Item item) => item.storeDiscount == 0 ? item.discountType : 'percent';
 
   void navigateToItemPage(Item? item, BuildContext context, {bool inStore = false, bool isCampaign = false}) {
     if(Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! || item!.moduleType == 'food') {
       ResponsiveHelper.isMobile(context) ? Get.bottomSheet(
-        ItemBottomSheet(itemId: item!.id!, inStorePage: inStore, isCampaign: isCampaign, item: item),
+        ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign),
         backgroundColor: Colors.transparent, isScrollControlled: true,
       ) : Get.dialog(
-        Dialog(child: ItemBottomSheet(itemId: item!.id!, inStorePage: inStore, isCampaign: isCampaign, item: item)),
+        Dialog(child: ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign)),
       );
     }else {
-      Get.toNamed(RouteHelper.getItemDetailsRoute(item.id, inStore), arguments: ItemDetailsScreen(itemId: item.id!, inStorePage: inStore, isCampaign: isCampaign, item: item));
+      Get.toNamed(RouteHelper.getItemDetailsRoute(item.id, inStore), arguments: ItemDetailsScreen(item: item, inStorePage: inStore, isCampaign: isCampaign));
     }
   }
 
   void itemDirectlyAddToCart(Item? item, BuildContext context, {bool inStore = false, bool isCampaign = false}) {
-    getItemDetails(itemId: item!.id!).then((value) {
-      if (((_item!.foodVariations != null && _item!.foodVariations!.isEmpty) && _item?.moduleType == AppConstants.food) || (_item?.variations != null && _item!.variations!.isEmpty && _item?.moduleType != AppConstants.food)) {
-        double price = _item!.price!;
-        double discount = _item!.discount!;
-        double discountPrice = PriceConverter.convertWithDiscount(price, discount, _item!.discountType)!;
+     
+    if (((item!.foodVariations != null && item.foodVariations!.isEmpty) && item.moduleType == AppConstants.food) || (item.variations != null && item.variations!.isEmpty && item.moduleType != AppConstants.food)) {
+      double price = item.price!;
+      double discount = item.discount!;
+      double discountPrice = PriceConverter.convertWithDiscount(price, discount, item.discountType)!;
 
-        CartModel cartModel = CartModel(
-          null, price, discount, [], [], (price - discountPrice), 1, [], [], isCampaign,
-          _item?.stock, _item, _item?.quantityLimit,
-        );
+      CartModel cartModel = CartModel(
+        null, price, discount, [], [], (price - discountPrice), 1, [], [], isCampaign,
+        item.stock, item, item.quantityLimit,
+      );
 
-        OnlineCart onlineCart = OnlineCart(
-          null, isCampaign ? null : _item?.id, isCampaign ? _item?.id : null, price.toString(),
-          '', null, ModuleHelper.getModuleConfig(_item?.moduleType).newVariation! ? [] : null,
-          1, [], [], [], 'Item',
-        );
-        if(Get.find<SplashController>().configModel!.moduleConfig!.module!.stock! && _item!.stock! <= 0){
-          showCustomSnackBar('out_of_stock'.tr);
-        }
-        else if (Get.find<CartController>().existAnotherStoreItem(cartModel.item!.storeId, ModuleHelper.getModule() != null
-            ? ModuleHelper.getModule()?.id : ModuleHelper.getCacheModule()?.id)) {
-          Get.dialog(ConfirmationDialog(
-            icon: Images.warning,
-            title: 'are_you_sure_to_reset'.tr,
-            description: Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText!
-                ? 'if_you_continue'.tr : 'if_you_continue_without_another_store'.tr,
-            onYesPressed: () {
-              Get.find<CartController>().clearCartOnline().then((success) async {
-                if (success) {
-                  await Get.find<CartController>().addToCartOnline(onlineCart);
-                  Get.back();
-                  showCartSnackBar();
-                }
-              });
-            },
-          ), barrierDismissible: false);
-        } else {
-          Get.find<CartController>().addToCartOnline(onlineCart);
-          showCartSnackBar();
-        }
-      } else if(Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! || _item?.moduleType == AppConstants.food){
-        ResponsiveHelper.isMobile(Get.context) ? Get.bottomSheet(
-          ItemBottomSheet(itemId: _item!.id!, inStorePage: inStore, isCampaign: isCampaign),
-          backgroundColor: Colors.transparent, isScrollControlled: true,
-        ) : Get.dialog(
-          Dialog(child: ItemBottomSheet(itemId: _item!.id!, inStorePage: inStore, isCampaign: isCampaign)),
-        );
-      } else {
-        Get.toNamed(RouteHelper.getItemDetailsRoute(_item!.id, inStore), arguments: ItemDetailsScreen(itemId: _item!.id!, inStorePage: inStore));
+      OnlineCart onlineCart = OnlineCart(
+        null, isCampaign ? null : item.id, isCampaign ? item.id : null, price.toString(),
+        '', null, ModuleHelper.getModuleConfig(item.moduleType).newVariation! ? [] : null,
+        1, [], [], [], 'Item',
+      );
+      if(
+        // Get.find<SplashController>().configModel!.moduleConfig!.module!.stock! &&
+         item.stock! < 0){
+
+  print('${item.stock} stock');
+  print("${Get.find<SplashController>().configModel!.moduleConfig!.module!.stock!}");
+
+        showCustomSnackBar('out_of_stock'.tr);
+
       }
-    });
+      //   if(item.stock! <= 0){
+      //     print('${item.stock} stock');
+      //   showCustomSnackBar('out_of_stock'.tr);
+      // }
+
+      else if (Get.find<CartController>().existAnotherStoreItem(cartModel.item!.storeId, ModuleHelper.getModule() != null
+          ? ModuleHelper.getModule()?.id : ModuleHelper.getCacheModule()?.id)) {
+
+
+        Get.dialog(
+          
+          ConfirmationDialog(
+
+          icon: Images.warning,
+          title: 'are_you_sure_to_reset'.tr,
+          description: 
+          Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! 
+             
+              ? 'if_you_continue'.tr : 'if_you_continue_without_another_store'.tr,
+                 
+          onYesPressed: () {
+            Get.find<CartController>().clearCartOnline().then((success) async {
+                 Get.back();
+              if (success) {
+                await Get.find<CartController>().addToCartOnline(onlineCart);
+             
+                showCartSnackBar();
+              }
+            });
+          },
+        ),
+        
+         barrierDismissible: false);
+
+
+      } else {
+         _isAdding = true;
+        Get.find<CartController>().addToCartOnline(onlineCart);
+        showCartSnackBar();
+         _isAdding = false;
+      }
+    } else if(Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! || item.moduleType == AppConstants.food){
+      ResponsiveHelper.isMobile(context) ? Get.bottomSheet(
+        ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign),
+        backgroundColor: Colors.transparent, isScrollControlled: true,
+      ) : Get.dialog(
+        Dialog(child: ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign)),
+      );
+    } else {
+      // Get.toNamed(RouteHelper.getItemDetailsRoute(item.id, inStore), arguments: ItemDetailsScreen(item: item, inStorePage: inStore));
+       showGroceryItemBottomSheet(
+        context,
+        item,inStore
+      );
+    }
+
+    
   }
+void setItem(Item? item) {
+    _item = item;
+    if (_item != null && _item!.foodVariations != null) {
+      // Initialize selectedVariations with first option selected for each variation
+      selectedVariations = RxList<List<bool>>.generate(
+        _item!.foodVariations!.length,
+        (index) => List<bool>.generate(
+          _item!.foodVariations![index].variationValues!.length,
+          (i) => i == 0, // Select the first option by default
+        ),
+      );
+    } else {
+      selectedVariations = [];
+    }
+    update();
+  }
+}
+
+
+void showGroceryItemBottomSheet(BuildContext context , item,inStorePage) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true, // Allows the bottom sheet to take full height
+    backgroundColor: Colors.transparent, // Make the background transparent
+    builder: (BuildContext context) {
+      return  GrocceryItemBottomSheet(inStorePage: inStorePage ,item: item,);
+    },
+  );
+
+
   
 }

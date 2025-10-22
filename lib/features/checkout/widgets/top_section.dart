@@ -3,6 +3,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
+import 'package:sixam_mart/common/widgets/address_widget.dart';
+
 import 'package:sixam_mart/features/checkout/widgets/guest_create_account.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/address/domain/models/address_model.dart';
@@ -10,6 +12,7 @@ import 'package:sixam_mart/features/cart/domain/models/cart_model.dart';
 import 'package:sixam_mart/common/models/config_model.dart';
 import 'package:sixam_mart/features/checkout/controllers/checkout_controller.dart';
 import 'package:sixam_mart/helper/auth_helper.dart';
+import 'package:sixam_mart/helper/price_converter.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
@@ -19,6 +22,7 @@ import 'package:sixam_mart/features/checkout/widgets/coupon_section.dart';
 import 'package:sixam_mart/features/checkout/widgets/delivery_instruction_view.dart';
 import 'package:sixam_mart/features/checkout/widgets/delivery_section.dart';
 import 'package:sixam_mart/features/checkout/widgets/deliveryman_tips_section.dart';
+import 'package:sixam_mart/features/checkout/widgets/partial_pay_view.dart';
 import 'package:sixam_mart/features/checkout/widgets/payment_section.dart';
 import 'package:sixam_mart/features/checkout/widgets/time_slot_section.dart';
 import 'package:sixam_mart/features/checkout/widgets/web_delivery_instruction_view.dart';
@@ -28,6 +32,7 @@ import 'dart:io';
 class TopSection extends StatelessWidget {
   final CheckoutController checkoutController;
   final double charge;
+  final      Currency;
   final double deliveryCharge;
   final List<DropdownItem<int>> addressList;
   final bool tomorrowClosed;
@@ -72,11 +77,12 @@ class TopSection extends StatelessWidget {
     required this.guestEmailController, required this.guestEmailNode, required this.tooltipController1,
     required this.tooltipController2, required this.dmTipsTooltipController, required this.guestPasswordController, required this.guestConfirmPasswordController,
     required this.guestPasswordNode, required this.guestConfirmPasswordNode, required this.variationPrice, required this.deliveryChargeForView,
-    required this.badWeatherCharge, required this.extraChargeForToolTip,
+    required this.badWeatherCharge, required this.extraChargeForToolTip, this.Currency,
   });
 
   @override
   Widget build(BuildContext context) {
+    
     bool takeAway = (checkoutController.orderType == 'take_away');
     bool isDesktop = ResponsiveHelper.isDesktop(context);
     bool isGuestLoggedIn = AuthHelper.isGuestLoggedIn();
@@ -88,11 +94,11 @@ class TopSection extends StatelessWidget {
         boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)],
       ) : null,
       child: Column(children: [
-
+       
         storeId != null ? Container(
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.05), blurRadius: 10)],
+            boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withOpacity(0.05), blurRadius: 10)],
           ),
           padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge, vertical: Dimensions.paddingSizeSmall),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -139,13 +145,13 @@ class TopSection extends StatelessWidget {
                       },
                       child: DottedBorder(
                         options: RoundedRectDottedBorderOptions(
-                          color: Theme.of(context).primaryColor,
-                          strokeWidth: 1,
-                          strokeCap: StrokeCap.butt,
-                          dashPattern: const [5, 5],
-                          padding: const EdgeInsets.all(0),
-                          radius: const Radius.circular(Dimensions.radiusDefault),
-                        ),
+    strokeWidth: 1,
+    strokeCap: StrokeCap.butt,
+    dashPattern: [5, 5],
+    padding: EdgeInsets.all(0),
+    color: Theme.of(context).primaryColor,
+    radius: Radius.circular(Dimensions.radiusDefault),
+  ),
                         child: Container(
                           height: 98, width: 98, alignment: Alignment.center, decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
@@ -164,14 +170,14 @@ class TopSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                     ),
                     child: DottedBorder(
-                      options: RoundedRectDottedBorderOptions(
-                        color: Theme.of(context).primaryColor,
-                        strokeWidth: 1,
-                        strokeCap: StrokeCap.butt,
-                        dashPattern: const [5, 5],
-                        padding: const EdgeInsets.all(0),
-                        radius: const Radius.circular(Dimensions.radiusDefault),
-                      ),
+                     options: RoundedRectDottedBorderOptions(
+    strokeWidth: 1,
+    strokeCap: StrokeCap.butt,
+    dashPattern: [5, 5],
+    padding: EdgeInsets.all(0),
+    color: Theme.of(context).primaryColor,
+    radius: Radius.circular(Dimensions.radiusDefault),
+  ),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Stack(children: [
@@ -202,62 +208,32 @@ class TopSection extends StatelessWidget {
             ),
           ]),
         ) : const SizedBox(),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
+        // const SizedBox(height: Dimensions.paddingSizeSmall),
+///DmTips..
+  Padding(
+    padding: const EdgeInsets.only(left: 8,right: 8),
+    child: DeliveryManTipsSection(
+            takeAway: takeAway, tooltipController3: dmTipsTooltipController,
+            totalPrice: total, onTotalChange: (double price) => total + price, storeId: storeId,
+            Currency:Currency ,
 
-        // delivery option
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.05), blurRadius: 10)],
           ),
-          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge, vertical: Dimensions.paddingSizeSmall),
-          width: double.infinity,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('delivery_type'.tr, style: robotoMedium),
-              const SizedBox(height: Dimensions.paddingSizeSmall),
-
-              storeId != null ? DeliveryOptionButtonWidget(
-                value: 'delivery', title: 'home_delivery'.tr, charge: charge,
-                isFree: checkoutController.store!.freeDelivery, fromWeb: true, total: total,
-                deliveryChargeForView: deliveryChargeForView, badWeatherCharge: badWeatherCharge, extraChargeForToolTip: extraChargeForToolTip,
-              ) : SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: [
-                Get.find<SplashController>().configModel!.homeDeliveryStatus == 1 && checkoutController.store!.delivery! ? DeliveryOptionButtonWidget(
-                  value: 'delivery', title: 'home_delivery'.tr, charge: charge,
-                  isFree: checkoutController.store!.freeDelivery,  fromWeb: true, total: total,
-                  deliveryChargeForView: deliveryChargeForView, badWeatherCharge: badWeatherCharge, extraChargeForToolTip: extraChargeForToolTip,
-                ) : const SizedBox(),
-                const SizedBox(width: Dimensions.paddingSizeDefault),
-
-                Get.find<SplashController>().configModel!.takeawayStatus == 1 && checkoutController.store!.takeAway! ? DeliveryOptionButtonWidget(
-                  value: 'take_away', title: 'take_away'.tr, charge: deliveryCharge, isFree: true,  fromWeb: true, total: total,
-                  deliveryChargeForView: deliveryChargeForView, badWeatherCharge: badWeatherCharge, extraChargeForToolTip: extraChargeForToolTip,
-                ) : const SizedBox(),
-              ]),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: Dimensions.paddingSizeLarge),
-
-        ///delivery section
-        DeliverySection(checkoutController: checkoutController, address: address, addressList: addressList,
-          guestNameTextEditingController: guestNameTextEditingController, guestNumberTextEditingController: guestNumberTextEditingController,
-          guestNumberNode: guestNumberNode, guestEmailController: guestEmailController, guestEmailNode: guestEmailNode,
-        ),
-
-        SizedBox(height: !takeAway ? isDesktop ? Dimensions.paddingSizeLarge : Dimensions.paddingSizeSmall : 0),
+  ),
+       
+        ///delivery instruction
+        !takeAway ? isDesktop ? const WebDeliveryInstructionView() : Padding(
+          padding: const EdgeInsets.only(left: 8,right: 8),
+          child: const DeliveryInstructionView(),
+        ) : const SizedBox(),
+        // SizedBox(height: !takeAway ? isDesktop ? Dimensions.paddingSizeLarge : Dimensions.paddingSizeSmall : 0),
 
         ///Create Account with existing info
+
         isGuestLoggedIn && Get.find<SplashController>().configModel!.centralizeLoginSetup!.manualLoginStatus! ? GuestCreateAccount(
           guestPasswordController: guestPasswordController, guestConfirmPasswordController: guestConfirmPasswordController,
           guestPasswordNode: guestPasswordNode, guestConfirmPasswordNode: guestConfirmPasswordNode,
         ) : const SizedBox(),
         SizedBox(height: isGuestLoggedIn && Get.find<SplashController>().configModel!.centralizeLoginSetup!.manualLoginStatus! ? Dimensions.paddingSizeSmall : 0),
-
-        ///delivery instruction
-        !takeAway ? isDesktop ? const WebDeliveryInstructionView() : const DeliveryInstructionView() : const SizedBox(),
-        SizedBox(height: !takeAway ? isDesktop ? Dimensions.paddingSizeLarge : Dimensions.paddingSizeSmall : 0),
 
         /// Time Slot
         TimeSlotSection(
@@ -272,29 +248,34 @@ class TopSection extends StatelessWidget {
         ) : const SizedBox(),
 
         ///DmTips..
-        DeliveryManTipsSection(
-          takeAway: takeAway, tooltipController3: dmTipsTooltipController,
-          totalPrice: total, onTotalChange: (double price) => total + price, storeId: storeId,
-        ),
+        // DeliveryManTipsSection(
+        //   takeAway: takeAway, tooltipController3: dmTipsTooltipController,
+        //   totalPrice: total, onTotalChange: (double price) => total + price, storeId: storeId,
+        // ),
 
-        ///Payment..
-        Container(
-          decoration: isDesktop ? const BoxDecoration() : BoxDecoration(
-            color: Theme.of(context).cardColor,
-            boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.05), blurRadius: 10)],
-          ),
-          padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeLarge, horizontal: Dimensions.paddingSizeLarge),
-          child: Column(children: [
+        // ///Payment..
+        // Container(
+        //   decoration: isDesktop ? const BoxDecoration() : BoxDecoration(
+        //     color: Theme.of(context).cardColor,
+        //     boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withOpacity(0.05), blurRadius: 10)],
+        //   ),
+        //   padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeLarge, horizontal: Dimensions.paddingSizeLarge),
+        //   child: Column(children: [
 
-            PaymentSection(
-              storeId: storeId, isCashOnDeliveryActive: isCashOnDeliveryActive, isDigitalPaymentActive: isDigitalPaymentActive,
-              isWalletActive: isWalletActive, total: total, checkoutController: checkoutController, isOfflinePaymentActive: isOfflinePaymentActive,
-            ),
+        //     PaymentSection(
+        //       storeId: storeId, isCashOnDeliveryActive: isCashOnDeliveryActive, isDigitalPaymentActive: isDigitalPaymentActive,
+        //       isWalletActive: isWalletActive, total: total, checkoutController: checkoutController, isOfflinePaymentActive: isOfflinePaymentActive,
+        //     ),
+        //     SizedBox(height: isGuestLoggedIn ? 0 : Dimensions.paddingSizeLarge),
 
-          ]),
-        ),
-        SizedBox(height: isDesktop ? Dimensions.paddingSizeLarge : 0),
+        //     !isDesktop && !isGuestLoggedIn ? PartialPayView(totalPrice: total, isPrescription: storeId != null) : const SizedBox(),
 
+        //   ]),
+        // ),
+        // SizedBox(height: isDesktop ? Dimensions.paddingSizeLarge : 0),
+
+                  // AddressWidget(address: address, fromAddress: false),
+              
       ]),
     );
   }

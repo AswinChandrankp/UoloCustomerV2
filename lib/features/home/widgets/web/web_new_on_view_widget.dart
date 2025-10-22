@@ -56,40 +56,41 @@ class _WebNewOnViewWidgetState extends State<WebNewOnViewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<StoreController>(builder: (storeController) {
-      List<Store>? storeList = storeController.popularStoreList;
-
-      if(storeList != null && storeList.length > 4 && isFirstTime){
-        showForwardButton = true;
-        isFirstTime = false;
-      }
-      return storeList != null ? storeList.isNotEmpty ? Column(children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-          child: TitleWidget(
-            title: widget.isFood ? 'best_store_nearby'.tr : '${'new_on'.tr} ${AppConstants.appName}',
-            onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute('latest', isNearbyStore: widget.isFood ? true : false)),
-          ),
+    return Column(children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
+        child: TitleWidget(
+          title: widget.isFood ? 'best_store_nearby'.tr : '${'new_on'.tr} ${AppConstants.appName}',
+          onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute('latest', isNearbyStore: widget.isFood ? true : false)),
         ),
+      ),
 
-        Stack(children: [
+      GetBuilder<StoreController>(builder: (storeController) {
+        List<Store>? storeList = storeController.popularStoreList;
+
+        if(storeList != null && storeList.length > 4 && isFirstTime){
+          showForwardButton = true;
+          isFirstTime = false;
+        }
+
+        return storeList != null && storeList.isNotEmpty ? Stack(children: [
           SizedBox(
             height: 215,
             child: ListView.builder(
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                itemCount: storeList.length,
-                itemBuilder: (context, index){
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: Dimensions.paddingSizeDefault, top: Dimensions.paddingSizeDefault,
-                      left: Get.find<LocalizationController>().isLtr ? 0 : Dimensions.paddingSizeDefault,
-                      right: Get.find<LocalizationController>().isLtr ? Dimensions.paddingSizeDefault : 0,
-                    ),
-                    child: StoreCardWithDistance(store: storeList[index]),
-                  );
-                }),
+              controller: scrollController,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemCount: storeList.length,
+              itemBuilder: (context, index){
+                return Padding(
+                  padding: EdgeInsets.only(
+                    bottom: Dimensions.paddingSizeDefault, top: Dimensions.paddingSizeDefault,
+                    left: Get.find<LocalizationController>().isLtr ? 0 : Dimensions.paddingSizeDefault,
+                    right: Get.find<LocalizationController>().isLtr ? Dimensions.paddingSizeDefault : 0,
+                  ),
+                  child: StoreCardWithDistance(store: storeList[index]),
+                );
+              }),
           ),
 
           if(showBackButton)
@@ -97,7 +98,7 @@ class _WebNewOnViewWidgetState extends State<WebNewOnViewWidget> {
               top: 70, left: 0,
               child: ArrowIconButton(
                 isRight: false,
-                onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+                onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                     duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
               ),
             ),
@@ -106,44 +107,33 @@ class _WebNewOnViewWidgetState extends State<WebNewOnViewWidget> {
             Positioned(
               top: 70, right: 0,
               child: ArrowIconButton(
-                onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+                onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                     duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
               ),
             ),
 
-        ]),
-
-      ]) : const SizedBox() : WebNewOnShimmerView(isFood: widget.isFood);
-
-    });
+        ]) : const WebNewOnShimmerView();
+      }),
+    ]);
   }
 }
 
 class WebNewOnShimmerView extends StatelessWidget {
   final bool fromAllStore;
-  final bool? isFood;
-  const WebNewOnShimmerView({super.key, this.fromAllStore = false, this.isFood = false});
+  const WebNewOnShimmerView({super.key, this.fromAllStore = false});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        isFood! ? Padding(
-          padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-          child: TitleWidget(
-            title: isFood! ? 'best_store_nearby'.tr : '${'new_on'.tr} ${AppConstants.appName}',
-            onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute('latest', isNearbyStore: isFood! ? true : false)),
-          ),
-        ) : const SizedBox(),
-
-        Shimmer(
-          duration: const Duration(seconds: 2),
-          enabled: true,
-          child: SizedBox(
-            height: 215,
-            child: ListView.builder(
+    return Stack(children: [
+      Shimmer(
+        duration: const Duration(seconds: 2),
+        enabled: true,
+        child: SizedBox(
+          height: 215,
+          child: ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               scrollDirection: fromAllStore ? Axis.vertical : Axis.horizontal,
+              //padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
               itemCount: 5,
               itemBuilder: (context, index){
                 return Padding(
@@ -156,7 +146,7 @@ class WebNewOnShimmerView extends StatelessWidget {
                     Container(
                       width: 260,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).shadowColor,
+                        color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
                       ),
                       child: Column(children: [
@@ -167,7 +157,7 @@ class WebNewOnShimmerView extends StatelessWidget {
                             child: Stack(clipBehavior: Clip.none, children: [
                               Container(
                                 height: double.infinity, width: double.infinity,
-                                color: Theme.of(context).shadowColor,
+                                color: Colors.grey[300],
                               ),
 
                               Positioned(
@@ -176,9 +166,9 @@ class WebNewOnShimmerView extends StatelessWidget {
                                   padding: const EdgeInsets.all(2),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Theme.of(context).cardColor.withValues(alpha: 0.8),
+                                    color: Theme.of(context).cardColor   ,
                                   ),
-                                  child: Icon(Icons.favorite_border, color: Theme.of(context).shadowColor, size: 20),
+                                  child: Icon(Icons.favorite_border, color: Colors.grey[300], size: 20),
                                 ),
                               ),
                             ]),
@@ -224,7 +214,7 @@ class WebNewOnShimmerView extends StatelessWidget {
                                     height: 10, width: 70,
                                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: Dimensions.paddingSizeSmall),
                                     decoration: BoxDecoration(
-                                      color: Theme.of(context).cardColor,
+                                      color: Theme.of(context).primaryColor  ,
                                       borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
                                     ),
                                   ),
@@ -263,11 +253,10 @@ class WebNewOnShimmerView extends StatelessWidget {
                   ]),
                 );
               },
-            ),
           ),
         ),
-      ],
-    );
+      ),
+    ]);
   }
 }
 

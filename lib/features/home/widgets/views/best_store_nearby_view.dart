@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:sixam_mart/common/widgets/add_favourite_view.dart';
 import 'package:sixam_mart/common/widgets/card_design/store_card.dart';
 import 'package:sixam_mart/common/widgets/card_design/store_card_with_distance.dart';
 import 'package:sixam_mart/common/widgets/custom_ink_well.dart';
 import 'package:sixam_mart/features/language/controllers/language_controller.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/store/controllers/store_controller.dart';
+import 'package:sixam_mart/features/favourite/controllers/favourite_controller.dart';
 import 'package:sixam_mart/common/models/module_model.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
+import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/helper/price_converter.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/app_constants.dart';
@@ -18,13 +19,19 @@ import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/common/widgets/custom_image.dart';
+import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
 import 'package:sixam_mart/common/widgets/discount_tag.dart';
 import 'package:sixam_mart/common/widgets/rating_bar.dart';
 import 'package:sixam_mart/common/widgets/title_widget.dart';
 import 'package:sixam_mart/features/store/screens/store_screen.dart';
 
+import '../../../../common/widgets/custom_divider copy.dart';
+
 class BestStoreNearbyView extends StatelessWidget {
-  const BestStoreNearbyView({super.key});
+   final bool? fromFood;
+  final bool isshop;
+  final bool? itemsview;
+  const BestStoreNearbyView({super.key ,this.fromFood = false,  this.isshop = false,  this.itemsview = false,});
 
   @override
   Widget build(BuildContext context) {
@@ -32,48 +39,58 @@ class BestStoreNearbyView extends StatelessWidget {
     bool isFood = Get.find<SplashController>().module != null && Get.find<SplashController>().module!.moduleType.toString() == AppConstants.food;
     final bool ltr = Get.find<LocalizationController>().isLtr;
 
+
     return GetBuilder<StoreController>(builder: (storeController) {
       List<Store>? storeList = isPharmacy ? storeController.featuredStoreList : storeController.popularStoreList;
 
       return storeList != null ? storeList.isNotEmpty ? Padding(
         padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
         child: Container(
-          color: isPharmacy ? null : Theme.of(context).disabledColor.withValues(alpha: 0.1),
+          // color: isPharmacy ? null : Theme.of(context).disabledColor  ,
           child: Column(children: [
-
-            (isPharmacy || isFood) ? Padding(
-              padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault, left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault),
-              child: TitleWidget(
-                title: isPharmacy ? 'featured_store'.tr : 'best_store_nearby'.tr,
-                onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute(isPharmacy ? 'featured' : 'popular', isNearbyStore: true)),
+  Padding(
+                   padding:  EdgeInsets.only(left: itemsview! ? 10 : 10,bottom: 10,top:itemsview! ? 30 :   0),
+                child: CustomDivider1(text: 'best_store_nearby'.tr.toUpperCase(),thickness: .2,textAlign: TextAlign.left,color: itemsview! ? Colors.black : Colors.black,),
+                
+                
+                //  TitleWidget(
+                //   title: 'Try Again'.tr,
+                //   onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute('latest')),
+                // ),
               ),
-            ) : Padding(
-              padding: EdgeInsets.only(top: Dimensions.paddingSizeDefault, left: ltr ? Dimensions.paddingSizeLarge : Dimensions.paddingSizeDefault,
-                  right: ltr ? Dimensions.paddingSizeDefault : Dimensions.paddingSizeLarge),
-              child: FittedBox(
-                child: Row(children: [
+            // (isPharmacy || isFood) ? Padding(
+            //   padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault, left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault),
+            //   child: TitleWidget(
+            //     title: isPharmacy ? 'featured_store'.tr : 'best_store_nearby'.tr,
+            //     onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute(isPharmacy ? 'featured' : 'popular', isNearbyStore: true)),
+            //   ),
+            // ) : Padding(
+            //   padding: EdgeInsets.only(top: Dimensions.paddingSizeDefault, left: ltr ? Dimensions.paddingSizeLarge : Dimensions.paddingSizeDefault,
+            //       right: ltr ? Dimensions.paddingSizeDefault : Dimensions.paddingSizeLarge),
+            //   child: FittedBox(
+            //     child: Row(children: [
 
-                  Container(
-                    height: 2, width: context.width * 0.75,
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-                  ),
-                  Container(transform: Matrix4.translationValues(-5, 0, 0),child: Icon(Icons.arrow_forward, size: 18, color: Theme.of(context).primaryColor.withValues(alpha: 0.5))),
+            //       Container(
+            //         height: 2, width: context.width * 0.75,
+            //         color: Theme.of(context).primaryColor  ,
+            //       ),
+            //       Container(transform: Matrix4.translationValues(-5, 0, 0),child: Icon(Icons.arrow_forward, size: 18, color: Theme.of(context).primaryColor  )),
 
 
-                  InkWell(
-                    onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute('popular', isNearbyStore: true)),
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(ltr ? 10 : 0, 5, ltr ? 0 : 10, 5),
-                      child: Text(
-                        'see_all'.tr,
-                        style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor, decoration: TextDecoration.underline),
-                      ),
-                    ),
-                  ),
+            //       InkWell(
+            //         onTap: () => Get.toNamed(RouteHelper.getAllStoreRoute('popular', isNearbyStore: true)),
+            //         child: Padding(
+            //           padding: EdgeInsets.fromLTRB(ltr ? 10 : 0, 5, ltr ? 0 : 10, 5),
+            //           child: Text(
+            //             'see_all'.tr,
+            //             style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor, decoration: TextDecoration.underline),
+            //           ),
+            //         ),
+            //       ),
 
-                ]),
-              ),
-            ),
+            //     ]),
+            //   ),
+            // ),
 
             isPharmacy ? SizedBox(
               height: 130, width: Get.width,
@@ -90,7 +107,7 @@ class BestStoreNearbyView extends StatelessWidget {
                 },
               ),
             ) : isFood ? SizedBox(
-              height: 215,
+              height: 275,
               child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
@@ -98,7 +115,7 @@ class BestStoreNearbyView extends StatelessWidget {
                   itemCount: storeList.length,
                   itemBuilder: (context, index){
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: InkWell(
                         onTap: () {
                           if(Get.find<SplashController>().moduleList != null) {
@@ -226,7 +243,7 @@ class BestStoreNearbyView extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).cardColor,
                                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), spreadRadius: 1, blurRadius: 7, offset: const Offset(0, 3))],
+                                  boxShadow: const [BoxShadow(color: Colors.black, spreadRadius: 1, blurRadius: 7, offset: Offset(0, 3))],
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
@@ -269,14 +286,35 @@ class BestStoreNearbyView extends StatelessWidget {
                               ),
                             ),
 
-                            AddFavouriteView(
+                           /* AddFavouriteView(
                               top: 40,
                               left: Get.find<LocalizationController>().isLtr ? null : 15,
                               right: Get.find<LocalizationController>().isLtr ? 15 : null,
-                              item: null,
-                              storeId: storeList[index].id,
-                            ),
+                              item: Item(id: storeList[index].id),
+                            ),*/
 
+                            Positioned(
+                              top: 40,
+                              left: Get.find<LocalizationController>().isLtr ? null : 15,
+                              right: Get.find<LocalizationController>().isLtr ? 15 : null,
+                              child: GetBuilder<FavouriteController>(builder: (favouriteController) {
+                                bool isWished = favouriteController.wishStoreIdList.contains(storeList[index].id);
+                                return InkWell(
+                                  onTap: () {
+                                    if(AuthHelper.isLoggedIn()) {
+                                      isWished ? favouriteController.removeFromFavouriteList(storeList[index].id, true)
+                                          : favouriteController.addToFavouriteList(null, storeList[index].id, true);
+                                    }else {
+                                      showCustomSnackBar('you_are_not_logged_in'.tr);
+                                    }
+                                  },
+                                  child: Icon(
+                                    isWished ? Icons.favorite : Icons.favorite_border,  size: 20,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                );
+                              }),
+                            ),
                           ]),
                         );
                       },
@@ -287,7 +325,7 @@ class BestStoreNearbyView extends StatelessWidget {
             ),
           ]),
         ),
-      ) : const SizedBox() : BestStoreNearbyShimmer(isPharmacy: isPharmacy, isFood: isFood);
+      ) : const SizedBox() : SizedBox();
     });
   }
 }
@@ -314,9 +352,9 @@ class BestStoreNearbyShimmer extends StatelessWidget {
 
               Container(
                 height: 2, width: context.width * 0.75,
-                color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                color: Theme.of(context).primaryColor  ,
               ),
-              Container(transform: Matrix4.translationValues(-5, 0, 0),child: Icon(Icons.arrow_forward, size: 18, color: Theme.of(context).primaryColor.withValues(alpha: 0.5))),
+              Container(transform: Matrix4.translationValues(-5, 0, 0),child: Icon(Icons.arrow_forward, size: 18, color: Theme.of(context).primaryColor  )),
 
 
               Padding(
@@ -423,7 +461,7 @@ class BestStoreNearbyShimmer extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: 3),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                              color: Theme.of(context).primaryColor  ,
                               borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge),
                             ),
                             child: Row(children: [
@@ -498,7 +536,7 @@ class BestStoreNearbyShimmer extends StatelessWidget {
                               child: Stack(clipBehavior: Clip.none, children: [
                                 Container(
                                   height: double.infinity, width: double.infinity,
-                                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                                  color: Theme.of(context).primaryColor  ,
                                 ),
 
                                 Positioned(
@@ -507,7 +545,7 @@ class BestStoreNearbyShimmer extends StatelessWidget {
                                     padding: const EdgeInsets.all(2),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Theme.of(context).cardColor.withValues(alpha: 0.8),
+                                      color: Theme.of(context).cardColor   ,
                                     ),
                                     child: Icon(Icons.favorite_border, color: Theme.of(context).primaryColor, size: 20),
                                   ),
@@ -555,7 +593,7 @@ class BestStoreNearbyShimmer extends StatelessWidget {
                                       height: 10, width: 70,
                                       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: Dimensions.paddingSizeSmall),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                                        color: Theme.of(context).primaryColor  ,
                                         borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
                                       ),
                                     ),

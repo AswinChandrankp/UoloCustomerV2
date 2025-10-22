@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart/common/widgets/add_favourite_view.dart';
 import 'package:sixam_mart/common/widgets/custom_ink_well.dart';
+import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
 import 'package:sixam_mart/common/widgets/hover/text_hover.dart';
 import 'package:sixam_mart/common/widgets/not_available_widget.dart';
+import 'package:sixam_mart/features/favourite/controllers/favourite_controller.dart';
 import 'package:sixam_mart/features/language/controllers/language_controller.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
+import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/app_constants.dart';
 import 'package:sixam_mart/util/dimensions.dart';
@@ -33,7 +35,7 @@ class VisitAgainCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
               color: Theme.of(context).cardColor,
-              border: Border.all(color: Theme.of(context).primaryColor.withValues(alpha: 0.2), width: 1),
+              border: Border.all(color: Theme.of(context).primaryColor  , width: 1),
               boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)],
             ),
             child: CustomInkWell(
@@ -102,7 +104,7 @@ class VisitAgainCard extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular((isPharmacy || isFood) ? 100 : Dimensions.radiusSmall),
-                                  color: Colors.black.withValues(alpha: 0.5),
+                                  color: Colors.black  ,
                                 ),
                                 child: Center(child: Text(
                                   (store.itemCount! > 20) ? '20+' : '${store.itemCount}', style: robotoMedium.copyWith(color: Colors.white, fontSize: Dimensions.fontSizeExtraSmall),
@@ -126,7 +128,7 @@ class VisitAgainCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(fromFood ? 100 : Dimensions.radiusDefault),
                 color: Theme.of(context).cardColor,
-                border: Border.all(color: Theme.of(context).primaryColor.withValues(alpha: 0.2), width: 2),
+                border: Border.all(color: Theme.of(context).primaryColor  , width: 2),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(fromFood ? 100 : Dimensions.radiusDefault),
@@ -146,11 +148,27 @@ class VisitAgainCard extends StatelessWidget {
             ),
           ),
 
-          AddFavouriteView(
+          Positioned(
             top: 30,
             left: Get.find<LocalizationController>().isLtr ? null : 10,
             right: Get.find<LocalizationController>().isLtr ? 10 : null,
-            item: null, storeId: store.id,
+            child: GetBuilder<FavouriteController>(builder: (favouriteController) {
+              bool isWished = favouriteController.wishStoreIdList.contains(store.id);
+              return InkWell(
+                onTap: () {
+                  if(AuthHelper.isLoggedIn()) {
+                    isWished ? favouriteController.removeFromFavouriteList(store.id, true)
+                        : favouriteController.addToFavouriteList(null, store.id, true);
+                  }else {
+                    showCustomSnackBar('you_are_not_logged_in'.tr);
+                  }
+                },
+                child: Icon(
+                  isWished ? Icons.favorite : Icons.favorite_border,  size: 20,
+                  color: Theme.of(context).primaryColor,
+                ),
+              );
+            }),
           ),
 
         ]);

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sixam_mart/util/app_constants.dart';
 
-ThemeData light({Color color = const Color(0xFF039D55)}) => ThemeData(
-  fontFamily: AppConstants.fontFamily,
+
+ThemeData light({Color color = const Color.fromARGB(255, 56, 4, 82) }) => ThemeData(
+  fontFamily: "Poppins",
   primaryColor: color,
   secondaryHeaderColor: const Color(0xFF1ED7AA),
-  disabledColor: const Color(0xFF9F9F9F),
+  disabledColor: const Color(0xFFBABFC4),
   brightness: Brightness.light,
   hintColor: const Color(0xFF9F9F9F),
   cardColor: Colors.white,
-  shadowColor: Colors.black.withValues(alpha: 0.03),
+  shadowColor: Colors.black.withOpacity(0.03),
   textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: color)),
   colorScheme: ColorScheme.light(primary: color, secondary: color).copyWith(
       surface: const Color(0xFFFCFCFC)).copyWith(error: const Color(0xFFE84D4F)),

@@ -36,7 +36,7 @@ class OtpLoginWidget extends StatelessWidget {
           const SizedBox(height: Dimensions.paddingSizeLarge),
 
           CustomTextField(
-            titleText: 'xxx-xxx-xxxxx'.tr,
+            titleText: 'Enter your number'.tr,
             controller: phoneController,
             focusNode: phoneFocus,
             inputAction: TextInputAction.done,
@@ -80,6 +80,14 @@ class OtpLoginWidget extends StatelessWidget {
           const SizedBox(height: Dimensions.paddingSizeLarge),
 
           CustomButton(
+              gradient: LinearGradient(
+          colors:   [
+            Colors.deepPurple.shade800 ,
+            Colors.purple.shade400  
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ) ,
             buttonText: 'login'.tr,
             radius: Dimensions.radiusDefault,
             isBold: isDesktop ? false : true,

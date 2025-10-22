@@ -1,15 +1,11 @@
-import 'dart:async';
-import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:sixam_mart/common/widgets/no_internet_screen.dart';
 import 'package:sixam_mart/features/cart/controllers/cart_controller.dart';
-import 'package:sixam_mart/features/category/controllers/category_controller.dart';
+import 'package:sixam_mart/features/location/domain/models/zone_model.dart';
 import 'package:sixam_mart/features/location/screens/pick_map_screen.dart';
 import 'package:sixam_mart/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
@@ -25,14 +21,12 @@ import 'package:sixam_mart/features/location/domain/models/zone_response_model.d
 import 'package:sixam_mart/features/address/domain/models/address_model.dart';
 import 'package:sixam_mart/features/location/domain/services/location_service_interface.dart';
 import 'package:sixam_mart/features/location/widgets/module_dialog_widget.dart';
-import 'package:sixam_mart/features/rental_module/rental_cart_screen/controllers/taxi_cart_controller.dart';
 import 'package:sixam_mart/helper/address_helper.dart';
 import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/common/widgets/custom_loader.dart';
 import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
-import 'package:sixam_mart/helper/taxi_helper.dart';
 
 class LocationController extends GetxController implements GetxService {
   final LocationServiceInterface locationServiceInterface;
@@ -81,11 +75,14 @@ class LocationController extends GetxController implements GetxService {
   GoogleMapController? _mapController;
   GoogleMapController? get mapController => _mapController;
 
-  final List<PredictionModel> _predictionList = [];
+  List<PredictionModel> _predictionList = [];
   List<PredictionModel> get predictionList => _predictionList;
 
-  void showSuggestedLocation(bool status){
-    _showLocationSuggestion = status;
+  List<ZoneData>? _zoneData;
+  List<ZoneData>? get zoneData => _zoneData;
+
+  void hideSuggestedLocation(){
+    _showLocationSuggestion = !_showLocationSuggestion;
   }
 
   void setAddressTypeIndex(int index, {bool isUpdate = true}) {
@@ -143,7 +140,7 @@ class LocationController extends GetxController implements GetxService {
     fromAddress ? _address = addressFromGeocode : _pickAddress = addressFromGeocode;
     ZoneResponseModel responseModel = await getZone(myPosition.latitude.toString(), myPosition.longitude.toString(), true);
     _buttonDisabled = !responseModel.isSuccess;
-
+     
     addressModel = AddressModel(
       latitude: myPosition.latitude.toString(), longitude: myPosition.longitude.toString(), addressType: 'others',
       zoneId: responseModel.isSuccess ? responseModel.zoneIds[0] : 0, zoneIds: responseModel.zoneIds,
@@ -159,7 +156,10 @@ class LocationController extends GetxController implements GetxService {
 
   }
 
-  Future<ZoneResponseModel> getZone(String? lat, String? lng, bool markerLoad, {bool updateInAddress = false, bool handleError = false}) async {
+  Future<ZoneResponseModel> getZone(String? lat, String? lng, bool markerLoad, {bool updateInAddress = false, bool handleError = false , bool clearcart = false}) async {
+   if (clearcart) {
+      Get.find<CartController>().clearCartList();
+    }
     if(markerLoad) {
       _loading = true;
     }else {
@@ -169,11 +169,15 @@ class LocationController extends GetxController implements GetxService {
       update();
     }
     ZoneResponseModel responseModel = await locationServiceInterface.getZone(lat, lng, handleError: handleError);
+
     _inZone = responseModel.isSuccess;
     _zoneID = responseModel.zoneIds.isNotEmpty ? responseModel.zoneIds[0] : 0;
+    //  Get.find<StoreController>().setzoneid();
     if(updateInAddress && responseModel.isSuccess) {
       AddressModel address = AddressHelper.getUserAddressFromSharedPref()!;
       address.zoneData = responseModel.zoneData;
+      _zoneData = responseModel.zoneData;
+      
       AddressHelper.saveUserAddressInSharedPref(address);
     }
     if(markerLoad) {
@@ -182,15 +186,11 @@ class LocationController extends GetxController implements GetxService {
       _isLoading = false;
     }
     update();
+    print("=================================================== zone data : ${responseModel.zoneData!.map((e) => e.toJson()).toList()}==========================================");
     return responseModel;
   }
 
   Future<void> syncZoneData() async {
-    bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      return;
-    }
-
     ZoneResponseModel response = await getZone(AddressHelper.getUserAddressFromSharedPref()!.latitude, AddressHelper.getUserAddressFromSharedPref()!.longitude, false, updateInAddress: true);
     if(response.zoneIds.isEmpty) {
       await AddressHelper.saveUserAddressInSharedPref(AddressModel());
@@ -245,16 +245,11 @@ class LocationController extends GetxController implements GetxService {
     _prepareZoneData(address!, fromSignUp, route, canRoute, isDesktop);
   }
 
-  void _prepareZoneData(AddressModel address, bool fromSignUp, String? route, bool canRoute, bool isDesktop) async {
-
-    bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      return;
-    }
-
-    getZone(address.latitude, address.longitude, false).then((response) async {
+  void _prepareZoneData(AddressModel address, bool fromSignUp, String? route, bool canRoute, bool isDesktop) {
+    getZone(address.latitude, address.longitude, false,clearcart: true).then((response) async {
       if (response.isSuccess) {
-        Get.find<CartController>().getCartDataOnline();
+        // Get.find<CartController>().getCartDataOnline();
+        
         address.zoneId = response.zoneIds[0];
         address.zoneIds = [];
         address.zoneIds!.addAll(response.zoneIds);
@@ -287,7 +282,7 @@ class LocationController extends GetxController implements GetxService {
       }
       Get.dialog(ModuleDialogWidget(callback: () {
         _saveDataAndFirebaseConfig(address, fromSignUp, route, canRoute, isDesktop);
-      }), barrierDismissible: false, barrierColor: Colors.black.withValues(alpha: 0.7));
+      }), barrierDismissible: false, barrierColor: Colors.black);
     } else {
       _saveDataAndFirebaseConfig(address!, fromSignUp, route, canRoute, isDesktop);
     }
@@ -295,9 +290,6 @@ class LocationController extends GetxController implements GetxService {
 
   void _saveDataAndFirebaseConfig(AddressModel address, bool fromSignUp, String? route, bool canRoute, bool isDesktop) async {
     locationServiceInterface.configureFirebaseMessaging(address);
-
-    await _handleTaxiModuleCart(address);
-
     await AddressHelper.saveUserAddressInSharedPref(address);
     if(AuthHelper.isLoggedIn()) {
       if(Get.find<SplashController>().module != null) {
@@ -319,34 +311,13 @@ class LocationController extends GetxController implements GetxService {
       if(!Get.find<ProfileController>().userInfoModel!.selectedModuleForInterest!.contains(Get.find<SplashController>().module!.id)
           && (Get.find<SplashController>().module!.moduleType == 'food' || Get.find<SplashController>().module!.moduleType == 'grocery' || Get.find<SplashController>().module!.moduleType == 'ecommerce')
       ) {
-        await Get.find<CategoryController>().getCategoryList(true, allCategory: false).then((_) async {
-          if(Get.find<CategoryController>().categoryList != null && Get.find<CategoryController>().categoryList!.isNotEmpty){
-            await Get.toNamed(RouteHelper.getInterestRoute());
-          }else{
-            Get.offAllNamed(RouteHelper.getInitialRoute());
-          }
-        });
+        await Get.toNamed(RouteHelper.getInterestRoute());
       } else {
         locationServiceInterface.handleRoute(fromSignUp, route, canRoute);
       }
     } else {
       locationServiceInterface.handleRoute(fromSignUp, route, canRoute);
     }
-  }
-
-  Future<void> _handleTaxiModuleCart(AddressModel address) async{
-    if(TaxiHelper.haveTaxiModule() && address.zoneIds != null && Get.find<TaxiCartController>().cartList.isNotEmpty) {
-      List<int>? providerZones = Get.find<TaxiCartController>().cartList[0].provider!.pickupZoneId??[];
-
-      if(!_hasIntersection(providerZones, address.zoneIds!)) {
-        showCustomSnackBar('your_cart_has_been_cleared_as_the_selected_zone_does_not_support_the_previous_pickup_point'.tr, showDuration: 10);
-        Get.find<TaxiCartController>().clearTaxiCart();
-      }
-    }
-  }
-
-  bool _hasIntersection(List<int> list1, List<int> list2) {
-    return list1.toSet().intersection(list2.toSet()).isNotEmpty;
   }
 
   Future<AddressModel> setLocation(String? placeID, String? address, GoogleMapController? mapController) async {
@@ -374,22 +345,11 @@ class LocationController extends GetxController implements GetxService {
     );
   }
 
-  Timer? _debounce;
-  Future<List<PredictionModel>> searchLocation(BuildContext context, String query) async {
-    if (query.isEmpty) return [];
-
-    _debounce?.cancel();
-    final completer = Completer<List<PredictionModel>>();
-    _debounce = Timer(const Duration(milliseconds: 400), () async {
-      try {
-        final result = await locationServiceInterface.searchLocation(query);
-        completer.complete(result);
-      } catch (e) {
-        completer.completeError(e);
-      }
-    });
-
-    return completer.future;
+  Future<List<PredictionModel>> searchLocation(BuildContext context, String text) async {
+    if(text.isNotEmpty) {
+      _predictionList = await locationServiceInterface.searchLocation(text);
+    }
+    return _predictionList;
   }
 
   void setPlaceMark(String address) {
@@ -459,11 +419,6 @@ class LocationController extends GetxController implements GetxService {
 
   void _checkPermission(String page) async {
 
-    bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      return;
-    }
-
     LocationPermission permission = await Geolocator.checkPermission();
 
     if(permission == LocationPermission.denied) {
@@ -532,19 +487,6 @@ class LocationController extends GetxController implements GetxService {
       }
     }
 
-  }
-
-  Future<bool> checkInternet() async {
-    if(kIsWeb) {
-      return true;
-    }
-    final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
-    bool isConnected = connectivityResult.contains(ConnectivityResult.wifi) || connectivityResult.contains(ConnectivityResult.mobile);
-    if(!isConnected && !Platform.isIOS) {
-      Get.offAll(()=> const NoInternetScreen());
-      return false;
-    }
-    return true;
   }
 
 }

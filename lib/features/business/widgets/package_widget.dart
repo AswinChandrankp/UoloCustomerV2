@@ -16,18 +16,18 @@ class PackageWidget extends StatelessWidget {
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
-        padding: const EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.only(left: 30),
         child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
           Icon(Icons.check_circle, size: 18, color: isSelect ? Theme.of(context).cardColor : Colors.green),
           const SizedBox(width: Dimensions.paddingSizeSmall),
 
           Text(title.tr, style: robotoRegular.copyWith(fontSize: isDesktop ? Dimensions.fontSizeExtraSmall : Dimensions.fontSizeSmall, color: isSelect ? Theme.of(context).cardColor
-          : Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7))),
+          : Theme.of(context).textTheme.bodyLarge?.color  )),
 
         ]),
       ),
 
-      Divider(indent: 20, endIndent: 50, color: Theme.of(Get.context!).disabledColor.withValues(alpha: 0.5), thickness: 1),
+      Divider(indent: 20, endIndent: 50, color: Theme.of(Get.context!).disabledColor  , thickness: 1),
 
     ]);
   }

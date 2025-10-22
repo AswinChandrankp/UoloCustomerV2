@@ -131,7 +131,6 @@ class MenuDrawerState extends State<MenuDrawer> with SingleTickerProviderStateMi
       Get.back();
       if(AuthHelper.isLoggedIn()) {
         Get.dialog(ConfirmationDialog(icon: Images.support, description: 'are_you_sure_to_logout'.tr, isLogOut: true, onYesPressed: () async {
-          Get.find<AuthController>().resetOtpView();
           Get.find<ProfileController>().clearUserInfo();
           await Get.find<AuthController>().clearSharedData();
           Get.find<CartController>().clearCartList();
@@ -193,7 +192,7 @@ class MenuDrawerState extends State<MenuDrawer> with SingleTickerProviderStateMi
         Container(
           padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeLarge, horizontal: 25),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withValues(alpha: 0.10),
+            color: Theme.of(context).primaryColor  ,
           ),
           alignment: Alignment.centerLeft,
           child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

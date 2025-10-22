@@ -120,7 +120,7 @@ class _WebItemThatYouLoveViewWidgetState extends State<WebItemThatYouLoveViewWid
                                               decoration: BoxDecoration(
                                                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.radiusDefault), topRight: Radius.circular(Dimensions.radiusDefault)),
                                                 color: Theme.of(context).cardColor,
-                                                boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1.2))],
+                                                boxShadow: const [BoxShadow(color: Colors.grey  , spreadRadius: 1, blurRadius: 5, offset: Offset(0, 1.2))],
                                               ),
                                               child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                                 Text(recommendItems[index].name!, style: robotoBold, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -317,7 +317,7 @@ class _WebItemThatYouLoveForShopState extends State<WebItemThatYouLoveForShop> {
                                             decoration: BoxDecoration(
                                               borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.radiusDefault), topRight: Radius.circular(Dimensions.radiusDefault)),
                                               color: Theme.of(context).cardColor,
-                                              boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.2), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1.2))],
+                                              boxShadow: const [BoxShadow(color: Colors.grey  , spreadRadius: 1, blurRadius: 5, offset: Offset(0, 1.2))],
                                             ),
                                             child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                               Text(recommendItems[index].name!, style: robotoBold, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -377,7 +377,7 @@ class _WebItemThatYouLoveForShopState extends State<WebItemThatYouLoveForShop> {
             top: 200, left: 0,
             child: ArrowIconButton(
               isRight: false,
-              onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+              onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),
@@ -386,7 +386,7 @@ class _WebItemThatYouLoveForShopState extends State<WebItemThatYouLoveForShop> {
           Positioned(
             top: 200, right: 0,
             child: ArrowIconButton(
-              onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+              onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                   duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
             ),
           ),
@@ -557,7 +557,7 @@ class WebItemThatYouLoveShimmerView extends StatelessWidget {
                             width: 65, height: 30,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(112),
-                              color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
+                              color: Theme.of(context).primaryColor  ,
                             ),
                           ),
                         ),

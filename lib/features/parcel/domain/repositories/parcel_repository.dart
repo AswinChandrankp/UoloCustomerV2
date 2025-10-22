@@ -1,9 +1,9 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:sixam_mart/api/api_client.dart';
 import 'package:sixam_mart/api/local_client.dart';
 import 'package:sixam_mart/common/enums/data_source_enum.dart';
-import 'package:sixam_mart/features/parcel/domain/models/parcel_cancellation_reasons_model.dart';
 import 'package:sixam_mart/features/parcel/domain/models/parcel_category_model.dart';
 import 'package:sixam_mart/features/parcel/domain/models/parcel_instruction_model.dart';
 import 'package:sixam_mart/features/parcel/domain/models/video_content_model.dart';
@@ -19,6 +19,16 @@ class ParcelRepository implements ParcelRepositoryInterface {
   @override
   Future<Response> getPlaceDetails(String? placeID) async {
     return await apiClient.getData('${AppConstants.placeDetailsUri}?placeid=$placeID');
+  }
+
+  @override
+  Future add(value) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future delete(int? id) {
+    throw UnimplementedError();
   }
 
   @override
@@ -102,27 +112,7 @@ class ParcelRepository implements ParcelRepositoryInterface {
   }
 
   @override
-  Future<ParcelCancellationReasonsModel?> getParcelCancellationReasons({required bool isBeforePickup}) async {
-    ParcelCancellationReasonsModel? cancellationReasonsModel;
-    Response response = await apiClient.getData('${AppConstants.getParcelCancellationReasons}?limit=25&offset=1&user_type=customer&cancellation_type=${isBeforePickup ? 'before_pickup' : 'after_pickup'}');
-    if(response.statusCode == 200){
-      cancellationReasonsModel = ParcelCancellationReasonsModel.fromJson(response.body);
-    }
-    return cancellationReasonsModel;
-  }
-
-  @override
   Future update(Map<String, dynamic> body, int? id) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future add(value) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future delete(int? id) {
     throw UnimplementedError();
   }
 

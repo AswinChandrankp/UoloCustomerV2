@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:sixam_mart/features/item/domain/models/item_model.dart';
+import 'package:sixam_mart/features/location/controllers/location_controller.dart';
 import 'package:sixam_mart/features/search/domain/models/popular_categories_model.dart';
 import 'package:sixam_mart/features/search/domain/models/search_suggestion_model.dart';
+import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
 import 'package:sixam_mart/features/search/domain/repositories/search_repository_interface.dart';
 import 'package:sixam_mart/features/search/domain/services/search_service_interface.dart';
@@ -39,7 +41,9 @@ class SearchService implements SearchServiceInterface {
   @override
   List<Item>? sortItemSearchList( List<Item>? allItemList, double upperValue, double lowerValue, int rating, bool veg, bool nonVeg, bool isAvailableItems, bool isDiscountedItems, int sortIndex) {
     List<Item>? searchItemList= [];
+    allItemList!.removeWhere((element) => element.store!.noservicerestriction == 0 && element.store!.noservicerestriction == 0);
     searchItemList.addAll(allItemList!);
+    // searchItemList.iremoveWhere((product) => produc);
     if(upperValue > 0) {
       searchItemList.removeWhere((product) => product.price! <= lowerValue || product.price! > upperValue);
     }
@@ -74,8 +78,14 @@ class SearchService implements SearchServiceInterface {
 
   @override
   List<Store>? sortStoreSearchList(List<Store>? allStoreList, int storeRating, bool storeVeg, bool storeNonVeg, bool isAvailableStore, bool isDiscountedStore, int storeSortIndex) {
+   
     List<Store>? searchStoreList = [];
+   allStoreList!.removeWhere((store) => store.zoneId != Get.find<LocationController>().zoneID);
     searchStoreList.addAll(allStoreList!);
+
+    // if (Get.find<LocationController>().zoneID != null) {
+   
+    // }
     if(storeRating != -1) {
       searchStoreList.removeWhere((store) => store.avgRating! < storeRating);
     }

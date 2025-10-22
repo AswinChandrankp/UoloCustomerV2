@@ -29,13 +29,13 @@ class LanguageCardWidget extends StatelessWidget {
         height: 70,
         padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
         decoration: !fromWeb ? BoxDecoration(
-          color: localizationController.selectedLanguageIndex == index ? Theme.of(context).primaryColor.withValues(alpha: 0.05) : null,
+          color: localizationController.selectedLanguageIndex == index ? Theme.of(context).primaryColor   : null,
           borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
-          border: localizationController.selectedLanguageIndex == index ? Border.all(color: Theme.of(context).primaryColor.withValues(alpha: 0.2)) : null,
+          border: localizationController.selectedLanguageIndex == index ? Border.all(color: Theme.of(context).primaryColor  ) : null,
         ) : BoxDecoration(
-          color: localizationController.selectedLanguageIndex == index ? Theme.of(context).primaryColor.withValues(alpha: 0.05) : Theme.of(context).cardColor,
+          color: localizationController.selectedLanguageIndex == index ? Theme.of(context).primaryColor   : Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(Dimensions.radiusLarge),
-          border: Border.all(color: localizationController.selectedLanguageIndex == index ? Theme.of(context).primaryColor.withValues(alpha: 0.2) : Theme.of(context).disabledColor.withValues(alpha: 0.3)),
+          border: Border.all(color: localizationController.selectedLanguageIndex == index ? Theme.of(context).primaryColor   : Theme.of(context).disabledColor  ),
         ),
         child: Row(children: [
 

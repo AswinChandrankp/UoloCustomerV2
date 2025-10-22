@@ -41,7 +41,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: widget.storeName ?? 'store_reviews'.tr),
       endDrawer: const MenuDrawer(), endDrawerEnableOpenDragGesture: false,
-      body: GetBuilder<ReviewController>(builder: (reviewController) {
+      body: 
+      GetBuilder<ReviewController>(builder: (reviewController) {
         return reviewController.storeReviewList != null ? reviewController.storeReviewList!.isNotEmpty ? RefreshIndicator(
           onRefresh: () async {
             await reviewController.getStoreReviewList(widget.storeID);
@@ -70,7 +71,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).cardColor,
                             borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                            boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
+                            boxShadow: const [BoxShadow(color: Colors.grey  , spreadRadius: 1, blurRadius: 10, offset: Offset(0, 1))],
                           ),
                           child: ReviewListWidget(reviewController: reviewController, storeName: widget.storeName),
                         ),
@@ -93,6 +94,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           ),
         ) : Center(child: NoDataScreen(text: 'no_review_found'.tr, showFooter: true)) : const Center(child: CircularProgressIndicator());
       }),
+    
     );
   }
 }

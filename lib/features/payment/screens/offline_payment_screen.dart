@@ -260,7 +260,7 @@ class _OfflinePaymentScreenState extends State<OfflinePaymentScreen> {
   Widget bankCard(BuildContext context, List<OfflineMethodModel>? offlineMethodList, int index, bool selected) {
     return Container(
       decoration: BoxDecoration(
-        color: selected ? Theme.of(context).cardColor : Theme.of(context).primaryColor.withValues(alpha: 0.1),
+        color: selected ? Theme.of(context).cardColor : Theme.of(context).primaryColor  ,
         borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
         boxShadow: selected ? const [BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)] : [],
       ),
@@ -290,7 +290,7 @@ class _OfflinePaymentScreenState extends State<OfflinePaymentScreen> {
               child: Row(children: [
                 Text(
                   '${offlineMethodList[index].methodFields![i].inputName!.toString().replaceAll('_', ' ')} : ',
-                  style: robotoMedium.copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.5)),
+                  style: robotoMedium.copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!  ),
                 ),
                 Flexible(child: Text(offlineMethodList[index].methodFields![i].inputData!, style: robotoMedium, overflow: TextOverflow.ellipsis)),
               ]),

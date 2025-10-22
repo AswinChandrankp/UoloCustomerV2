@@ -43,7 +43,7 @@ class PopularStoreView extends StatelessWidget {
           ),
 
           SizedBox(
-            height: 165,
+            height: 160,
             child: storeList != null ? ListView.builder(
               controller: ScrollController(),
               physics: const BouncingScrollPhysics(),
@@ -59,7 +59,7 @@ class PopularStoreView extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                      boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.15), blurRadius: 7, spreadRadius: 0)],
+                      boxShadow: [BoxShadow(color: Theme.of(context).primaryColor   , blurRadius: 7, spreadRadius: 0)],
                     ),
                     child: CustomInkWell(
                       onTap: () {
@@ -123,8 +123,8 @@ class PopularStoreView extends StatelessWidget {
 
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: Dimensions.paddingSizeExtraSmall),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
+                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
                               Text(
                                 storeList[index].name ?? '',
                                 style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
@@ -139,11 +139,11 @@ class PopularStoreView extends StatelessWidget {
                               ),
                               const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
-                              storeList[index].ratingCount != null && storeList[index].ratingCount! > 0 ? RatingBar(
+                              RatingBar(
                                 rating: storeList[index].avgRating,
                                 ratingCount: storeList[index].ratingCount,
                                 size: 12,
-                              ) : const SizedBox(),
+                              ),
                             ]),
                           ),
                         ),

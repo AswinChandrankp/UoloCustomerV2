@@ -14,8 +14,7 @@ class RateReviewScreen extends StatefulWidget {
   final List<OrderDetailsModel> orderDetailsList;
   final DeliveryMan? deliveryMan;
   final int? orderID;
-  final List<Reviews>? reviews;
-  const RateReviewScreen({super.key, required this.orderDetailsList, required this.deliveryMan, required this.orderID, this.reviews});
+  const RateReviewScreen({super.key, required this.orderDetailsList, required this.deliveryMan, required this.orderID});
 
   @override
   RateReviewScreenState createState() => RateReviewScreenState();
@@ -63,10 +62,10 @@ class RateReviewScreenState extends State<RateReviewScreen> with TickerProviderS
         Expanded(child: TabBarView(
           controller: _tabController,
           children: widget.orderDetailsList.isNotEmpty ? widget.deliveryMan != null ? [
-            ItemReviewWidget(orderDetailsList: widget.orderDetailsList, reviews: widget.reviews),
+            ItemReviewWidget(orderDetailsList: widget.orderDetailsList),
             DeliveryManReviewWidget(deliveryMan: widget.deliveryMan, orderID: widget.orderID.toString()),
           ] : [
-            ItemReviewWidget(orderDetailsList: widget.orderDetailsList, reviews: widget.reviews),
+            ItemReviewWidget(orderDetailsList: widget.orderDetailsList),
           ] : [
             DeliveryManReviewWidget(deliveryMan: widget.deliveryMan, orderID: widget.orderID.toString()),
           ],

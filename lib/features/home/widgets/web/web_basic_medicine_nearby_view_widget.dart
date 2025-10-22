@@ -123,7 +123,7 @@ class _WebBasicMedicineNearbyViewWidgetState extends State<WebBasicMedicineNearb
         Stack(children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              color: Theme.of(context).primaryColor  ,
               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
             ),
             child: SizedBox(
@@ -149,7 +149,7 @@ class _WebBasicMedicineNearbyViewWidgetState extends State<WebBasicMedicineNearb
               top: 110, left: 0,
               child: ArrowIconButton(
                 isRight: false,
-                onTap: () => scrollController.animateTo(scrollController.offset - (Dimensions.webMaxWidth / 3),
+                onTap: () => scrollController.animateTo(scrollController.offset - Dimensions.webMaxWidth,
                     duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
               ),
             ),
@@ -158,7 +158,7 @@ class _WebBasicMedicineNearbyViewWidgetState extends State<WebBasicMedicineNearb
             Positioned(
               top: 110, right: 0,
               child: ArrowIconButton(
-                onTap: () => scrollController.animateTo(scrollController.offset + (Dimensions.webMaxWidth / 3),
+                onTap: () => scrollController.animateTo(scrollController.offset + Dimensions.webMaxWidth,
                     duration: const Duration(milliseconds: 500), curve: Curves.easeInOut),
               ),
             ),
@@ -199,7 +199,7 @@ class MedicineCardShimmer extends StatelessWidget {
                   Container(
                     height: ResponsiveHelper.isDesktop(context) ? 150 : 100,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
+                      color: Theme.of(context).disabledColor  ,
                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.radiusSmall), topRight: Radius.circular(Dimensions.radiusSmall)),
                     ),
                   ),
@@ -213,7 +213,7 @@ class MedicineCardShimmer extends StatelessWidget {
                           Container(
                             height: 10, width: 100,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
+                              color: Theme.of(context).disabledColor  ,
                               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                             ),
                           ),
@@ -221,7 +221,7 @@ class MedicineCardShimmer extends StatelessWidget {
                           Container(
                             height: 10, width: 50,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
+                              color: Theme.of(context).disabledColor  ,
                               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                             ),
                           ),
@@ -229,7 +229,7 @@ class MedicineCardShimmer extends StatelessWidget {
                           Container(
                             height: 10, width: 80,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
+                              color: Theme.of(context).disabledColor  ,
                               borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                             ),
                           ),

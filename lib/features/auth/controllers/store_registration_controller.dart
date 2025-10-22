@@ -1,9 +1,6 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:sixam_mart/api/api_client.dart';
-import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
 import 'package:sixam_mart/features/business/controllers/business_controller.dart';
 import 'package:sixam_mart/features/business/domain/models/package_model.dart';
 import 'package:sixam_mart/features/home/controllers/home_controller.dart';
@@ -15,7 +12,6 @@ import 'package:sixam_mart/features/location/domain/models/zone_data_model.dart'
 import 'package:sixam_mart/features/location/domain/models/zone_response_model.dart';
 import 'package:sixam_mart/features/auth/domain/models/store_body_model.dart';
 import 'package:sixam_mart/features/auth/domain/services/store_registration_service_interface.dart';
-import 'package:sixam_mart/helper/date_converter.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 
 class StoreRegistrationController extends GetxController implements GetxService {
@@ -104,51 +100,6 @@ class StoreRegistrationController extends GetxController implements GetxService 
 
   PackageModel? _packageModel;
   PackageModel? get packageModel => _packageModel;
-
-  String? _selectedPickupZone;
-  String? get selectedPickupZone => _selectedPickupZone;
-
-  int? _selectedPickupZoneId;
-  int? get selectedPickupZoneId => _selectedPickupZoneId;
-
-  final List<String> _pickupZoneList = [];
-  List<String> get pickupZoneList => _pickupZoneList;
-
-  final List<int> _pickupZoneIdList = [];
-  List<int> get pickupZoneIdList => _pickupZoneIdList;
-
-  final List<FilePickerResult> _tinFiles = [];
-  List<FilePickerResult>? get tinFiles => _tinFiles;
-
-  String? _tinExpireDate;
-  String? get tinExpireDate => _tinExpireDate;
-
-  void setSelectedPickupZone(String? zone, int? zoneId) {
-    if (zone != null && zoneId != null) {
-      if (_pickupZoneList.contains(zone) || _pickupZoneIdList.contains(zoneId)) {
-        showCustomSnackBar('zone_already_added_please_select_another'.tr);
-      } else {
-        _selectedPickupZone = zone;
-        _pickupZoneList.add(zone);
-        _pickupZoneIdList.add(zoneId);
-        update();
-      }
-    }
-  }
-
-  void removePickupZone(String zone, int zoneId) {
-    _selectedPickupZone = null;
-    _pickupZoneList.remove(zone);
-    _pickupZoneIdList.remove(zoneId);
-    update();
-  }
-
-  void clearPickupZone() {
-    _selectedModuleIndex = -1;
-    _selectedPickupZone = null;
-    _pickupZoneList.clear();
-    _pickupZoneIdList.clear();
-  }
 
   void showHidePass({bool isUpdate = true}){
     _showPassView = ! _showPassView;
@@ -241,20 +192,18 @@ class StoreRegistrationController extends GetxController implements GetxService 
   Future<void> getZoneList() async {
     _pickedLogo = null;
     _pickedCover = null;
-    _selectedZoneIndex = 0;
+    _selectedZoneIndex = -1;
     _restaurantLocation = null;
     _zoneIds = null;
     List<ZoneDataModel>? zones = await storeRegistrationServiceInterface.getZoneList();
-    if (zones != null) {
-      _zoneList = [];
-      _zoneList!.addAll(zones);
-      setLocation(LatLng(
-        double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lat ?? '0'),
-        double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lng ?? '0'),
-      ), forStoreRegistration: true, zoneId: _zoneList![0].id);
-      await getModules(_zoneList![0].id);
-    }
-    update();
+    _zoneList = [];
+    _zoneList!.addAll(zones ?? []);
+    setLocation(LatLng(
+      double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lat ?? '0'),
+      double.parse(Get.find<SplashController>().configModel!.defaultLocation!.lng ?? '0'),
+    ), forStoreRegistration: true, zoneId: _zoneList![0].id);
+    await getModules(_zoneList![0].id);
+      update();
   }
 
   void setLocation(LatLng location, {bool forStoreRegistration = false, int? zoneId}) async {
@@ -289,11 +238,9 @@ class StoreRegistrationController extends GetxController implements GetxService 
 
   Future<void> getModules(int? zoneId) async {
     List<ModuleModel>? modules = await storeRegistrationServiceInterface.getModules(zoneId);
-    if (modules != null) {
-      _moduleList = [];
-      _moduleList!.addAll(modules);
-    }
-    update();
+    _moduleList = [];
+    _moduleList!.addAll(modules ?? []);
+      update();
   }
 
   void resetStoreRegistration(){
@@ -310,31 +257,16 @@ class StoreRegistrationController extends GetxController implements GetxService 
   Future<void> registerStore(StoreBodyModel storeBody) async {
     _isLoading = true;
     update();
-
-    List<FilePickerResult> tinFiles = [];
-
-    for (FilePickerResult element in _tinFiles) {
-      tinFiles.add(element);
-    }
-
-    List<MultipartDocument> document = [];
-    for (FilePickerResult result in tinFiles) {
-      document.add(MultipartDocument('tin_certificate_image', result));
-    }
-
-    Response? response = await storeRegistrationServiceInterface.registerStore(storeBody, _pickedLogo, _pickedCover, document);
+    Response? response = await storeRegistrationServiceInterface.registerStore(storeBody, _pickedLogo, _pickedCover);
     if(response.statusCode == 200) {
       Get.find<HomeController>().saveRegistrationSuccessfulSharedPref(true);
       int? storeId = response.body['store_id'];
       int? packageId = response.body['package_id'];
-      if(packageId == null) {
-        Get.find<BusinessController>().submitBusinessPlan(storeId: storeId!, packageId: null);
-      } else {
-        Get.toNamed(RouteHelper.getSubscriptionPaymentRoute(
-          storeId: storeId,
-          packageId: packageId,
-        ));
-      }
+      Get.toNamed(RouteHelper.getSubscriptionPaymentRoute(
+        storeId: storeId,
+        packageId: packageId,
+      ));
+          // Get.offAllNamed(RouteHelper.getBusinessPlanRoute(storeId, packageId));
     }
     _isLoading = false;
     update();
@@ -348,8 +280,8 @@ class StoreRegistrationController extends GetxController implements GetxService 
     _paymentIndex = Get.find<SplashController>().configModel!.subscriptionFreeTrialStatus??false ? 1 : 0;
   }
 
-  Future<void> getPackageList({bool isUpdate = true, int? moduleId}) async {
-    _packageModel = await storeRegistrationServiceInterface.getPackageList(moduleId: moduleId);
+  Future<void> getPackageList({bool isUpdate = true}) async {
+    _packageModel = await storeRegistrationServiceInterface.getPackageList();
     if(isUpdate) {
       update();
     }
@@ -381,52 +313,6 @@ class StoreRegistrationController extends GetxController implements GetxService 
   void selectSubscriptionCard(int index){
     _activeSubscriptionIndex = index;
     update();
-  }
-
-  Future<void> pickFiles() async {
-    FilePickerResult? result;
-
-    if(GetPlatform.isWeb){
-      result = await FilePicker.platform.pickFiles(
-        withReadStream: false,
-        allowMultiple: false,
-      );
-    }else{
-      result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
-        allowMultiple: false,
-      );
-    }
-
-    if (result != null && result.files.isNotEmpty) {
-      for (var file in result.files) {
-        if (file.size > 2000000) {
-          showCustomSnackBar('please_upload_lower_size_file'.tr);
-        } else {
-          _tinFiles.add(result);
-        }
-      }
-      update();
-    }
-  }
-
-  void removeFile(int index) {
-    _tinFiles.removeAt(index);
-    update();
-  }
-
-  Future<void> setTinExpireDate(DateTime dateTime) async {
-    _tinExpireDate = DateConverter.dateToDate(dateTime);
-    update();
-  }
-
-  void resetData(){
-    _tinExpireDate = null;
-    _tinFiles.clear();
-    _storeMinTime = '--';
-    _storeMaxTime = '--';
-    _storeTimeUnit = 'minute';
   }
 
 }

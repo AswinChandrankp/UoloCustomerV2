@@ -61,11 +61,11 @@ class CashBackDialogWidget extends StatelessWidget {
                               Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).disabledColor.withValues(alpha: 0.2),
+                                  color: Theme.of(context).disabledColor  ,
                                   borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                                 ),
                                 padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                                child: Text('${PriceConverter.convertPrice(homeController.cashBackOfferList![index].cashbackAmount!)} ${homeController.cashBackOfferList![index].title}', style: robotoBold),
+                                child: Text(homeController.cashBackOfferList![index].title??'', style: robotoBold,),
                               ),
 
                               Padding(
@@ -76,8 +76,9 @@ class CashBackDialogWidget extends StatelessWidget {
                                   style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeSmall),
                                 ),
                               ),
+                              // Text('Min Spent \$500 |Valid till 22 Sept, 2023', style: robotoRegular.copyWith(color: Theme.of(context).hintColor)),
 
-                            ]),
+                            ],),
                           );
                         }),
                     ),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:sixam_mart/common/widgets/add_favourite_view.dart';
 import 'package:sixam_mart/common/widgets/custom_ink_well.dart';
 import 'package:sixam_mart/common/widgets/hover/text_hover.dart';
 import 'package:sixam_mart/common/widgets/not_available_widget.dart';
 import 'package:sixam_mart/features/language/controllers/language_controller.dart';
 import 'package:sixam_mart/features/splash/controllers/splash_controller.dart';
 import 'package:sixam_mart/features/store/controllers/store_controller.dart';
+import 'package:sixam_mart/features/favourite/controllers/favourite_controller.dart';
 import 'package:sixam_mart/common/models/module_model.dart';
 import 'package:sixam_mart/features/store/domain/models/store_model.dart';
+import 'package:sixam_mart/helper/auth_helper.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/app_constants.dart';
@@ -17,6 +18,7 @@ import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/common/widgets/custom_image.dart';
+import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
 import 'package:sixam_mart/common/widgets/new_tag.dart';
 import 'package:sixam_mart/common/widgets/rating_bar.dart';
 import 'package:sixam_mart/features/store/screens/store_screen.dart';
@@ -45,7 +47,7 @@ class StoreCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-          boxShadow: ResponsiveHelper.isMobile(context) ? [BoxShadow(color: Theme.of(context).disabledColor.withValues(alpha: 0.2), blurRadius: 5, spreadRadius: 1)] : null,
+          boxShadow: ResponsiveHelper.isMobile(context) ? [BoxShadow(color: Theme.of(context).disabledColor  , blurRadius: 5, spreadRadius: 1)] : null,
         ),
         child: CustomInkWell(
           onTap: () {
@@ -143,7 +145,7 @@ class StoreCard extends StatelessWidget {
                     child: isTopOffers! ? Container(
                       padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraSmall, vertical: 3),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                        color: Theme.of(context).primaryColor  ,
                         borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge),
                       ),
                       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -179,7 +181,7 @@ class StoreCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: 3),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                          color: Theme.of(context).primaryColor  ,
                           borderRadius: BorderRadius.circular(Dimensions.radiusExtraLarge),
                         ),
                         child: Row(children: [
@@ -213,11 +215,27 @@ class StoreCard extends StatelessWidget {
                   ),
                 ]),
 
-                AddFavouriteView(
+                Positioned(
                   top: 0,
                   left: Get.find<LocalizationController>().isLtr ? null : 0,
                   right: Get.find<LocalizationController>().isLtr ? 0 : null,
-                  item: null, storeId: store.id,
+                  child: GetBuilder<FavouriteController>(builder: (favouriteController) {
+                    bool isWished = favouriteController.wishStoreIdList.contains(store.id);
+                    return InkWell(
+                      onTap: () {
+                        if(AuthHelper.isLoggedIn()) {
+                          isWished ? favouriteController.removeFromFavouriteList(store.id, true)
+                              : favouriteController.addToFavouriteList(null, store.id, true);
+                        }else {
+                          showCustomSnackBar('you_are_not_logged_in'.tr);
+                        }
+                      },
+                      child: Icon(
+                        isWished ? Icons.favorite : Icons.favorite_border,  size: 20,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  }),
                 ),
 
               ]);

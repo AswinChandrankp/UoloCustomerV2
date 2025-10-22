@@ -18,13 +18,10 @@ class Dimensions {
   static const double paddingSizeExtraOverLarge = 35.0;
 
   static const double radiusSmall = 5.0;
-  static const double radiusMedium = 8.0;
   static const double radiusDefault = 10.0;
   static const double radiusLarge = 15.0;
   static const double radiusExtraLarge = 20.0;
 
   static const double webMaxWidth = 1170;
   static const int messageInputLength = 1000;
-
-  static const double pickMapIconSize = 100.0;
 }

@@ -61,24 +61,38 @@ class PrescriptionImagePickerWidget extends StatelessWidget {
                   }
                 },
                 child: DottedBorder(
-                  options: RoundedRectDottedBorderOptions(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: 1,
-                    strokeCap: StrokeCap.butt,
-                    dashPattern: const [5, 5],
-                    padding: const EdgeInsets.all(0),
-                    radius: const Radius.circular(Dimensions.radiusDefault),
-                  ),
-                  child: Container(
-                    height: 98, width: 98, alignment: Alignment.center, decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                  ),
-                    child:  Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Icon(Icons.cloud_upload, color: Theme.of(context).disabledColor, size: 32),
-                      Text('upload_your_prescription'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeSmall), textAlign: TextAlign.center,),
-                    ]),
-                  ),
-                ),
+  options: RoundedRectDottedBorderOptions(
+    strokeWidth: 1,
+    strokeCap: StrokeCap.butt,
+    dashPattern: [5, 5],
+    padding: EdgeInsets.all(0),
+    color: Theme.of(context).primaryColor,
+    radius: Radius.circular(Dimensions.radiusDefault),
+  ),
+  child: Container(
+    height: 98,
+    width: 98,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.cloud_upload, color: Theme.of(context).disabledColor, size: 32),
+        Text(
+          'upload_your_prescription'.tr,
+          style: robotoRegular.copyWith(
+            color: Theme.of(context).disabledColor,
+            fontSize: Dimensions.fontSizeSmall,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  ),
+)
+,
               );
             }
             return file != null ? Container(
@@ -87,14 +101,14 @@ class PrescriptionImagePickerWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
               ),
               child: DottedBorder(
-                options: RoundedRectDottedBorderOptions(
-                  color: Theme.of(context).primaryColor,
-                  strokeWidth: 1,
-                  strokeCap: StrokeCap.butt,
-                  dashPattern: const [5, 5],
-                  padding: const EdgeInsets.all(0),
-                  radius: const Radius.circular(Dimensions.radiusDefault),
-                ),
+              options: RoundedRectDottedBorderOptions(
+    strokeWidth: 1,
+    strokeCap: StrokeCap.butt,
+    dashPattern: [5, 5],
+    padding: EdgeInsets.all(0),
+    color: Theme.of(context).primaryColor,
+    radius: Radius.circular(Dimensions.radiusDefault),
+  ),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Stack(children: [
@@ -140,7 +154,7 @@ class PrescriptionImagePickerWidget extends StatelessWidget {
         padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
         margin: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtremeLarge),
         decoration: BoxDecoration(
-          color: ResponsiveHelper.isDesktop(context) ? Theme.of(context).colorScheme.error.withValues(alpha: 0.05) : Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          color: ResponsiveHelper.isDesktop(context) ? Theme.of(context).colorScheme.error   : Theme.of(context).primaryColor  ,
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
         ),
         child: Text(

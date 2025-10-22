@@ -1,8 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart/util/dimensions.dart';
-import 'package:sixam_mart/util/styles.dart';
 
 class CodePickerWidget extends StatefulWidget {
   final ValueChanged<CountryCode>? onChanged;
@@ -38,6 +36,7 @@ class CodePickerWidget extends StatefulWidget {
   final bool? showDropDownButton;
   final Decoration? flagDecoration;
   final List<Map<String, String>>? countryList;
+
   const CodePickerWidget({
     this.onChanged,
     this.onInit,
@@ -74,6 +73,7 @@ class CodePickerWidget extends StatefulWidget {
     this.countryList = codes,
     super.key,
   });
+
   @override
   State<CodePickerWidget> createState() => _CodePickerWidgetState();
 }
@@ -82,38 +82,38 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
   CountryCode? selectedItem;
   List<CountryCode>? elements = [];
   List<CountryCode>? favoriteElements = [];
-
-
+  
+  
   List<CountryCode> getCountryList(){
     List<Map<String, String>> jsonList = widget.countryList != null? widget.countryList! : [];
-
+    
     List<CountryCode> elements =
     jsonList.map((json) => CountryCode.fromJson(json)).toList();
-
+    
     if (widget.comparator != null) {
-      elements.sort(widget.comparator);
+    elements.sort(widget.comparator);
     }
-
+    
     if (widget.countryFilter != null && widget.countryFilter!.isNotEmpty) {
-      final uppercaseCustomList =
-      widget.countryFilter!.map((c) => c.toUpperCase()).toList();
-      elements = elements
-          .where((c) =>
-      uppercaseCustomList.contains(c.code) ||
-          uppercaseCustomList.contains(c.name) ||
-          uppercaseCustomList.contains(c.dialCode))
-          .toList();
+    final uppercaseCustomList =
+    widget.countryFilter!.map((c) => c.toUpperCase()).toList();
+    elements = elements
+        .where((c) =>
+    uppercaseCustomList.contains(c.code) ||
+    uppercaseCustomList.contains(c.name) ||
+    uppercaseCustomList.contains(c.dialCode))
+        .toList();
     }
     return elements;
   }
-
+  
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     elements = elements!.map((e) => e.localize(context)).toList();
     _onInit(selectedItem!);
   }
-
+  
   @override
   void didUpdateWidget(CodePickerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -133,7 +133,7 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
       _onInit(selectedItem!);
     }
   }
-
+  
   @override
   void initState() {
     super.initState();
@@ -149,51 +149,49 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
       } else {
         selectedItem = elements![0];
       }
-
-      favoriteElements = elements!.where((e) =>
-      widget.favorite!.firstWhereOrNull((f) =>
-      e.code!.toUpperCase() == f.toUpperCase() ||
-          e.dialCode == f ||
-          e.name!.toUpperCase() == f.toUpperCase()) !=
-          null)
-          .toList();
-    }
-
+    
+    favoriteElements = elements!.where((e) =>
+    widget.favorite!.firstWhereOrNull((f) =>
+    e.code!.toUpperCase() == f.toUpperCase() ||
+    e.dialCode == f ||
+    e.name!.toUpperCase() == f.toUpperCase()) !=
+    null)
+    .toList();
   }
-
+    
+  }
+  
   void showCountryCodePickerDialog() {
     if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
       showDialog(
-        barrierColor: widget.barrierColor ?? Colors.grey.withValues(alpha: 0.5),
+        barrierColor: widget.barrierColor ?? Colors.grey  ,
         // backgroundColor: widgets.backgroundColor ?? Colors.transparent,
         context: context,
         builder: (context) => Center(
           child: Container(
             constraints: const BoxConstraints(maxHeight: 500, maxWidth: 400),
-            child: Dialog(
-              child: SelectionDialog(
-                elements!,
-                favoriteElements!,
-                showCountryOnly: widget.showCountryOnly,
-                emptySearchBuilder: widget.emptySearchBuilder,
-                searchDecoration: widget.searchDecoration!,
-                searchStyle: widget.searchStyle,
-                textStyle: widget.dialogTextStyle,
-                boxDecoration: widget.boxDecoration,
-                showFlag: widget.showFlagDialog ?? widget.showFlag,
-                flagWidth: widget.flagWidth!,
-                size: widget.dialogSize,
-                backgroundColor: widget.dialogBackgroundColor,
-                barrierColor: widget.barrierColor,
-                hideSearch: widget.hideSearch!,
-                closeIcon: widget.closeIcon,
-                flagDecoration: widget.flagDecoration,
-                hideHeaderText: false,
-                headerAlignment: MainAxisAlignment.start,
-                headerTextStyle: robotoMedium,
-                topBarPadding: EdgeInsets.zero,
-              ),
-            ),
+            // child: Dialog(
+            //   child: SelectionDialog(
+
+                
+            //     elements!,
+            //     favoriteElements!,
+            //     showCountryOnly: widget.showCountryOnly,
+            //     emptySearchBuilder: widget.emptySearchBuilder,
+            //     searchDecoration: widget.searchDecoration!,
+            //     searchStyle: widget.searchStyle,
+            //     textStyle: widget.dialogTextStyle,
+            //     boxDecoration: widget.boxDecoration,
+            //     showFlag: widget.showFlagDialog ?? widget.showFlag,
+            //     flagWidth: widget.flagWidth!,
+            //     size: widget.dialogSize,
+            //     backgroundColor: widget.dialogBackgroundColor,
+            //     barrierColor: widget.barrierColor,
+            //     hideSearch: widget.hideSearch!,
+            //     closeIcon: widget.closeIcon,
+            //     flagDecoration: widget.flagDecoration,
+            //   ),
+            // ),
           ),
         ),
       ).then((e) {
@@ -201,72 +199,60 @@ class _CodePickerWidgetState extends State<CodePickerWidget> {
           setState(() {
             selectedItem = e;
           });
-
-          _publishSelection(e);
-        }
+        
+        _publishSelection(e);
+      }
       });
     } else {
-      Get.bottomSheet(
-        ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(Get.context!).size.height * 0.45),
-          child: SelectionDialog(
-            elements!,
-            favoriteElements!,
-            showCountryOnly: widget.showCountryOnly,
-            emptySearchBuilder: widget.emptySearchBuilder,
-            searchDecoration: widget.searchDecoration!,
-            searchStyle: widget.searchStyle,
-            textStyle: widget.dialogTextStyle,
-            boxDecoration: widget.boxDecoration,
-            showFlag: widget.showFlagDialog ?? widget.showFlag,
-            flagWidth: widget.flagWidth!,
-            flagDecoration: widget.flagDecoration,
-            size: widget.dialogSize,
-            backgroundColor: widget.dialogBackgroundColor,
-            barrierColor: widget.barrierColor,
-            hideSearch: widget.hideSearch!,
-            closeIcon: widget.closeIcon,
-            hideHeaderText: false,
-            headerAlignment: MainAxisAlignment.start,
-            headerTextStyle: robotoMedium,
-            topBarPadding: EdgeInsets.zero,
-          ),
-        ),
-        useRootNavigator: true,
-        barrierColor: widget.barrierColor ?? Colors.grey.withValues(alpha: 0.5),
+      showModalBottomSheet(
+        barrierColor: widget.barrierColor ?? Colors.grey  ,
         backgroundColor: widget.backgroundColor ?? Colors.transparent,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(Dimensions.radiusExtraLarge),
-            topRight: Radius.circular(Dimensions.radiusExtraLarge),
-          ),
+        context: context,
+        builder: (context) => Center(
+          // child: SelectionDialog(
+          //   elements!,
+          //   favoriteElements!,
+          //   showCountryOnly: widget.showCountryOnly,
+          //   emptySearchBuilder: widget.emptySearchBuilder,
+          //   searchDecoration: widget.searchDecoration!,
+          //   searchStyle: widget.searchStyle,
+          //   textStyle: widget.dialogTextStyle,
+          //   boxDecoration: widget.boxDecoration,
+          //   showFlag: widget.showFlagDialog ?? widget.showFlag,
+          //   flagWidth: widget.flagWidth!,
+          //   flagDecoration: widget.flagDecoration,
+          //   size: widget.dialogSize,
+          //   backgroundColor: widget.dialogBackgroundColor,
+          //   barrierColor: widget.barrierColor,
+          //   hideSearch: widget.hideSearch!,
+          //   closeIcon: widget.closeIcon,
+          // ),
         ),
       ).then((e) {
         if (e != null) {
           setState(() {
             selectedItem = e;
           });
-
-          _publishSelection(e);
-        }
+        
+        _publishSelection(e);
+      }
       });
     }
   }
-
+  
   void _publishSelection(CountryCode e) {
     if (widget.onChanged != null) {
       widget.onChanged!(e);
     }
   }
-
+  
   void _onInit(CountryCode e) {
     if (widget.onInit != null) {
       widget.onInit!(e);
     }
   }
-
-
+  
+  
   @override
   Widget build(BuildContext context) {
     Widget child;

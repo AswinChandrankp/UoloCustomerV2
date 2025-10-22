@@ -5,13 +5,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sixam_mart/common/enums/data_source_enum.dart';
 import 'package:sixam_mart/features/checkout/controllers/checkout_controller.dart';
 import 'package:sixam_mart/features/location/controllers/location_controller.dart';
-import 'package:sixam_mart/features/parcel/domain/models/parcel_cancellation_reasons_model.dart';
 import 'package:sixam_mart/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart/features/address/domain/models/address_model.dart';
 import 'package:sixam_mart/features/location/domain/models/zone_response_model.dart';
 import 'package:sixam_mart/features/auth/controllers/auth_controller.dart';
 import 'package:sixam_mart/features/checkout/domain/models/place_order_body_model.dart';
 import 'package:sixam_mart/features/parcel/domain/models/parcel_category_model.dart';
+import 'package:sixam_mart/features/parcel/domain/models/place_details_model.dart';
 import 'package:sixam_mart/features/parcel/domain/models/video_content_model.dart';
 import 'package:sixam_mart/features/parcel/domain/models/why_choose_model.dart';
 import 'package:sixam_mart/features/parcel/domain/services/parcel_service_interface.dart';
@@ -80,8 +80,8 @@ class ParcelController extends GetxController implements GetxService {
   List<Data>? _parcelInstructionList;
   List<Data>? get parcelInstructionList => _parcelInstructionList;
 
-  int _instructionSelectedIndex = -1;
-  int get instructionSelectedIndex => _instructionSelectedIndex;
+  int _instructionselectedIndex = -1;
+  int get instructionselectedIndex => _instructionselectedIndex;
 
   final TextEditingController _customNoteController = TextEditingController();
   TextEditingController get customNoteController => _customNoteController;
@@ -91,6 +91,12 @@ class ParcelController extends GetxController implements GetxService {
 
   int _selectedIndexNote = -1;
   int? get selectedIndexNote => _selectedIndexNote;
+
+  int? _senderAddressIndex = 0;
+  int? get senderAddressIndex => _senderAddressIndex;
+
+  int? _receiverAddressIndex = 0;
+  int? get receiverAddressIndex => _receiverAddressIndex;
 
   String? _senderCountryCode;
   String? get senderCountryCode => _senderCountryCode;
@@ -116,8 +122,6 @@ class ParcelController extends GetxController implements GetxService {
   bool _isDmTipSave = false;
   bool get isDmTipSave => _isDmTipSave;
 
-  List<Reason>? _parcelCancellationReasons;
-  List<Reason>? get parcelCancellationReasons => _parcelCancellationReasons;
 
   void showTipsField(){
     _canShowTipsField = !_canShowTipsField;
@@ -139,6 +143,20 @@ class ParcelController extends GetxController implements GetxService {
       _senderCountryCode = code;
     } else {
       _receiverCountryCode = code;
+    }
+  }
+
+  void setSenderAddressIndex(int? index, {bool canUpdate = true}) {
+    _senderAddressIndex = index;
+    if(canUpdate) {
+      update();
+    }
+  }
+
+  void setReceiverAddressIndex(int? index, {bool canUpdate = true}) {
+    _receiverAddressIndex = index;
+    if(canUpdate) {
+      update();
     }
   }
 
@@ -181,44 +199,48 @@ class ParcelController extends GetxController implements GetxService {
   }
 
   void setLocationFromPlace(String? placeID, String? address, bool? isPickedUp) async {
-    LatLng latLng = await parcelServiceInterface.getPlaceDetails(placeID);
-    await _processAddressAndAction(latLng, address);
+    Response response = await parcelServiceInterface.getPlaceDetails(placeID);
+    if(response.statusCode == 200) {
+      PlaceDetailsModel placeDetails = PlaceDetailsModel.fromJson(response.body);
+      await _processAddressAndAction(placeDetails, address);
+    }
   }
 
-  Future<void> _processAddressAndAction(LatLng latLng, String? address) async {
-    AddressModel address0 = AddressModel(
-      address: address, addressType: 'others', latitude: latLng.latitude.toString(),
-      longitude: latLng.longitude.toString(),
-      contactPersonName: AddressHelper.getUserAddressFromSharedPref()!.contactPersonName,
-      contactPersonNumber: AddressHelper.getUserAddressFromSharedPref()!.contactPersonNumber,
-    );
-    ZoneResponseModel response0 = await Get.find<LocationController>().getZone(address0.latitude, address0.longitude, false);
-    if (response0.isSuccess) {
-      bool inZone = false;
-      for(int zoneId in AddressHelper.getUserAddressFromSharedPref()!.zoneIds!) {
-        if(response0.zoneIds.contains(zoneId)) {
-          inZone = true;
-          break;
+  Future<void> _processAddressAndAction(PlaceDetailsModel placeDetails, String? address) async {
+    if(placeDetails.status == 'OK') {
+      AddressModel address0 = AddressModel(
+        address: address, addressType: 'others', latitude: placeDetails.result!.geometry!.location!.lat.toString(),
+        longitude: placeDetails.result!.geometry!.location!.lng.toString(),
+        contactPersonName: AddressHelper.getUserAddressFromSharedPref()!.contactPersonName,
+        contactPersonNumber: AddressHelper.getUserAddressFromSharedPref()!.contactPersonNumber,
+      );
+      ZoneResponseModel response0 = await Get.find<LocationController>().getZone(address0.latitude, address0.longitude, false);
+      if (response0.isSuccess) {
+        bool inZone = false;
+        for(int zoneId in AddressHelper.getUserAddressFromSharedPref()!.zoneIds!) {
+          if(response0.zoneIds.contains(zoneId)) {
+            inZone = true;
+            break;
+          }
         }
-      }
-      if(inZone) {
-        address0.zoneId =  response0.zoneIds[0];
-        address0.zoneIds = [];
-        address0.zoneIds!.addAll(response0.zoneIds);
-        address0.zoneData = [];
-        address0.zoneData!.addAll(response0.zoneData);
-        if(isPickedUp!) {
-          setPickupAddress(address0, true);
+        if(inZone) {
+          address0.zoneId =  response0.zoneIds[0];
+          address0.zoneIds = [];
+          address0.zoneIds!.addAll(response0.zoneIds);
+          address0.zoneData = [];
+          address0.zoneData!.addAll(response0.zoneData);
+          if(isPickedUp!) {
+            setPickupAddress(address0, true);
+          }else {
+            setDestinationAddress(address0);
+          }
         }else {
-          setDestinationAddress(address0);
+          showCustomSnackBar('your_selected_location_is_from_different_zone_store'.tr);
         }
-      }else {
-        showCustomSnackBar('your_selected_location_is_from_different_zone_store'.tr);
+      } else {
+        showCustomSnackBar(response0.message);
       }
-    } else {
-      showCustomSnackBar(response0.message);
     }
-
   }
 
   Future<void> getWhyChooseDetails({DataSourceEnum source = DataSourceEnum.local}) async {
@@ -299,15 +321,9 @@ class ParcelController extends GetxController implements GetxService {
     update();
   }
 
-  void setInstructionSelectedIndex(int index, {bool notify = true}) {
-    // If the same index is tapped again → unselect
-    if (_instructionSelectedIndex == index) {
-      _instructionSelectedIndex = -1;
-    } else {
-      _instructionSelectedIndex = index;
-    }
-
-    if (notify) {
+  void setInstructionselectedIndex(int index, {bool notify = true}) {
+    _instructionselectedIndex = index;
+    if(notify) {
       update();
     }
   }
@@ -335,7 +351,7 @@ class ParcelController extends GetxController implements GetxService {
     if(index != null) {
       _selectedIndexNote = index;
     }else{
-      _selectedIndexNote = _instructionSelectedIndex;
+      _selectedIndexNote = _instructionselectedIndex;
     }
     if(index == null) {
       update();
@@ -424,16 +440,6 @@ class ParcelController extends GetxController implements GetxService {
     }else {
       showCustomSnackBar(message);
     }
-  }
-
-  Future<void> getParcelCancellationReasons({required bool isBeforePickup}) async {
-    _parcelCancellationReasons = null;
-    ParcelCancellationReasonsModel? parcelCancellationReasons = await parcelServiceInterface.getParcelCancellationReasons(isBeforePickup: isBeforePickup);
-    if(parcelCancellationReasons != null) {
-      _parcelCancellationReasons = [];
-      _parcelCancellationReasons!.addAll(parcelCancellationReasons.data!);
-    }
-    update();
   }
 
 }

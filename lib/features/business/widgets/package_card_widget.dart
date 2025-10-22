@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sixam_mart/features/auth/controllers/store_registration_controller.dart';
 import 'package:sixam_mart/features/business/domain/models/package_model.dart';
 import 'package:sixam_mart/features/business/widgets/curve_clipper_widget.dart';
 import 'package:sixam_mart/features/business/widgets/package_widget.dart';
 import 'package:sixam_mart/helper/price_converter.dart';
-import 'package:sixam_mart/util/app_constants.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
 
@@ -16,11 +14,6 @@ class PackageCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    StoreRegistrationController storeRegController = Get.find<StoreRegistrationController>();
-
-    bool isRental = storeRegController.moduleList != null && storeRegController.selectedModuleIndex != -1 &&
-        storeRegController.moduleList![storeRegController.selectedModuleIndex!].moduleType == AppConstants.taxi;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -65,19 +58,21 @@ class PackageCardWidget extends StatelessWidget {
 
             Text(
               PriceConverter.convertPrice(packages.price),
-              style: robotoBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: canSelect ? Theme.of(context).cardColor : Colors.cyan.shade700),
+              style: robotoBold.copyWith(fontSize: 35, color: canSelect ? Theme.of(context).cardColor : Colors.cyan.shade700),
             ),
 
-            Text('${packages.validity}' 'days'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: canSelect ? Theme.of(context).cardColor : Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7))),
+            Text('${packages.validity}' 'days'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
 
-            Divider(color: canSelect ? Theme.of(context).cardColor : Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7), indent: 70, endIndent: 70, thickness: 1),
+            Divider(color: Theme.of(context).disabledColor  , indent: 70, endIndent: 70, thickness: 1),
             const SizedBox(height: Dimensions.paddingSizeDefault),
+
+
 
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-              PackageWidget(title: '${isRental ? 'max_trip'.tr : 'max_order'.tr} (${packages.maxOrder})', isSelect: canSelect ? true : false),
+              PackageWidget(title: '${'max_order'.tr} (${packages.maxOrder})', isSelect: canSelect ? true : false),
 
-              PackageWidget(title: '${isRental ? 'max_vehicle'.tr : 'max_product'.tr} (${packages.maxProduct})', isSelect: canSelect ? true : false),
+              PackageWidget(title: '${'max_product'.tr} (${packages.maxProduct})', isSelect: canSelect ? true : false),
 
               packages.pos == 1 ? PackageWidget(title: 'pos'.tr, isSelect: canSelect ? true : false) : const SizedBox(),
 

@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:sixam_mart/common/widgets/confirmation_dialog.dart';
 import 'package:sixam_mart/common/widgets/custom_asset_image_widget.dart';
 import 'package:sixam_mart/common/widgets/custom_tool_tip_widget.dart';
@@ -50,7 +49,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
 
   final List<TextEditingController> _nameController = [];
   final List<TextEditingController> _addressController = [];
-  final TextEditingController _tinNumberController = TextEditingController();
+  final TextEditingController _vatController = TextEditingController();
   final TextEditingController _fNameController = TextEditingController();
   final TextEditingController _lNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -59,6 +58,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
   final TextEditingController _confirmPasswordController = TextEditingController();
   final List<FocusNode> _nameFocus = [];
   final List<FocusNode> _addressFocus = [];
+  final FocusNode _vatFocus = FocusNode();
   final FocusNode _fNameFocus = FocusNode();
   final FocusNode _lNameFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
@@ -93,7 +93,6 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
       _nameFocus.add(FocusNode());
       _addressFocus.add(FocusNode());
     }
-    Get.find<StoreRegistrationController>().resetData();
     Get.find<StoreRegistrationController>().storeStatusChange(0.1, isUpdate: false);
     Get.find<StoreRegistrationController>().getZoneList();
     Get.find<StoreRegistrationController>().selectModuleIndex(-1, canUpdate: false);
@@ -101,7 +100,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
       Get.find<StoreRegistrationController>().showHidePass(isUpdate: false);
     }
     Get.find<StoreRegistrationController>().resetBusiness();
-    Get.find<StoreRegistrationController>().clearPickupZone();
+    Get.find<StoreRegistrationController>().getPackageList(isUpdate: false);
 
     for (var language in _languageList) {
       _tabs.add(Tab(text: language.value));
@@ -143,7 +142,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
         }
       },
       child: Scaffold(
-        appBar: CustomAppBar(title: 'vendor_registration'.tr, onBackPressed: () async {
+        appBar: CustomAppBar(title: 'store_registration'.tr, onBackPressed: () async {
           if(Get.find<StoreRegistrationController>().storeStatus != 0.1 && firstTime){
             Get.find<StoreRegistrationController>().storeStatusChange(0.1);
             firstTime = false;
@@ -160,7 +159,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
 
           return Column(children: [
 
-            WebScreenTitleWidget(title: 'join_as_vendor'.tr),
+            WebScreenTitleWidget(title: 'join_as_store'.tr),
 
             ResponsiveHelper.isDesktop(context) ? Center(child: SizedBox(
               width: Dimensions.webMaxWidth,
@@ -172,7 +171,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
               padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge, vertical:  Dimensions.paddingSizeSmall),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(
-                  storeRegController.storeStatus == 0.1 ? 'provide_vendor_information_to_proceed_next'.tr : storeRegController.storeStatus == 0.6 ? 'provide_owner_information_to_confirm'.tr : 'you_are_one_step_away_choose_your_business_plan'.tr,
+                  storeRegController.storeStatus == 0.1 ? 'provide_store_information_to_proceed_next'.tr : storeRegController.storeStatus == 0.6 ? 'provide_owner_information_to_confirm'.tr : 'you_are_one_step_away_choose_your_business_plan'.tr,
                   style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).hintColor),
                 ),
 
@@ -198,7 +197,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                         key: _formKeyFirst,
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-                          Text('vendor_info'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                          Text('store_info'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
                           const SizedBox(height: Dimensions.paddingSizeDefault),
 
                           Container(
@@ -240,8 +239,8 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
 
                               CustomTextField(
                                 key: _storeInfoScrollKey,
-                                titleText: 'write_vendor_name'.tr,
-                                labelText: 'vendor_name'.tr,
+                                titleText: 'write_store_name'.tr,
+                                labelText: 'store_name'.tr,
                                 controller: _nameController[_tabController!.index],
                                 focusNode: _nameFocus[_tabController!.index],
                                 nextFocus: _tabController!.index != _languageList!.length-1 ? _addressFocus[_tabController!.index] : _addressFocus[0],
@@ -249,7 +248,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                 prefixImage: Images.shopIcon,
                                 capitalization: TextCapitalization.words,
                                 required: true,
-                                validator: (value) => ValidateCheck.validateEmptyText(value, "vendor_name_field_is_required".tr),
+                                validator: (value) => ValidateCheck.validateEmptyText(value, "store_name_field_is_required".tr),
                               ),
                               const SizedBox(height: Dimensions.paddingSizeExtremeLarge),
 
@@ -259,7 +258,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
                                     Row(children: [
-                                      Text('vendor_logo'.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7))),
+                                      Text('store_logo'.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7))),
                                       Text(' (${'1:1'})', style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeSmall)),
                                     ]),
                                     const SizedBox(height: Dimensions.paddingSizeDefault),
@@ -277,14 +276,14 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                             width: 150, height: 120,
                                             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 
-                                              Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withValues(alpha: 0.6)),
+                                              Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withOpacity(0.6)),
                                               const SizedBox(height: Dimensions.paddingSizeSmall),
 
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
                                                 child: Text(
-                                                  'upload_vendor_logo'.tr,
-                                                  style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)), textAlign: TextAlign.center,
+                                                  'upload_store_logo'.tr,
+                                                  style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7)), textAlign: TextAlign.center,
                                                 ),
                                               ),
 
@@ -297,14 +296,13 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                         child: InkWell(
                                           onTap: () => storeRegController.pickImage(true, false),
                                           child: DottedBorder(
-                                            options: RoundedRectDottedBorderOptions(
-                                              color: Theme.of(context).primaryColor,
-                                              strokeWidth: 1,
-                                              strokeCap: StrokeCap.butt,
-                                              dashPattern: const [5, 5],
-                                              padding: const EdgeInsets.all(0),
-                                              radius: const Radius.circular(Dimensions.radiusDefault),
-                                            ),
+                                            // color: Theme.of(context).primaryColor,
+                                            // strokeWidth: 1,
+                                            // strokeCap: StrokeCap.butt,
+                                            // dashPattern: const [5, 5],
+                                            // padding: const EdgeInsets.all(0),
+                                            // borderType: BorderType.RRect,
+                                            // radius: const Radius.circular(Dimensions.radiusDefault),
                                             child: Center(
                                               child: Visibility(
                                                 visible: storeRegController.pickedLogo != null,
@@ -330,7 +328,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
                                     Row(children: [
-                                      Text('vendor_cover'.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7))),
+                                      Text('store_cover'.tr, style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7))),
                                       Text(' (${'3:1'})', style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeSmall)),
                                     ]),
                                     const SizedBox(height: Dimensions.paddingSizeDefault),
@@ -348,18 +346,18 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                             width: context.width, height: 120,
                                             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 
-                                              Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withValues(alpha: 0.6)),
+                                              Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withOpacity(0.6)),
 
                                               Text(
-                                                'upload_vendor_cover'.tr,
-                                                style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)), textAlign: TextAlign.center,
+                                                'upload_store_cover'.tr,
+                                                style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7)), textAlign: TextAlign.center,
                                               ),
 
                                               Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
                                                 child: Text(
                                                   'upload_jpg_png_gif_maximum_2_mb'.tr,
-                                                  style: robotoRegular.copyWith(color: Theme.of(context).disabledColor.withValues(alpha: 0.6), fontSize: Dimensions.fontSizeSmall),
+                                                  style: robotoRegular.copyWith(color: Theme.of(context).disabledColor.withOpacity(0.6), fontSize: Dimensions.fontSizeSmall),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
@@ -374,14 +372,13 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                         child: InkWell(
                                           onTap: () => storeRegController.pickImage(false, false),
                                           child: DottedBorder(
-                                            options: RoundedRectDottedBorderOptions(
-                                              color: Theme.of(context).primaryColor,
-                                              strokeWidth: 1,
-                                              strokeCap: StrokeCap.butt,
-                                              dashPattern: const [5, 5],
-                                              padding: const EdgeInsets.all(0),
-                                              radius: const Radius.circular(Dimensions.radiusDefault),
-                                            ),
+                                            // color: Theme.of(context).primaryColor,
+                                            // strokeWidth: 1,
+                                            // strokeCap: StrokeCap.butt,
+                                            // dashPattern: const [5, 5],
+                                            // padding: const EdgeInsets.all(0),
+                                            // borderType: BorderType.RRect,
+                                            // radius: const Radius.circular(Dimensions.radiusDefault),
                                             child: Center(
                                               child: Visibility(
                                                 visible: storeRegController.pickedCover != null,
@@ -413,62 +410,42 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                           storeRegController.zoneList != null ? SelectLocationViewWidget(
                             key: _locationInfoScrollKey,
                             fromView: true, addressController: _addressController[0], addressFocus: _addressFocus[0],
-                          ) : Container(
-                            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                              boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
-                            ),
-                            child: Column(children: [
+                          ) : const Center(child: CircularProgressIndicator()),
 
-                              Shimmer(
-                                child: Container(
-                                  height: 45, width: context.width,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).shadowColor,
-                                    borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                              Shimmer(
-                                child: Container(
-                                  height: 220, width: context.width,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).shadowColor,
-                                    borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                              Shimmer(
-                                child: Container(
-                                  height: 100, width: context.width,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).shadowColor,
-                                    borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                  ),
-                                ),
-                              ),
-
-                            ]),
-                          ),
                           const SizedBox(height: Dimensions.paddingSizeLarge),
 
-                          Text('vendor_preference'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+
+                          Text('store_preference'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
                           const SizedBox(height: Dimensions.paddingSizeDefault),
 
                           Container(
                             decoration: BoxDecoration(
                               color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                              boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
+                              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeDefault),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            child: Column(children: [
+
+                              CustomTextField(
+                                key: _storePrefScrollKey,
+                                titleText: 'write_vat_tax_amount'.tr,
+                                labelText: 'vat_tax'.tr,
+                                controller: _vatController,
+                                focusNode: _vatFocus,
+                                inputAction: TextInputAction.done,
+                                inputType: TextInputType.number,
+                                prefixImage: Images.vatTaxIcon,
+                                isAmount: true,
+                                suffixChild: CustomToolTip(
+                                  message: 'please_provide_vat_tax_amount'.tr,
+                                  preferredDirection: AxisDirection.down,
+                                  iconColor: Theme.of(context).disabledColor,
+                                ),
+                                required: true,
+                                validator: (value) => ValidateCheck.validateEmptyText(value, "store_vat_tax_field_is_required".tr),
+                              ),
+                              const SizedBox(height: Dimensions.paddingSizeExtremeLarge),
 
                               InkWell(
                                 onTap: () {
@@ -501,255 +478,12 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                                           color: Theme.of(context).cardColor,
                                         ),
                                         padding: const EdgeInsets.all(5),
-                                        child: Text('select_estimated_delivery_time'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),
+                                        child: Text('select_time'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ]),
-                          ),
-                          const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                          Text('business_tin'.tr, style: robotoBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
-                          const SizedBox(height: Dimensions.paddingSizeDefault),
-
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).cardColor,
-                              borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                              boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeDefault),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                              CustomTextField(
-                                hintText: 'taxpayer_identification_number_tin'.tr,
-                                labelText: 'tin_number'.tr,
-                                controller: _tinNumberController,
-                                inputAction: TextInputAction.done,
-                                inputType: TextInputType.number,
-                                required: true,
-                                validator: (value) => ValidateCheck.validateEmptyText(value, "vendor_tin_field_is_required".tr),
-                                onChanged: (value) {
-                                  if (value.isNotEmpty) {
-                                    _formKeyFirst?.currentState?.validate();
-                                  }
-                                },
-                              ),
-                              const SizedBox(height: Dimensions.paddingSizeExtremeLarge),
-
-                              InkWell(
-                                onTap: () async {
-                                  final DateTime? pickedDate = await showDatePicker(
-                                    context: context,
-                                    firstDate: DateTime.now(),
-                                    initialDate: DateTime.now(),
-                                    lastDate: DateTime(2100),
-                                  );
-
-                                  if (pickedDate != null) {
-                                    storeRegController.setTinExpireDate(pickedDate);
-                                  }
-                                },
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).cardColor,
-                                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                        border: Border.all(color: Theme.of(context).disabledColor, width: 0.5),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
-                                      child: Row(children: [
-                                        Expanded(child: Text(
-                                          storeRegController.tinExpireDate ?? 'select_date'.tr,
-                                          style: robotoMedium,
-                                        )),
-                                        Icon(Icons.calendar_month, color: Theme.of(context).primaryColor),
-                                      ]),
-                                    ),
-
-                                    Positioned(
-                                      left: 10, top: -15,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).cardColor,
-                                        ),
-                                        padding: const EdgeInsets.all(5),
-                                        child: Row(
-                                          children: [
-                                            Text('expire_date'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),
-                                            Text(' *', style: robotoRegular.copyWith(color: Colors.red)),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                              Text('tin_certificate'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge)),
-
-                              Text('vehicle_doc_format'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
-                              const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                              storeRegController.tinFiles!.isEmpty ? InkWell(
-                                onTap: () {
-                                  storeRegController.pickFiles();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraLarge),
-                                  child: DottedBorder(
-                                    options: RoundedRectDottedBorderOptions(
-                                      radius: const Radius.circular(Dimensions.radiusDefault),
-                                      dashPattern: const [8, 4],
-                                      strokeWidth: 1,
-                                      color: Get.isDarkMode ? Colors.white.withValues(alpha: 0.2) : const Color(0xFFE5E5E5),
-                                    ),
-                                    child: Container(
-                                      height: 120,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: Get.isDarkMode ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFFAFAFA),
-                                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          const SizedBox(width: Dimensions.paddingSizeSmall),
-                                          CustomAssetImageWidget(Images.uploadIcon, height: 40, width: 40, color: Get.isDarkMode ? Colors.grey : null),
-                                          const SizedBox(width: Dimensions.paddingSizeSmall),
-                                          RichText(
-                                            textAlign: TextAlign.center,
-                                            text: TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                  text: 'click_to_upload'.tr,
-                                                  style: robotoBold.copyWith(fontSize: Dimensions.fontSizeSmall, color: Colors.blue),
-                                                ),
-                                                // const TextSpan(text: '\n'),
-                                                // TextSpan(
-                                                //   text: 'or_drag_and_drop'.tr,
-                                                //   style: robotoBold.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)),
-                                                // ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ) : Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeExtraLarge),
-                                child: DottedBorder(
-                                  options: RoundedRectDottedBorderOptions(
-                                    radius: const Radius.circular(Dimensions.radiusDefault),
-                                    dashPattern: const [8, 4],
-                                    strokeWidth: 1,
-                                    color: const Color(0xFFE5E5E5),
-                                  ),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.only(left: Dimensions.paddingSizeDefault),
-                                          height: 120,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFFAFAFA),
-                                            borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Flexible(
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Builder(
-                                                      builder: (context) {
-                                                        final filePath = storeRegController.tinFiles![0].paths[0];
-                                                        final fileName = filePath!.split('/').last.toLowerCase();
-
-                                                        if (fileName.endsWith('.pdf')) {
-                                                          // Show PDF preview
-                                                          return Row(
-                                                            children: [
-                                                              const Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
-                                                              const SizedBox(width: 10),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  fileName,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                              ),
-                                                              const SizedBox(width: 35),
-                                                            ],
-                                                          );
-                                                        } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
-                                                          // Show Word document preview
-                                                          return Row(
-                                                            children: [
-                                                              const Icon(Icons.description, size: 40, color: Colors.blue),
-                                                              const SizedBox(width: 10),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  fileName,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                              ),
-                                                              const SizedBox(width: 35),
-                                                            ],
-                                                          );
-                                                        } else {
-                                                          // Show generic file preview
-                                                          return Row(
-                                                            children: [
-                                                              const Icon(Icons.insert_drive_file, size: 40, color: Colors.grey),
-                                                              const SizedBox(width: 10),
-                                                              Expanded(
-                                                                child: Text(
-                                                                  fileName,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                              ),
-                                                              const SizedBox(width: 35),
-                                                            ],
-                                                          );
-                                                        }
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Positioned(
-                                          right: 0,
-                                          top: 0,
-                                          child: InkWell(
-                                            onTap: () {
-                                              storeRegController.removeFile(0);
-                                            },
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(Dimensions.paddingSizeSmall),
-                                              child: Icon(Icons.delete_forever, color: Colors.red),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-
                             ]),
                           ),
 
@@ -768,9 +502,9 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                             const SizedBox(width: Dimensions.paddingSizeSmall),
 
                             CustomToolTip(
-                              message: 'this_info_will_need_for_vendor_app_and_panel_login'.tr,
+                              message: 'this_info_will_need_for_store_app_and_panel_login'.tr,
                               preferredDirection: AxisDirection.down,
-                              iconColor: Theme.of(context).textTheme.bodyLarge!.color?.withValues(alpha: 0.7),
+                              iconColor: Theme.of(context).textTheme.bodyLarge!.color?.withOpacity(0.7),
                             ),
                           ]),
                           const SizedBox(height: Dimensions.paddingSizeDefault),
@@ -779,7 +513,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                             decoration: BoxDecoration(
                               color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                              boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
+                              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeDefault),
                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -935,15 +669,15 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                         storeRegController.businessIndex == 0 ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
                           child: Text(
-                            "${'vendor_will_pay'.tr} ${Get.find<SplashController>().configModel!.adminCommission}% ${'commission_to'.tr} ${Get.find<SplashController>().configModel!.businessName} ${'from_each_order_You_will_get_access_of_all'.tr}",
-                            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)), textAlign: TextAlign.justify, textScaler: const TextScaler.linear(1.1),
+                            "${'store_will_pay'.tr} ${Get.find<SplashController>().configModel!.adminCommission}% ${'commission_to'.tr} ${Get.find<SplashController>().configModel!.businessName} ${'from_each_order_You_will_get_access_of_all'.tr}",
+                            style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7)), textAlign: TextAlign.justify, textScaler: const TextScaler.linear(1.1),
                           ),
                         ) : Column(children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
                             child: Text(
-                              'run_vendor_by_purchasing_subscription_packages'.tr,
-                              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)), textAlign: TextAlign.justify, textScaler: const TextScaler.linear(1.1),
+                              'run_store_by_purchasing_subscription_packages'.tr,
+                              style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7)), textAlign: TextAlign.justify, textScaler: const TextScaler.linear(1.1),
                             ),
                           ),
                           const SizedBox(height: Dimensions.paddingSizeLarge),
@@ -1000,7 +734,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
           CustomAssetImageWidget(Images.shopIcon, height: 20, width: 20, color: Theme.of(context).textTheme.bodyLarge!.color),
           const SizedBox(width: Dimensions.paddingSizeSmall),
 
-          Text('vendor_information'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault)),
+          Text('store_information'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault)),
         ]),
         const SizedBox(height: Dimensions.paddingSizeSmall),
 
@@ -1047,8 +781,8 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                   const SizedBox(height: Dimensions.paddingSizeSmall),
 
                   CustomTextField(
-                    titleText: 'write_vendor_name'.tr,
-                    labelText: 'vendor_name'.tr,
+                    titleText: 'write_store_name'.tr,
+                    labelText: 'store_name'.tr,
                     controller: _nameController[_tabController!.index],
                     focusNode: _nameFocus[_tabController!.index],
                     nextFocus: _tabController!.index != _languageList!.length-1 ? _addressFocus[_tabController!.index] : _addressFocus[0],
@@ -1056,7 +790,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                     prefixImage: Images.shopIcon,
                     capitalization: TextCapitalization.words,
                     required: true,
-                    validator: (value) => ValidateCheck.validateEmptyText(value, "vendor_name_field_is_required".tr),
+                    validator: (value) => ValidateCheck.validateEmptyText(value, "store_name_field_is_required".tr),
                   ),
                   const SizedBox(height: Dimensions.paddingSizeExtraOverLarge),
 
@@ -1064,7 +798,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                   const SizedBox(height: Dimensions.paddingSizeExtraOverLarge),
 
                   CustomTextField(
-                    titleText: 'write_vendor_address'.tr,
+                    titleText: 'write_store_address'.tr,
                     labelText: 'address'.tr,
                     controller: _addressController[0],
                     focusNode: _addressFocus[0],
@@ -1073,7 +807,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                     capitalization: TextCapitalization.sentences,
                     maxLines: 3,
                     required: true,
-                    validator: (value) => ValidateCheck.validateEmptyText(value, "vendor_address_field_is_required".tr),
+                    validator: (value) => ValidateCheck.validateEmptyText(value, "store_address_field_is_required".tr),
                   ),
 
                 ]),
@@ -1109,9 +843,28 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
           margin: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
           child: Column(children: [
 
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
 
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(child: Column(children: [
+
+                CustomTextField(
+                  titleText: 'write_vat_tax_amount'.tr,
+                  labelText: 'vat_tax'.tr,
+                  controller: _vatController,
+                  focusNode: _vatFocus,
+                  inputAction: TextInputAction.done,
+                  inputType: TextInputType.number,
+                  prefixImage: Images.vatTaxIcon,
+                  isAmount: true,
+                  suffixChild: CustomToolTip(
+                    message: 'please_provide_vat_tax_amount'.tr,
+                    preferredDirection: AxisDirection.down,
+                    iconColor: Theme.of(context).disabledColor,
+                  ),
+                  required: true,
+                  validator: (value) => ValidateCheck.validateEmptyText(value, "store_vat_tax_field_is_required".tr),
+                ),
+                const SizedBox(height: Dimensions.paddingSizeExtraOverLarge),
 
                 InkWell(
                   onTap: () {
@@ -1169,14 +922,14 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                           width: 150, height: 120,
                           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 
-                            Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withValues(alpha: 0.6)),
+                            Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withOpacity(0.6)),
                             const SizedBox(height: Dimensions.paddingSizeSmall),
 
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
                               child: Text(
-                                '${'upload_vendor_logo'.tr} (${'1:1'})',
-                                style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)), textAlign: TextAlign.center,
+                                '${'upload_store_logo'.tr} (${'1:1'})',
+                                style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7)), textAlign: TextAlign.center,
                               ),
                             ),
 
@@ -1184,7 +937,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                               padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
                               child: Text(
                                 'upload_jpg_png_gif_maximum_2_mb'.tr,
-                                style: robotoRegular.copyWith(color: Theme.of(context).disabledColor.withValues(alpha: 0.6), fontSize: Dimensions.fontSizeOverSmall),
+                                style: robotoRegular.copyWith(color: Theme.of(context).disabledColor.withOpacity(0.6), fontSize: Dimensions.fontSizeOverSmall),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -1198,14 +951,13 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                       child: InkWell(
                         onTap: () => storeRegController.pickImage(true, false),
                         child: DottedBorder(
-                          options: RoundedRectDottedBorderOptions(
-                            color: Theme.of(context).primaryColor,
-                            strokeWidth: 1,
-                            strokeCap: StrokeCap.butt,
-                            dashPattern: const [5, 5],
-                            padding: const EdgeInsets.all(0),
-                            radius: const Radius.circular(Dimensions.radiusDefault),
-                          ),
+                          // color: Theme.of(context).primaryColor,
+                          // strokeWidth: 1,
+                          // strokeCap: StrokeCap.butt,
+                          // dashPattern: const [5, 5],
+                          // padding: const EdgeInsets.all(0),
+                          // borderType: BorderType.RRect,
+                          // radius: const Radius.circular(Dimensions.radiusDefault),
                           child: Center(
                             child: Visibility(
                               visible: storeRegController.pickedLogo != null,
@@ -1240,18 +992,18 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                           width: context.width, height: 120,
                           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
 
-                            Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withValues(alpha: 0.6)),
+                            Icon(CupertinoIcons.photo_camera_solid, size: 30, color: Theme.of(context).disabledColor.withOpacity(0.6)),
 
                             Text(
-                              '${'upload_vendor_cover'.tr} (${'3:1'})',
-                              style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7), fontSize: Dimensions.fontSizeExtraSmall), textAlign: TextAlign.center,
+                              '${'upload_store_cover'.tr} (${'3:1'})',
+                              style: robotoRegular.copyWith(color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.7), fontSize: Dimensions.fontSizeExtraSmall), textAlign: TextAlign.center,
                             ),
 
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
                               child: Text(
                                 'upload_jpg_png_gif_maximum_2_mb'.tr,
-                                style: robotoRegular.copyWith(color: Theme.of(context).disabledColor.withValues(alpha: 0.6), fontSize: Dimensions.fontSizeOverSmall),
+                                style: robotoRegular.copyWith(color: Theme.of(context).disabledColor.withOpacity(0.6), fontSize: Dimensions.fontSizeOverSmall),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -1266,14 +1018,13 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                       child: InkWell(
                         onTap: () => storeRegController.pickImage(false, false),
                         child: DottedBorder(
-                          options: RoundedRectDottedBorderOptions(
-                            color: Theme.of(context).primaryColor,
-                            strokeWidth: 1,
-                            strokeCap: StrokeCap.butt,
-                            dashPattern: const [5, 5],
-                            padding: const EdgeInsets.all(0),
-                            radius: const Radius.circular(Dimensions.radiusDefault),
-                          ),
+                          // color: Theme.of(context).primaryColor,
+                          // strokeWidth: 1,
+                          // strokeCap: StrokeCap.butt,
+                          // dashPattern: const [5, 5],
+                          // padding: const EdgeInsets.all(0),
+                          // borderType: BorderType.RRect,
+                          // radius: const Radius.circular(Dimensions.radiusDefault),
                           child: Center(
                             child: Visibility(
                               visible: storeRegController.pickedCover != null,
@@ -1298,254 +1049,6 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
 
             ]),
 
-          ]),
-        ),
-        const SizedBox(height: Dimensions.paddingSizeDefault),
-
-        Row(children: [
-          const Icon(Icons.business),
-          const SizedBox(width: Dimensions.paddingSizeSmall),
-          Text('business_tin'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault))
-        ]),
-        const SizedBox(height: Dimensions.paddingSizeSmall),
-
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-            boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 10, offset: const Offset(0, 1))],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: Dimensions.paddingSizeDefault),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-
-                CustomTextField(
-                  hintText: 'taxpayer_identification_number_tin'.tr,
-                  labelText: 'tin'.tr,
-                  controller: _tinNumberController,
-                  inputAction: TextInputAction.done,
-                  inputType: TextInputType.number,
-                  required: true,
-                  validator: (value) => ValidateCheck.validateEmptyText(value, "vendor_tin_field_is_required".tr),
-                ),
-                const SizedBox(height: Dimensions.paddingSizeExtremeLarge),
-
-                InkWell(
-                  onTap: () async {
-                    final DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      firstDate: DateTime.now(),
-                      initialDate: DateTime.now(),
-                      lastDate: DateTime(2100),
-                    );
-
-                    if (pickedDate != null) {
-                      storeRegController.setTinExpireDate(pickedDate);
-                    }
-                  },
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                          border: Border.all(color: Theme.of(context).disabledColor, width: 0.5),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
-                        child: Row(children: [
-                          Expanded(child: Text(
-                            storeRegController.tinExpireDate ?? 'select_date'.tr,
-                            style: robotoMedium,
-                          )),
-                          Icon(Icons.calendar_month, color: Theme.of(context).primaryColor),
-                        ]),
-                      ),
-
-                      Positioned(
-                        left: 10, top: -15,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).cardColor,
-                          ),
-                          padding: const EdgeInsets.all(5),
-                          child: Row(
-                            children: [
-                              Text('expire_date'.tr, style: robotoRegular.copyWith(color: Theme.of(context).disabledColor)),
-                              Text(' *', style: robotoRegular.copyWith(color: Colors.red)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-              ]),
-            ),
-            const SizedBox(width: Dimensions.paddingSizeExtraLarge),
-
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                Row(children: [
-                  Text('tin_certificate'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge)),
-                  Text('(${'vehicle_doc_format'.tr})', style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor)),
-
-                ]),
-
-                const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                storeRegController.tinFiles!.isEmpty ? InkWell(
-                  onTap: () {
-                    storeRegController.pickFiles();
-                  },
-                  child: DottedBorder(
-                    options: RoundedRectDottedBorderOptions(
-                      radius: const Radius.circular(Dimensions.radiusDefault),
-                      dashPattern: const [8, 4],
-                      strokeWidth: 1,
-                      color: Get.isDarkMode ? Colors.white.withValues(alpha: 0.2) : const Color(0xFFE5E5E5),
-                    ),
-                    child: Container(
-                      height: 120,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Get.isDarkMode ? Colors.white.withValues(alpha: 0.05) : const Color(0xFFFAFAFA),
-                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(width: Dimensions.paddingSizeSmall),
-                          CustomAssetImageWidget(Images.uploadIcon, height: 40, width: 40, color: Get.isDarkMode ? Colors.grey : null),
-                          const SizedBox(width: Dimensions.paddingSizeSmall),
-                          RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'click_to_upload'.tr,
-                                  style: robotoBold.copyWith(fontSize: Dimensions.fontSizeSmall, color: Colors.blue),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ) : DottedBorder(
-                  options: RoundedRectDottedBorderOptions(
-                    radius: const Radius.circular(Dimensions.radiusDefault),
-                    dashPattern: const [8, 4],
-                    strokeWidth: 1,
-                    color: const Color(0xFFE5E5E5),
-                  ),
-                  child: SizedBox(
-                    height: 120,
-                    width: double.infinity,
-                    child: Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(left: Dimensions.paddingSizeDefault),
-                          height: 120,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFAFAFA),
-                            borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                          ),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: SizedBox(
-                                  height: 120,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Builder(
-                                        builder: (context) {
-                                          final file = storeRegController.tinFiles![0].files[0];
-                                          final fileName = file.name.toLowerCase();
-
-                                          if (fileName.endsWith('.pdf')) {
-                                            // Show PDF preview
-                                            return Row(
-                                              children: [
-                                                const Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
-                                                const SizedBox(width: 10),
-                                                Expanded(
-                                                  child: Text(
-                                                    fileName,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 35),
-                                              ],
-                                            );
-                                          } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
-                                            // Show Word document preview
-                                            return Row(
-                                              children: [
-                                                const Icon(Icons.description, size: 40, color: Colors.blue),
-                                                const SizedBox(width: 10),
-                                                Expanded(
-                                                  child: Text(
-                                                    fileName,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 35),
-                                              ],
-                                            );
-                                          } else {
-                                            // Show generic file preview
-                                            return Row(
-                                              children: [
-                                                const Icon(Icons.insert_drive_file, size: 40, color: Colors.grey),
-                                                const SizedBox(width: 10),
-                                                Expanded(
-                                                  child: Text(
-                                                    fileName,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 35),
-                                              ],
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: InkWell(
-                            onTap: () {
-                              storeRegController.removeFile(0);
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(Dimensions.paddingSizeSmall),
-                              child: Icon(Icons.delete_forever, color: Colors.red),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-              ]),
-            ),
           ]),
         ),
         const SizedBox(height: Dimensions.paddingSizeDefault),
@@ -1725,7 +1228,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-            border: Border.all(color: Theme.of(context).disabledColor.withValues(alpha: 0.3)),
+            border: Border.all(color: Theme.of(context).disabledColor.withOpacity(0.3)),
           ),
           width: 165,
           child: CustomButton(
@@ -1738,7 +1241,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
               _fNameController.text = '';
               _lNameController.text = '';
               _lNameController.text = '';
-              _tinNumberController.text = '';
+              _vatController.text = '';
               _passwordController.text = '';
               _confirmPasswordController.text = '';
               for(int i =0; i< _nameController.length; i++ ){
@@ -1748,6 +1251,8 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                 _addressController[i].text = '';
               }
               storeRegController.resetStoreRegistration();
+
+              //profileController.initData(isUpdate: true);
             },
             buttonText: 'reset'.tr,
             isBold: false,
@@ -1778,7 +1283,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
           isLoading: storeRegController.isLoading,
           margin: EdgeInsets.all(ResponsiveHelper.isDesktop(context) ? 0 : Dimensions.paddingSizeSmall),
           buttonText: storeRegController.storeStatus == 0.1 && !ResponsiveHelper.isDesktop(context) ? 'next'.tr : 'submit'.tr,
-          color: Theme.of(context).primaryColor,
+          color: /*ResponsiveHelper.isDesktop(context) ? Theme.of(context).disabledColor.withOpacity(0.9) :*/ Theme.of(context).primaryColor,
           onPressed: (storeRegController.storeStatus == 0.1 && !ResponsiveHelper.isDesktop(context) && !storeRegController.inZone)
               || (ResponsiveHelper.isDesktop(context) && !storeRegController.inZone) ? null :() {
             bool defaultDataNull = false;
@@ -1790,7 +1295,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                 break;
               }
             }
-            String tin = _tinNumberController.text.trim();
+            String vat = _vatController.text.trim();
             String minTime = storeRegController.storeMinTime;
             String maxTime = storeRegController.storeMaxTime;
             String fName = _fNameController.text.trim();
@@ -1813,18 +1318,18 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                 if(defaultDataNull) {
                   _scrollToKey(_storeInfoScrollKey);
                 }
-                if(tin.isEmpty){
+                if(vat.isEmpty){
                   _scrollToKey(_storePrefScrollKey);
                 }
                 if(_formKeyFirst!.currentState!.validate()){
                   if(defaultDataNull) {
-                    showCustomSnackBar('enter_vendor_name'.tr);
+                    showCustomSnackBar('enter_store_name'.tr);
                   }else if(storeRegController.pickedLogo == null) {
                     _scrollToKey(_storeInfoScrollKey);
-                    showCustomSnackBar('select_vendor_logo'.tr);
+                    showCustomSnackBar('select_store_logo'.tr);
                   }else if(storeRegController.pickedCover == null) {
                     _scrollToKey(_storeInfoScrollKey);
-                    showCustomSnackBar('select_vendor_cover_photo'.tr);
+                    showCustomSnackBar('select_store_cover_photo'.tr);
                   }else if(storeRegController.selectedZoneIndex == -1) {
                     _scrollToKey(_locationInfoScrollKey);
                     showCustomSnackBar('please_select_zone'.tr);
@@ -1832,14 +1337,10 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                     _scrollToKey(_locationInfoScrollKey);
                     showCustomSnackBar('please_select_module_first'.tr);
                   }else if(storeRegController.restaurantLocation == null) {
-                    showCustomSnackBar('set_vendor_location'.tr);
+                    showCustomSnackBar('set_store_location'.tr);
                     _scrollToKey(_locationInfoScrollKey);
-                  }else if(tin.isEmpty) {
-                    showCustomSnackBar('enter_tin'.tr);
-                  }else if(storeRegController.tinExpireDate == null || storeRegController.tinExpireDate!.isEmpty) {
-                    showCustomSnackBar('select_tin_expire_date'.tr);
-                  }else if(storeRegController.tinFiles == null || storeRegController.tinFiles!.isEmpty) {
-                    showCustomSnackBar('upload_tin_certificate'.tr);
+                  }else if(vat.isEmpty) {
+                    showCustomSnackBar('enter_vat_amount'.tr);
                   }else if(minTime.isEmpty) {
                     showCustomSnackBar('enter_minimum_delivery_time'.tr);
                   }else if(maxTime.isEmpty) {
@@ -1858,19 +1359,15 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
               }else{
                 if(ResponsiveHelper.isDesktop(context)){
                   if(defaultDataNull) {
-                    showCustomSnackBar('enter_vendor_name'.tr);
+                    showCustomSnackBar('enter_store_name'.tr);
                   }else if(storeRegController.restaurantLocation == null) {
-                    showCustomSnackBar('set_vendor_location'.tr);
+                    showCustomSnackBar('set_store_location'.tr);
                   }else if(storeRegController.selectedZoneIndex == -1) {
                     showCustomSnackBar('please_select_zone'.tr);
                   }else if(storeRegController.selectedModuleIndex == -1) {
                     showCustomSnackBar('please_select_module_first'.tr);
-                  }else if(tin.isEmpty) {
-                    showCustomSnackBar('enter_tin'.tr);
-                  }else if(storeRegController.tinExpireDate == null || storeRegController.tinExpireDate!.isEmpty) {
-                    showCustomSnackBar('select_tin_expire_date'.tr);
-                  }else if(storeRegController.tinFiles == null || storeRegController.tinFiles!.isEmpty) {
-                    showCustomSnackBar('upload_tin_certificate'.tr);
+                  }else if(vat.isEmpty) {
+                    showCustomSnackBar('enter_vat_amount'.tr);
                   }else if(minTime.isEmpty) {
                     showCustomSnackBar('enter_minimum_delivery_time'.tr);
                   }else if(maxTime.isEmpty) {
@@ -1880,9 +1377,9 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                   }else if(valid && double.parse(minTime) > double.parse(maxTime)) {
                     showCustomSnackBar('maximum_delivery_time_can_not_be_smaller_then_minimum_delivery_time'.tr);
                   }else if(storeRegController.pickedLogo == null) {
-                    showCustomSnackBar('select_vendor_logo'.tr);
+                    showCustomSnackBar('select_store_logo'.tr);
                   }else if(storeRegController.pickedCover == null) {
-                    showCustomSnackBar('select_vendor_cover_photo'.tr);
+                    showCustomSnackBar('select_store_cover_photo'.tr);
                   }
                 }
                 if((storeRegController.storeStatus == 0.6 && _formKeySecond!.currentState!.validate()) || ResponsiveHelper.isDesktop(context)){
@@ -1926,7 +1423,7 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
               }
 
               storeRegController.registerStore(StoreBodyModel(
-                translation: jsonEncode(translation), minDeliveryTime: minTime,
+                translation: jsonEncode(translation), tax: vat, minDeliveryTime: minTime,
                 maxDeliveryTime: maxTime, lat: storeRegController.restaurantLocation!.latitude.toString(), email: email,
                 lng: storeRegController.restaurantLocation!.longitude.toString(), fName: fName, lName: lName, phone: _countryDialCode! + phone,
                 password: password, zoneId: storeRegController.zoneList![storeRegController.selectedZoneIndex!].id.toString(),
@@ -1934,15 +1431,58 @@ class _StoreRegistrationScreenState extends State<StoreRegistrationScreen> with 
                 deliveryTimeType: storeRegController.storeTimeUnit,
                 businessPlan: storeRegController.businessIndex == 0 ? 'commission' : 'subscription',
                 packageId: storeRegController.businessIndex == 0 ? '' : storeRegController.packageModel!.packages![storeRegController.activeSubscriptionIndex].id!.toString(),
-                pickUpZoneIds: storeRegController.pickupZoneIdList.map((e) => e.toString()).toList(),
-                tin: tin, tinExpireDate: storeRegController.tinExpireDate,
               ));
+
 
             }
           },
         ),
       );
     });
+  }
+
+  void stepOne(bool defaultDataNull, String vat, String minTime, String maxTime, bool valid, StoreRegistrationController storeRegController) {
+    if(defaultDataNull) {
+      _scrollToKey(_storeInfoScrollKey);
+    }
+    if(vat.isEmpty){
+      _scrollToKey(_storePrefScrollKey);
+    }
+    if(_formKeyFirst!.currentState!.validate()){
+      if(defaultDataNull) {
+        showCustomSnackBar('enter_store_name'.tr);
+      }else if(storeRegController.pickedLogo == null) {
+        _scrollToKey(_storeInfoScrollKey);
+        showCustomSnackBar('select_store_logo'.tr);
+      }else if(storeRegController.pickedCover == null) {
+        _scrollToKey(_storeInfoScrollKey);
+        showCustomSnackBar('select_store_cover_photo'.tr);
+      }else if(storeRegController.selectedZoneIndex == -1) {
+        _scrollToKey(_locationInfoScrollKey);
+        showCustomSnackBar('please_select_zone'.tr);
+      }else if(storeRegController.selectedModuleIndex == -1) {
+        _scrollToKey(_locationInfoScrollKey);
+        showCustomSnackBar('please_select_module_first'.tr);
+      }else if(storeRegController.restaurantLocation == null) {
+        showCustomSnackBar('set_store_location'.tr);
+        _scrollToKey(_locationInfoScrollKey);
+      }else if(vat.isEmpty) {
+        showCustomSnackBar('enter_vat_amount'.tr);
+      }else if(minTime.isEmpty) {
+        showCustomSnackBar('enter_minimum_delivery_time'.tr);
+      }else if(maxTime.isEmpty) {
+        showCustomSnackBar('enter_maximum_delivery_time'.tr);
+      }else if(!valid) {
+        _scrollToKey(_storePrefScrollKey);
+        showCustomSnackBar('please_enter_the_max_min_delivery_time'.tr);
+      }else if(valid && double.parse(minTime) > double.parse(maxTime)) {
+        showCustomSnackBar('maximum_delivery_time_can_not_be_smaller_then_minimum_delivery_time'.tr);
+      }else{
+        _scrollController.jumpTo(_scrollController.position.minScrollExtent);
+        storeRegController.storeStatusChange(0.6);
+        firstTime = true;
+      }
+    }
   }
 
   void _scrollToKey(GlobalKey scrollKey) {

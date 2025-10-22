@@ -4,7 +4,6 @@ import 'package:sixam_mart/features/item/domain/models/item_model.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
-
 class OrganicTag extends StatelessWidget {
   final double? fontSize;
   final Item item;
@@ -19,7 +18,7 @@ class OrganicTag extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall, vertical: 3),
       margin: EdgeInsets.only(bottom: fromDetails ? Dimensions.paddingSizeSmall : 0),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+        color: Theme.of(context).primaryColor  ,
         borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
       ),
       child: Text(

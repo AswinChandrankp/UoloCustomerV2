@@ -28,8 +28,8 @@ class ReviewItemCard extends StatelessWidget {
     bool isShop = Get.find<SplashController>().module != null && Get.find<SplashController>().module!.moduleType.toString() == AppConstants.ecommerce;
     bool isFood = Get.find<SplashController>().module != null && Get.find<SplashController>().module!.moduleType.toString() == AppConstants.food;
 
-    double? discount = item?.discount;
-    String? discountType = item?.discountType;
+    double? discount = item?.storeDiscount == 0 ? item?.discount : item?.storeDiscount;
+    String? discountType = item?.storeDiscount == 0 ? item?.discountType : 'percent';
 
     return TextHover(
       builder: (hovered) {
@@ -40,7 +40,7 @@ class ReviewItemCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
               color: Theme.of(context).cardColor,
-              boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))],
+              boxShadow: const [BoxShadow(color: Colors.grey  , spreadRadius: 1, blurRadius: 5, offset: Offset(0, 1))],
             ),
             child: CustomInkWell(
               onTap: () => Get.find<ItemController>().navigateToItemPage(item, context),
@@ -126,7 +126,7 @@ class ReviewItemCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
               color: Theme.of(context).cardColor,
-              boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))],
+              boxShadow: const [BoxShadow(color: Colors.grey  , spreadRadius: 1, blurRadius: 5, offset: Offset(0, 1))],
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
@@ -179,18 +179,18 @@ class ReviewItemCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimensions.radiusDefault), topRight: Radius.circular(Dimensions.radiusDefault)),
                               color: Theme.of(context).cardColor,
-                              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))],
+                              boxShadow: const [BoxShadow(color: Colors.black  , spreadRadius: 1, blurRadius: 5, offset: Offset(0, 1))],
                             ),
                             child: isFood ? Column(
                               crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                 const SizedBox(height: Dimensions.paddingSizeExtraSmall),
 
                               Text(
-                                item?.storeName ?? '', maxLines: 1, overflow: TextOverflow.ellipsis,
+                                item!.storeName!, maxLines: 1, overflow: TextOverflow.ellipsis,
                                 style: robotoRegular.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeSmall),
                               ),
 
-                              Text(item?.name ?? '', maxLines: 1, overflow: TextOverflow.ellipsis, style: robotoBold),
+                              Text(item!.name!, maxLines: 1, overflow: TextOverflow.ellipsis, style: robotoBold),
 
                               item!.ratingCount! > 0 ? Row(mainAxisAlignment: isFeatured ? MainAxisAlignment.start : MainAxisAlignment.center, children: [
                                 Icon(Icons.star, size: 14, color: Theme.of(context).primaryColor),
@@ -275,7 +275,7 @@ class ReviewItemCard extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(112),
                                     color: Theme.of(context).cardColor,
-                                    boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withValues(alpha: 0.1), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))],
+                                    boxShadow: [BoxShadow(color: Theme.of(context).primaryColor  , spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 1))],
                                   ),
                                   child: Text("add".tr, style: robotoBold.copyWith(color: Theme.of(context).primaryColor)),
                                 ),

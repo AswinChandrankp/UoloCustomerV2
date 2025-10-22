@@ -5,11 +5,11 @@ import 'package:sixam_mart/features/item/domain/models/item_model.dart';
 import 'package:sixam_mart/features/cart/domain/models/cart_model.dart';
 
 abstract class ItemServiceInterface {
-  Future<ItemModel?> getPopularItemList({required String type, DataSourceEnum? source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice});
-  Future<ItemModel?> getReviewedItemList({required String type, DataSourceEnum? source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice});
+  Future<List<Item>?> getPopularItemList(String type, DataSourceEnum? source);
+  Future<ItemModel?> getReviewedItemList(String type, DataSourceEnum? source);
   Future<ItemModel?> getFeaturedCategoriesItemList(DataSourceEnum? source);
   Future<List<Item>?> getRecommendedItemList(String type, DataSourceEnum? source);
-  Future<ItemModel?> getDiscountedItemList({required String type, DataSourceEnum? source, required int offset, String? search, List<int>? categoryIds, List<String>? filter, int? rating, double? minPrice, double? maxPrice});
+  Future<List<Item>?> getDiscountedItemList(String type, DataSourceEnum? source);
   Future<Item?> getItemDetails(int? itemID);
   Future<BasicMedicineModel?> getBasicMedicine(DataSourceEnum source);
   Future<List<CommonConditionModel>?> getCommonConditions();

@@ -29,7 +29,7 @@ class RegistrationCardWidget extends StatelessWidget {
         height: 200,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+          color: Theme.of(context).primaryColor  ,
         ),
         child: Row(children: [
           Expanded(flex: 6, child: Padding(

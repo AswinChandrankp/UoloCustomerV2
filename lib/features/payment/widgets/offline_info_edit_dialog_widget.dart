@@ -80,7 +80,7 @@ class _OfflineInfoEditDialogWidgetState extends State<OfflineInfoEditDialogWidge
 
                     CustomButton(
                       width: 100,
-                      color: Theme.of(context).disabledColor.withValues(alpha: 0.5),
+                      color: Theme.of(context).disabledColor  ,
                       textColor: Theme.of(context).textTheme.bodyMedium!.color,
                       buttonText: 'cancel'.tr,
                       onPressed: () => Get.back(),
@@ -102,7 +102,6 @@ class _OfflineInfoEditDialogWidgetState extends State<OfflineInfoEditDialogWidge
                               "_method": "put",
                               "order_id": widget.orderId.toString(),
                               "method_id": widget.offlinePayment.data!.methodId.toString(),
-                              "update_payment_info" : "1",
                             };
 
                             for(int i=0; i<paymentController.informationControllerList.length; i++){

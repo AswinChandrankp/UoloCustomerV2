@@ -106,7 +106,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             addTitle ? Padding(
                               padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeDefault),
                               child: Text(
-                                DateConverter.convertTodayYesterdayDate(notificationController.notificationList![index].createdAt!),
+                                DateConverter.dateTimeStringToDateOnly(notificationController.notificationList![index].createdAt!),
                                 style: robotoMedium.copyWith(color: Theme.of(context).hintColor),
                               ),
                             ) : const SizedBox(),
@@ -134,16 +134,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).cardColor,
+                                  color: isSeen ? Theme.of(context).cardColor : Theme.of(context).hintColor  ,
                                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                  boxShadow: isSeen ? [] : [const BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)],
                                 ),
                                 padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
                                 child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
+                                      color: Theme.of(context).primaryColor  ,
                                       borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                                     ),
                                     padding: const EdgeInsets.all(Dimensions.paddingSizeExtraSmall + 1),
@@ -161,7 +160,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       Expanded(
                                         child: Text(
                                           notificationController.notificationList![index].data!.title ?? '', maxLines: 1, overflow: TextOverflow.ellipsis,
-                                          style: robotoBold.copyWith(color: isSeen ? Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.5) : Theme.of(context).textTheme.bodyLarge?.color,
+                                          style: robotoBold.copyWith(color: isSeen ? Theme.of(context).textTheme.bodyLarge?.color   : Theme.of(context).textTheme.bodyLarge?.color,
                                             fontWeight: isSeen ? FontWeight.w500 : FontWeight.w700,
                                           ),
                                         ),
@@ -182,17 +181,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       Expanded(
                                         child: Text(
                                           notificationController.notificationList![index].data!.description ?? '', maxLines: 2, overflow: TextOverflow.ellipsis,
-                                          style: robotoRegular.copyWith(color: isSeen ? Theme.of(context).disabledColor : Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.7)),
+                                          style: robotoRegular.copyWith(color: isSeen ? Theme.of(context).disabledColor : Theme.of(context).textTheme.bodyLarge?.color  ),
                                         ),
                                       ),
                                       const SizedBox(width: Dimensions.paddingSizeSmall),
 
                                       notificationController.notificationList![index].data!.type == 'push_notification' ? ClipRRect(
                                         borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                                        child: notificationController.notificationList![index].imageFullUrl!=null ? CustomImage(
+                                        child: CustomImage(
+                                          placeholder: Images.placeholder,
                                           image: '${notificationController.notificationList![index].imageFullUrl}',
                                           height: 45, width: 75, fit: BoxFit.cover,
-                                        ): const SizedBox(),
+                                        ),
                                       ) : const SizedBox.shrink(),
 
                                     ]),

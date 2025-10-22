@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sixam_mart/common/widgets/custom_snackbar.dart';
-import 'package:sixam_mart/features/checkout/controllers/checkout_controller.dart';
 import 'package:sixam_mart/features/profile/controllers/profile_controller.dart';
 import 'package:sixam_mart/features/address/domain/models/address_model.dart';
 import 'package:sixam_mart/features/parcel/controllers/parcel_controller.dart';
@@ -159,8 +158,6 @@ class _ReceiverDetailsBottomSheetWidgetState extends State<ReceiverDetailsBottom
                   Get.find<ParcelController>().pickupAddress!,
                   Get.find<ParcelController>().destinationAddress!,
                 ));
-                Get.find<CheckoutController>().updateFirstTime();
-                Get.find<CheckoutController>().updateFirstTimeCodActive();
               }
             },
           ),

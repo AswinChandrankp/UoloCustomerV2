@@ -34,7 +34,7 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //   final bool fromCart;
 //   final double total;
 //   final   double? maxCodOrderAmount;
- 
+
 //    Placeorderbottomsheet({super.key, e, required this.checkoutController,required this.placeOrderBody,required this.isCashOnDeliveryActive, required this.fromCart, required this.total, this.maxCodOrderAmount});
 
 //   @override
@@ -42,7 +42,6 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 // }
 
 // class _PlaceorderbottomsheetState extends State<Placeorderbottomsheet> {
-
 
 //   @override
 //   void initState() {
@@ -67,7 +66,6 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //     // Simulate order placement after 30 seconds
 //     Future.delayed(Duration(seconds: _progressDuration), () {
 
-
 //       if (!_isOrderCanceled) {
 //        widget.checkoutController.placeOrder(widget.placeOrderBody,widget.checkoutController.store!.zoneId, widget. total,widget.  maxCodOrderAmount, widget.fromCart,widget.isCashOnDeliveryActive!,widget.checkoutController.pickedPrescriptions);
 //         // _placeOrder();
@@ -79,7 +77,7 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //     int totalSteps = _progressDuration * 10; // 30 seconds * 10 steps per second
 
 //     int currentStep = 0;
-//     Timer.periodic(interval, (Timer timer) {      
+//     Timer.periodic(interval, (Timer timer) {
 
 //       setState(() {
 //         _progressValue = (currentStep / totalSteps);
@@ -114,19 +112,16 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //     bool isLoggedIn = AuthHelper.isLoggedIn();
 //     bool isDesktop = ResponsiveHelper.isDesktop(context);
 
-
 //     return SizedBox(
 //       width: 550,
 //       child: Container(
 //         constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
 //         decoration: BoxDecoration(
 //           color: Colors.transparent,
-         
-//         ),
-      
-//         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
-         
+//         ),
+
+//         child: Column(mainAxisSize: MainAxisSize.min, children: [
 
 //           // ResponsiveHelper.isDesktop(context) ? Align(
 //           //   alignment: Alignment.topRight,
@@ -155,11 +150,11 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //               decoration: BoxDecoration(
 //                 borderRadius: BorderRadius.circular(100),
 //                 color: Colors.white,
-            
+
 //               ),
 //               height: 40,
 //               width: 40,
-              
+
 //               child: Icon(Icons.close,size: 30,),
 //             ),
 //           ),
@@ -173,7 +168,7 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //             bottom: Radius.circular(ResponsiveHelper.isDesktop(context) ? Dimensions.radiusLarge : 0),
 //           )
 //             ),
-      
+
 //               padding: EdgeInsets.symmetric(horizontal: isDesktop ? Dimensions.paddingSizeSmall : Dimensions.paddingSizeLarge, vertical: Dimensions.paddingSizeLarge),
 //             child: Flexible(
 //               child: SingleChildScrollView(
@@ -259,7 +254,6 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //     );
 //   }
 // }
-
 
 // import 'dart:async';
 // import 'package:flutter/material.dart';
@@ -454,7 +448,7 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //                                 onTap: () {
 //                                   // Pause timer and show dialog
 //                                   _pauseTimer();
-                                      
+
 //                                   showDialog(
 //                                     context: context,
 //                                     builder: (BuildContext context) {
@@ -501,7 +495,6 @@ import 'package:sixam_mart/features/checkout/widgets/payment_button_new.dart';
 //   }
 // }
 
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -522,7 +515,8 @@ class Placeorderbottomsheet extends StatefulWidget {
     required this.isCashOnDeliveryActive,
     required this.fromCart,
     required this.total,
-    this.maxCodOrderAmount, required this.address,
+    this.maxCodOrderAmount,
+    required this.address,
   });
 
   @override
@@ -533,7 +527,7 @@ class _PlaceorderbottomsheetState extends State<Placeorderbottomsheet> {
   bool _isOrderPlaced = false;
   bool _isOrderCanceled = false;
   bool _isTimerPaused = false;
-  int _progressDuration = 4; 
+  int _progressDuration = 4;
   double _progressValue = 0.0;
   Timer? _timer;
   int _currentStep = 0;
@@ -555,7 +549,6 @@ class _PlaceorderbottomsheetState extends State<Placeorderbottomsheet> {
 
     Future.delayed(Duration(seconds: _progressDuration), () {
       if (!_isOrderCanceled && !_isTimerPaused) {
-
         setState(() {
           _isOrderPlaced = false;
           Get.to(CustomLoaderWidget());
@@ -570,8 +563,6 @@ class _PlaceorderbottomsheetState extends State<Placeorderbottomsheet> {
           widget.isCashOnDeliveryActive!,
           widget.checkoutController.pickedPrescriptions,
         );
-
-        
       }
     });
 
@@ -619,269 +610,295 @@ class _PlaceorderbottomsheetState extends State<Placeorderbottomsheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 550,
-      child: Container(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.9),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // InkWell(
-            //   onTap: () => Get.back(),
-            //   child: Container(
-            //           padding:  const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-            //           decoration: BoxDecoration(
-            //             color: Colors.black.withOpacity(0.1),
-            //             shape: BoxShape.circle,
-            //             boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withOpacity(0.1), blurRadius: 5)],
-            //           ),
-            //           child: const Icon(Icons.close, size: 30,color: Colors.white,),
-            //       ),
-            // ),
-            const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+    return SafeArea(
+      child: SizedBox(
+        width: 550,
+        child: Container(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.9),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // InkWell(
+              //   onTap: () => Get.back(),
+              //   child: Container(
+              //           padding:  const EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+              //           decoration: BoxDecoration(
+              //             color: Colors.black.withOpacity(0.1),
+              //             shape: BoxShape.circle,
+              //             boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withOpacity(0.1), blurRadius: 5)],
+              //           ),
+              //           child: const Icon(Icons.close, size: 30,color: Colors.white,),
+              //       ),
+              // ),
+              const SizedBox(height: 10),
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Placing Your Order",
+                        style: robotoBold.copyWith(fontSize: 20)),
+                    const SizedBox(height: 10),
+                    widget.isCashOnDeliveryActive == true
+                        ? Row(
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 50,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Image.asset(Images.codIcon),
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black12),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              // Text("${widget.placeOrderBody.paymentMethod}", style: robotoMedium.copyWith(fontSize: 16)),
+                              Text(
+                                  "Pay ${widget.total.round()} ${widget.placeOrderBody.paymentMethod!.replaceAll("_", " ")}"),
+                            ],
+                          )
+                        : SizedBox(),
+                    //       const SizedBox(height: 10),
+                    // widget.placeOrderBody.paymentMethod == AppConstants ?   Row(
+                    //     children: [
+                    //       Container(
+                    //         width: 60,
+                    //         height: 50,
+                    //         child: Padding(
+                    //           padding: const EdgeInsets.all(10),
+                    //           child: SvgPicture.asset('assets/image/icons/Vector (1).svg')
+                    //           // Image.asset("assets/image/icons/Vector (1).svg"),
+                    //         ),
+                    //         decoration: BoxDecoration(
+                    //           border: Border.all(color: Colors.black12),
+                    //           borderRadius: BorderRadius.circular(10),
+                    //         ),
+                    //       ),
+                    //       const SizedBox(width: 8),
+                    //       Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text("${ widget.placeOrderBody.paymentMethod ?? 123} promo applied"),
+                    //           Text("${widget.placeOrderBody.couponDiscountAmount ?? 123} saved"),
+                    //         ],
+                    //       ),
+                    //     ],
+                    //   ) : SizedBox(),
 
-                  Text("Placing Your Order", style: robotoBold.copyWith(fontSize: 20)),
-                  const SizedBox(height: 10),
-           widget.isCashOnDeliveryActive == true ?      Row(
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 50,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Image.asset(Images.codIcon),
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black12),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // Text("${widget.placeOrderBody.paymentMethod}", style: robotoMedium.copyWith(fontSize: 16)),
-                      Text("Pay ${widget.total.round()} ${widget.placeOrderBody.paymentMethod!.replaceAll("_", " ") }"),
-                    ],
-                  ) : SizedBox(),
-                //       const SizedBox(height: 10),
-                // widget.placeOrderBody.paymentMethod == AppConstants ?   Row(
-                //     children: [
-                //       Container(
-                //         width: 60,
-                //         height: 50,
-                //         child: Padding(
-                //           padding: const EdgeInsets.all(10),
-                //           child: SvgPicture.asset('assets/image/icons/Vector (1).svg')
-                //           // Image.asset("assets/image/icons/Vector (1).svg"),
-                //         ),
-                //         decoration: BoxDecoration(
-                //           border: Border.all(color: Colors.black12),
-                //           borderRadius: BorderRadius.circular(10),
-                //         ),
-                //       ),
-                //       const SizedBox(width: 8),
-                //       Column(
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           Text("${ widget.placeOrderBody.paymentMethod ?? 123} promo applied"),
-                //           Text("${widget.placeOrderBody.couponDiscountAmount ?? 123} saved"),
-                //         ],
-                //       ),
-                //     ],
-                //   ) : SizedBox(),
-              
-              
-                  // SizedBox(height: 6,),
-                  //  const SizedBox(height: 10),
-                  const SizedBox(height: 10),
-                widget.placeOrderBody.couponCode != null ?   Row(
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 50,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: SvgPicture.asset('assets/image/icons/Vector (1).svg')
-                          // Image.asset("assets/image/icons/Vector (1).svg"),
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black12),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${widget.placeOrderBody.couponCode!.toUpperCase()} promo applied"),
-                          Text("${widget.placeOrderBody.couponDiscountAmount!.round()} saved"),
-                        ],
-                      ),
-                    ],
-                  ) : SizedBox(),
-              
-              
-                  // SizedBox(height: 6,),
-                   const SizedBox(height: 10),
-                   Row(
-                     children: [
-                       Container(
-                        width: 60,
-                        height: 50,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Image.asset(
-                           widget. address!.addressType == 'home' ? Images.homeIcon : widget.address!.addressType == 'office' ? Images.workIcon : Images.otherIcon,
-                            color: Theme.of(context).primaryColor, height: ResponsiveHelper.isDesktop(context) ? 20 : 15, width: ResponsiveHelper.isDesktop(context) ? 25 : 20,
+                    // SizedBox(height: 6,),
+                    //  const SizedBox(height: 10),
+                    const SizedBox(height: 10),
+                    widget.placeOrderBody.couponCode != null
+                        ? Row(
+                            children: [
+                              Container(
+                                width: 60,
+                                height: 50,
+                                child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: SvgPicture.asset(
+                                        'assets/image/icons/Vector (1).svg')
+                                    // Image.asset("assets/image/icons/Vector (1).svg"),
+                                    ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black12),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "${widget.placeOrderBody.couponCode!.toUpperCase()} promo applied"),
+                                  Text(
+                                      "${widget.placeOrderBody.couponDiscountAmount!.round()} saved"),
+                                ],
+                              ),
+                            ],
+                          )
+                        : SizedBox(),
+
+                    // SizedBox(height: 6,),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 50,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Image.asset(
+                              widget.address!.addressType == 'home'
+                                  ? Images.homeIcon
+                                  : widget.address!.addressType == 'office'
+                                      ? Images.workIcon
+                                      : Images.otherIcon,
+                              color: Theme.of(context).primaryColor,
+                              height:
+                                  ResponsiveHelper.isDesktop(context) ? 20 : 15,
+                              width:
+                                  ResponsiveHelper.isDesktop(context) ? 25 : 20,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black12),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black12),
-                          borderRadius: BorderRadius.circular(10),
+                        SizedBox(
+                          width: 6,
                         ),
-                      ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                "Delivering to ${widget.address!.addressType != 'home' && widget.address!.addressType != 'office' ? "" : widget.address.addressType}"),
+                            Text("${widget.address.address}")
+                          ],
+                        ),
+                      ],
+                    ),
+                    // AddressWidget(address: widget.address, fromAddress: false),
+                    const SizedBox(height: 20),
+                    _isOrderPlaced
+                        ? Row(
+                            children: [
+                              Expanded(
+                                child: CustomLinearProgressIndicator(
+                                  value: _progressValue,
+                                ),
+                                //  LinearProgressIndicator(
+                                //   borderRadius: BorderRadius.circular(15),
 
-                      SizedBox(width: 6,),
-                       Column(
-                        crossAxisAlignment:   CrossAxisAlignment.start,
-                        children: [
-                            Text("Delivering to ${  widget. address!.addressType !=  'home' && widget. address!.addressType != 'office'  ? "" :  widget.address.addressType}"),
-                             Text("${widget.address.address}")
-                        ],
-                       ),
-                     ],
-                   ),
-                  // AddressWidget(address: widget.address, fromAddress: false),
-                       const SizedBox(height: 20),
-                 _isOrderPlaced ?  Row(
-                    children: [
-                     Expanded(
-                        child: CustomLinearProgressIndicator(value: _progressValue, ),
-                        //  LinearProgressIndicator(
-                        //   borderRadius: BorderRadius.circular(15),
-
-                        //   value: _progressValue,
-                        //   backgroundColor: Colors.grey[300],
-                        //   valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-                        //   minHeight: 20,
-                        // ),
-                      ) ,
-                      const SizedBox(width: 8),
-                      InkWell(
-                        onTap: () {
-                          _pauseTimer();
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CancellationDialog(
-                                
+                                //   value: _progressValue,
+                                //   backgroundColor: Colors.grey[300],
+                                //   valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                                //   minHeight: 20,
+                                // ),
+                              ),
+                              const SizedBox(width: 8),
+                              InkWell(
+                                onTap: () {
+                                  _pauseTimer();
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CancellationDialog(
                                         icon: Images.warning,
                                         onYesPressed: () {
                                           // Cancel the order
                                           //  Get.back();
-                                      _cancelOrder();
+                                          _cancelOrder();
                                           Get.back(); // Close the dialog
-                                            Get.back();
+                                          Get.back();
                                         },
                                         onNoPressed: () {
                                           // Resume the timer
                                           _resumeTimer();
                                           _startProgress();
-                                             Get.back();
+                                          Get.back();
                                           // Get.back(); // Close the dialog
                                         },
-                                        title: "Are you sure you want to cancel order?",
+                                        title:
+                                            "Are you sure you want to cancel order?",
                                       );
                                     },
                                   );
-                              
-                              // AlertDialog(
-                              //   title: Text("Cancel Order"),
-                              //   content: Text("Are you sure you want to cancel the order?"),
-                              //   actions: [
-                              //     TextButton(
-                              //       onPressed: () {
-                              //         _resumeTimer();
-                              //         Get.back();
-                              //       },
-                              //       child: Text("No"),
-                              //     ),
-                              //     TextButton(
-                              //       onPressed: () {
-                              //         _cancelOrder();
-                              //         Get.back();
-                              //       },
-                              //       child: Text("Yes"),
-                              //     ),
-                              //   ],
-                              // );
-                          
-                          
-                            },
-                          // )
-                        // },
-                        child: Container(
-                          // width: 80,
-                          height: 30,
-                          // decoration: BoxDecoration(
-                          //   border: Border.all(color: Theme.of(context).primaryColor),
-                          //   borderRadius: BorderRadius.circular(10),
-                          // ),
-                          child: Center(child: Text("Cancel",style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),)),
-                        ),
-                      ),
-                    ],
-                  ) : 
-                   SizedBox(height: 10,),
-                  // Container(
-                  //   width: MediaQuery.sizeOf(context).width ,
 
-                  //   child: Container(
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.center,
-                  //           children: [
-                  //             Center(child: Text("Order Placed")),
-                  //             SizedBox(width: 10,),
-                  //             Container(
-                  //               height: 15,
-                  //               width: 15,
-                  //               child: CircularProgressIndicator(
-                  //                 strokeWidth: 2,
-                  //                 color: Theme.of(context).primaryColor,
-                                  
-                  //               ),
-                  //             )
-                  //           ],
-                  //         ),
-                  //   ),
-                  // ), 
-                ],
+                                  // AlertDialog(
+                                  //   title: Text("Cancel Order"),
+                                  //   content: Text("Are you sure you want to cancel the order?"),
+                                  //   actions: [
+                                  //     TextButton(
+                                  //       onPressed: () {
+                                  //         _resumeTimer();
+                                  //         Get.back();
+                                  //       },
+                                  //       child: Text("No"),
+                                  //     ),
+                                  //     TextButton(
+                                  //       onPressed: () {
+                                  //         _cancelOrder();
+                                  //         Get.back();
+                                  //       },
+                                  //       child: Text("Yes"),
+                                  //     ),
+                                  //   ],
+                                  // );
+                                },
+                                // )
+                                // },
+                                child: Container(
+                                  // width: 80,
+                                  height: 30,
+                                  // decoration: BoxDecoration(
+                                  //   border: Border.all(color: Theme.of(context).primaryColor),
+                                  //   borderRadius: BorderRadius.circular(10),
+                                  // ),
+                                  child: Center(
+                                      child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  )),
+                                ),
+                              ),
+                            ],
+                          )
+                        : SizedBox(
+                            height: 10,
+                          ),
+                    // Container(
+                    //   width: MediaQuery.sizeOf(context).width ,
+
+                    //   child: Container(
+                    //     child: Row(
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //           children: [
+                    //             Center(child: Text("Order Placed")),
+                    //             SizedBox(width: 10,),
+                    //             Container(
+                    //               height: 15,
+                    //               width: 15,
+                    //               child: CircularProgressIndicator(
+                    //                 strokeWidth: 2,
+                    //                 color: Theme.of(context).primaryColor,
+
+                    //               ),
+                    //             )
+                    //           ],
+                    //         ),
+                    //   ),
+                    // ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-
 class CustomLinearProgressIndicator extends StatelessWidget {
   final double value;
 
-  const CustomLinearProgressIndicator({Key? key, required this.value}) : super(key: key);
+  const CustomLinearProgressIndicator({Key? key, required this.value})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -897,12 +914,10 @@ class CustomLinearProgressIndicator extends StatelessWidget {
             widthFactor: value,
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [ Colors.deepPurple.shade800 ,
-            Colors.purple.shade400  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight
-                ),
+                gradient: LinearGradient(colors: [
+                  Colors.deepPurple.shade800,
+                  Colors.purple.shade400
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                 borderRadius: BorderRadius.circular(15),
               ),
             ),

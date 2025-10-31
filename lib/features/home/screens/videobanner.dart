@@ -55,12 +55,11 @@ import 'package:video_player/video_player.dart';
 //   }
 // }
 
-
 // class VideoContainer extends StatefulWidget {
 //   // final bool isFashion;
 //   final String link;
 
-//   const VideoContainer({Key? key, 
+//   const VideoContainer({Key? key,
 //   // required this.isFashion,
 //    required this.link}) : super(key: key);
 
@@ -78,22 +77,19 @@ import 'package:video_player/video_player.dart';
 //     VideoPlayerController.asset(
 //       widget.link
 //       //  widget.isFashion ? 'assets/image/static_banner/pinterestdownloader.com-1738566103.44417.mp4' : "assets/image/static_banner/pinterestdownloader.com-1737569803.046238.mp4"
-       
-//        ) 
+
+//        )
 //     //  VideoPlayerController.asset('assets/image/static_banner/pinterestdownloader.com-1737569803.046238.mp4')
 //       ..initialize().then((_) {
-//         setState(() {}); 
-//         _controller.play(); 
+//         setState(() {});
+//         _controller.play();
 //         _controller.setVolume(0);
-        
-        
+
 //       });
-
-
 
 //        _controller.addListener(() {
 //       if (_controller.value.position == _controller.value.duration) {
-      
+
 //         _controller.seekTo(Duration.zero);
 //         _controller.play();
 //       }
@@ -261,7 +257,6 @@ import 'package:video_player/video_player.dart';
 //   }
 // }
 
-
 // class VideoContainer extends StatefulWidget {
 //   // final String link;
 //   final bool shouldReinitialize;
@@ -269,7 +264,7 @@ import 'package:video_player/video_player.dart';
 //   final bool home;
 
 //   const VideoContainer({
-//     Key? key, 
+//     Key? key,
 //     // required this.link,
 //     this.shouldReinitialize = false,
 //     this.isimage = false, required this.home,
@@ -300,8 +295,8 @@ import 'package:video_player/video_player.dart';
 //   // void _initializeController() {
 //   //   _controller = VideoPlayerController.asset(widget.link,)
 //   //     ..initialize().then((_) {
-//   //       setState(() {}); 
-//   //       _controller.play(); 
+//   //       setState(() {});
+//   //       _controller.play();
 //   //       _controller.setVolume(0);
 //   //     });
 
@@ -364,7 +359,7 @@ import 'package:video_player/video_player.dart';
 //                     child: Image.asset(
 //                     "assets/image/static_banner/Uolo App Cover 02.jpg",
 //                       fit: BoxFit.cover,
-                       
+
 //                     ),
 //                   ),
 //                 ) :  ClipRRect(
@@ -378,7 +373,7 @@ import 'package:video_player/video_player.dart';
 //                     child: Image.asset(
 //                        "assets/image/static_banner/Uolo App Cover 00-01.jpg",
 //                       fit: BoxFit.cover,
-                       
+
 //                     ),
 //                   ),
 //                 ),
@@ -401,11 +396,11 @@ import 'package:video_player/video_player.dart';
 //                 //     child: Image.asset(
 //                 //       "assets/image/static_banner/Copy of Copy of black purple modern christmas food pinterest pin (500 x 500_20250219_123752_0000.png",
 //                 //       fit: BoxFit.cover,
-                       
+
 //                 //     ),
 //                 //   ),
 //                 // ),
-        
+
 //             // Existing content
 //             GetBuilder<LocationController>(builder: (locationController) {
 //               return Padding(
@@ -547,7 +542,6 @@ import 'package:video_player/video_player.dart';
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -561,7 +555,7 @@ class VideoContainer extends StatefulWidget {
   const VideoContainer({
     Key? key,
     this.shouldReinitialize = false,
-    this.isImage =true,
+    this.isImage = true,
     required this.home,
   }) : super(key: key);
 
@@ -632,19 +626,16 @@ class _VideoContainerState extends State<VideoContainer> {
             // Overlay content
             _buildTopContent(context),
 
-
             // Container(
-            
+
             //   child: ElevatedButton(
-                
+
             //     child: Text('Play'),
             //     onPressed: () {
             //      Get.find<StoreController>().setzoneid();
             //     },
             //   ),
-            // ),  
-            
-       
+            // ),
           ],
         ),
       ),
@@ -679,14 +670,16 @@ class _VideoContainerState extends State<VideoContainer> {
                       ),
                     ),
                     InkWell(
-                      onTap: () => locationController.navigateToLocationScreen('home'),
-              
+                      onTap: () =>
+                          locationController.navigateToLocationScreen('home'),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             AuthHelper.isLoggedIn()
-                                ? AddressHelper.getUserAddressFromSharedPref()!.addressType!.tr
+                                ? AddressHelper.getUserAddressFromSharedPref()!
+                                    .addressType!
+                                    .tr
                                 : 'your_location'.tr,
                             style: robotoMedium.copyWith(
                               color: Theme.of(context).cardColor,
@@ -697,7 +690,9 @@ class _VideoContainerState extends State<VideoContainer> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.5,
                             child: Text(
-                              AddressHelper.getUserAddressFromSharedPref()?.address ?? "",
+                              AddressHelper.getUserAddressFromSharedPref()
+                                      ?.address ??
+                                  "",
                               style: robotoRegular.copyWith(
                                 color: Theme.of(context).cardColor,
                                 fontSize: Dimensions.fontSizeSmall,

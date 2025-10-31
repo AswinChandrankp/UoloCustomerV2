@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.uolo.delivery"
+        applicationId = "com.uolo.user"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode

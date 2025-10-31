@@ -668,7 +668,6 @@ import '../widgets/bottom_cart_widget.dart';
 //                 ),
 //               ) : const SliverToBoxAdapter(child:SizedBox()),
 
-
 //               ///mobile view..
 //               ResponsiveHelper.isDesktop(context) ? const SliverToBoxAdapter(child:SizedBox()) :
 //               SliverToBoxAdapter(child: Center(child: Container(
@@ -812,7 +811,7 @@ import '../widgets/bottom_cart_widget.dart';
 //               ResponsiveHelper.isDesktop(context) ? const SliverToBoxAdapter(child:SizedBox()) :
 //               Builder(
 //                 builder: (context) {
-                 
+
 //                   return SliverToBoxAdapter(child: Container(
 //                     width: Dimensions.webMaxWidth,
 //                     decoration: BoxDecoration(
@@ -926,12 +925,15 @@ import '../widgets/bottom_cart_widget.dart';
 //   CategoryProduct(this.category, this.products);
 // }
 
-
 class StoreScreen extends StatefulWidget {
   final Store? store;
   final bool fromModule;
   final String slug;
-  const StoreScreen({super.key, required this.store, required this.fromModule, this.slug = ''});
+  const StoreScreen(
+      {super.key,
+      required this.store,
+      required this.fromModule,
+      this.slug = ''});
 
   @override
   State<StoreScreen> createState() => _StoreScreenState();
@@ -942,16 +944,16 @@ class _StoreScreenState extends State<StoreScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _showTitle = false;
   bool isShop = false;
-   
+
   @override
   void initState() {
     super.initState();
     initDataCall();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        print('================================================================ACTIVATE===================================================================');
+      print(
+          '================================================================ACTIVATE===================================================================');
       initCall2();
     });
-
 
     scrollController.addListener(() {
       if (scrollController.offset > 50 && !_showTitle) {
@@ -965,8 +967,7 @@ class _StoreScreenState extends State<StoreScreen> {
       }
     });
   }
-  
-     
+
   // @override
   // void activate() {
   //   // TODO: implement activate
@@ -979,7 +980,8 @@ class _StoreScreenState extends State<StoreScreen> {
   @override
   void dispose() {
     Get.find<StoreController>().clearstoreitems();
-    print('================================================================DISPOSE===================================================================');
+    print(
+        '================================================================DISPOSE===================================================================');
     scrollController.dispose();
 
     super.dispose();
@@ -990,12 +992,16 @@ class _StoreScreenState extends State<StoreScreen> {
     //   Get.find<StoreController>().changeSearchStatus(isUpdate: false);
     // }
     //  Get.find<CheckoutController>().initCheckoutData(widget.store!.id);
-       isShop =  Get.find<SplashController>().module!.moduleType.toString() == AppConstants.ecommerce;
+    isShop = Get.find<SplashController>().module!.moduleType.toString() ==
+        AppConstants.ecommerce;
     Get.find<StoreController>().hideAnimation();
-    await Get.find<StoreController>().getStoreDetails(Store(id: widget.store!.id), widget.fromModule, slug: widget.slug).then((value) {
+    await Get.find<StoreController>()
+        .getStoreDetails(Store(id: widget.store!.id), widget.fromModule,
+            slug: widget.slug)
+        .then((value) {
       Get.find<StoreController>().showButtonAnimation();
     });
-    if(Get.find<CategoryController>().categoryList == null) {
+    if (Get.find<CategoryController>().categoryList == null) {
       Get.find<CategoryController>().getCategoryList(true);
     }
     // Get.find<StoreController>().getStoreBannerList(widget.store!.id ?? Get.find<StoreController>().store!.id);
@@ -1003,97 +1009,109 @@ class _StoreScreenState extends State<StoreScreen> {
     // Get.find<StoreController>().getStoreItemList(widget.store!.id ?? Get.find<StoreController>().store!.id, 1, 'all', false);
 
     scrollController.addListener(() {
-      if(scrollController.position.userScrollDirection == ScrollDirection.reverse){
-        if(Get.find<StoreController>().showFavButton){
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (Get.find<StoreController>().showFavButton) {
           Get.find<StoreController>().changeFavVisibility();
           Get.find<StoreController>().hideAnimation();
         }
-      }else{
-        if(!Get.find<StoreController>().showFavButton){
+      } else {
+        if (!Get.find<StoreController>().showFavButton) {
           Get.find<StoreController>().changeFavVisibility();
           Get.find<StoreController>().showButtonAnimation();
-
         }
       }
     });
   }
-   initCall2() async {
-      bool isLoggedIn = AuthHelper.isLoggedIn();
-  
-        Get.find<CheckoutController>().initCheckoutData(widget.store!.id);
-      // Get.find<CheckoutController>().setGuestAddress(null, isUpdate: false);
-      Get.find<CheckoutController>().setPaymentMethod(0, isUpdate: false);
-      Get.find<CheckoutController>().streetNumberController.text = AddressHelper.getUserAddressFromSharedPref()!.streetNumber ?? '';
-      Get.find<CheckoutController>().houseController.text = AddressHelper.getUserAddressFromSharedPref()!.house ?? '';
-      Get.find<CheckoutController>().floorController.text = AddressHelper.getUserAddressFromSharedPref()!.floor ?? '';
-      Get.find<CheckoutController>().couponController.text = '';
 
-      Get.find<CheckoutController>().getDmTipMostTapped();
-      Get.find<CheckoutController>().setPreferenceTimeForView('', isUpdate: false);
+  initCall2() async {
+    bool isLoggedIn = AuthHelper.isLoggedIn();
 
-      Get.find<CheckoutController>().getOfflineMethodList();
+    Get.find<CheckoutController>().initCheckoutData(widget.store!.id);
+    // Get.find<CheckoutController>().setGuestAddress(null, isUpdate: false);
+    Get.find<CheckoutController>().setPaymentMethod(0, isUpdate: false);
+    Get.find<CheckoutController>().streetNumberController.text =
+        AddressHelper.getUserAddressFromSharedPref()!.streetNumber ?? '';
+    Get.find<CheckoutController>().houseController.text =
+        AddressHelper.getUserAddressFromSharedPref()!.house ?? '';
+    Get.find<CheckoutController>().floorController.text =
+        AddressHelper.getUserAddressFromSharedPref()!.floor ?? '';
+    Get.find<CheckoutController>().couponController.text = '';
 
-      if(Get.find<CheckoutController>().isCreateAccount) {
-        Get.find<CheckoutController>().toggleCreateAccount(willUpdate: false);
+    Get.find<CheckoutController>().getDmTipMostTapped();
+    Get.find<CheckoutController>()
+        .setPreferenceTimeForView('', isUpdate: false);
+
+    Get.find<CheckoutController>().getOfflineMethodList();
+
+    if (Get.find<CheckoutController>().isCreateAccount) {
+      Get.find<CheckoutController>().toggleCreateAccount(willUpdate: false);
+    }
+
+    if (Get.find<CheckoutController>().isPartialPay) {
+      Get.find<CheckoutController>().changePartialPayment(isUpdate: false);
+    }
+
+    if (isLoggedIn) {
+      if (Get.find<ProfileController>().userInfoModel == null) {
+        Get.find<ProfileController>().getUserInfo();
       }
 
-      if(Get.find<CheckoutController>().isPartialPay){
-        Get.find<CheckoutController>().changePartialPayment(isUpdate: false);
+      Get.find<CouponController>().getCouponList();
+
+      if (Get.find<AddressController>().addressList == null) {
+        Get.find<AddressController>().getAddressList();
       }
+    }
 
-      if(isLoggedIn) {
-        if(Get.find<ProfileController>().userInfoModel == null) {
-          Get.find<ProfileController>().getUserInfo();
-        }
-
-        Get.find<CouponController>().getCouponList();
-
-        if(Get.find<AddressController>().addressList == null) {
-          Get.find<AddressController>().getAddressList();
-        }
+    if (widget.store!.id == null) {
+      // _cartList = [];
+      if (GetPlatform.isWeb) {
+        await Get.find<CartController>().getCartDataOnline();
       }
-
-
-
-      if(widget.store!.id == null){
-        // _cartList = [];
-        if(GetPlatform.isWeb) {
-         await Get.find<CartController>().getCartDataOnline();
-        }
       //   widget.fromCart ? _cartList!.addAll(Get.find<CartController>().cartList) : _cartList!.addAll(widget.cartList!);
       //   if(_cartList != null && _cartList!.isNotEmpty) {
       //     Get.find<CheckoutController>().initCheckoutData(_cartList![0]!.item!.storeId);
       //   }
       // }
-      if(widget.store!.id != null){
+      if (widget.store!.id != null) {
         // Get.find<CheckoutController>().initCheckoutData(widget.store!.id);
         Get.find<CouponController>().removeCouponData(false);
       }
-      Get.find<CheckoutController>().pickPrescriptionImage(isRemove: true, isCamera: false);
+      Get.find<CheckoutController>()
+          .pickPrescriptionImage(isRemove: true, isCamera: false);
       // _isWalletActive = Get.find<SplashController>().configModel!.customerWalletStatus == 1;
       Get.find<CheckoutController>().updateTips(
-        Get.find<CheckoutController>().getSharedPrefDmTipIndex().isNotEmpty ? int.parse(Get.find<CheckoutController>().getSharedPrefDmTipIndex()) : 0,
+        Get.find<CheckoutController>().getSharedPrefDmTipIndex().isNotEmpty
+            ? int.parse(
+                Get.find<CheckoutController>().getSharedPrefDmTipIndex())
+            : 0,
         notify: false,
       );
-      Get.find<CheckoutController>().tipController.text = Get.find<CheckoutController>().selectedTips != -1 ? AppConstants.tips[Get.find<CheckoutController>().selectedTips] : '';
-  
+      Get.find<CheckoutController>().tipController.text =
+          Get.find<CheckoutController>().selectedTips != -1
+              ? AppConstants.tips[Get.find<CheckoutController>().selectedTips]
+              : '';
+    }
   }
-   }
-  
 
-    BoxDecoration _buildBackgroundDecoration( bool isappbar) {
+  BoxDecoration _buildBackgroundDecoration(bool isappbar) {
     return BoxDecoration(
       color: Theme.of(context).primaryColor,
       image: DecorationImage(
-        image: AssetImage("assets/image/static_banner/WhatsApp Image 2025-01-22 at 22.11.49_212d2639.jpg"),
+        image: AssetImage(
+            "assets/image/static_banner/WhatsApp Image 2025-01-22 at 22.11.49_212d2639.jpg"),
         fit: BoxFit.cover,
       ),
-      borderRadius:  !isappbar ? BorderRadius.only(
-        bottomLeft: Radius.circular(20),
-        bottomRight: Radius.circular(20),
-      ) : null,
+      borderRadius: !isappbar
+          ? BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
+            )
+          : null,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
@@ -1109,951 +1127,1086 @@ class _StoreScreenState extends State<StoreScreen> {
         endDrawerEnableOpenDragGesture: false,
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: GetBuilder<StoreController>(builder: (storeController) {
-      
-            //  initCall2();
+          //  initCall2();
           return GetBuilder<CategoryController>(builder: (categoryController) {
             Store? store;
             if (storeController.store != null &&
-                storeController.store!.name != null
-               ) {
+                storeController.store!.name != null) {
               store = storeController.store;
               storeController.setCategoryList();
             }
-      
+
             return (storeController.store != null &&
-                     storeController.store!.name != null) 
-                ?  !isShop ?     CustomScrollView(
-                  scrollBehavior: const MaterialScrollBehavior().copyWith(
-                    
-                  ),
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    controller: scrollController,
-                    slivers: [
-                      SliverAppBar(
-                        backgroundColor:
-                         Theme.of(context).cardColor,
-                        scrolledUnderElevation: 0,
-                        elevation: 0,
-                        pinned: true,
-                        //   flexibleSpace: FlexibleSpaceBar(
-                        //   background: Container(
-                        //     decoration: _buildBackgroundDecoration(
-                        //       true
-                        //     ),
-                        //   ),
-                        // ),
-                        leading: IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon:  Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColor),
-                        ),
-                            title: Text(_showTitle ? store!.name ?? '' : '', style: 
-                             robotoMedium.copyWith(fontSize: 16, color:  Colors.black,fontWeight: FontWeight.w600)
-                            // robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyLarge!.color)
+                    storeController.store!.name != null)
+                ? !isShop
+                    ? CustomScrollView(
+                        scrollBehavior:
+                            const MaterialScrollBehavior().copyWith(),
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        controller: scrollController,
+                        slivers: [
+                          SliverAppBar(
+                            backgroundColor: Theme.of(context).cardColor,
+                            scrolledUnderElevation: 0,
+                            elevation: 0,
+                            pinned: true,
+                            //   flexibleSpace: FlexibleSpaceBar(
+                            //   background: Container(
+                            //     decoration: _buildBackgroundDecoration(
+                            //       true
+                            //     ),
+                            //   ),
+                            // ),
+                            leading: IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: Icon(Icons.arrow_back_ios,
+                                  color: Theme.of(context).primaryColor),
                             ),
-                        // centerTitle: ",
-                        actions: [
-                          GetBuilder<FavouriteController>(builder: (favouriteController) {
-                            bool isWished = favouriteController.wishStoreIdList.contains(store!.id);
-                            return InkWell(
-                              overlayColor: WidgetStateProperty.all(Colors.transparent),
-                              onTap: () {
-                                if (AuthHelper.isLoggedIn()) {
-                                  isWished
-                                      ? favouriteController.removeFromFavouriteList(store!.id, true)
-                                      : favouriteController.addToFavouriteList(null, store?.id, true);
-                                } else {
-                                  showCustomSnackBar('you_are_not_logged_in'.tr);
-                                }
-                              },
-                              child: Icon(
-                                isWished ? Icons.favorite : Icons.favorite_border,
-                                color: isWished ? Colors.redAccent :  Theme.of(context).primaryColor,
-                                size: 25,
+                            title: Text(_showTitle ? store!.name ?? '' : '',
+                                style: robotoMedium.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600)
+                                // robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyLarge!.color)
+                                ),
+                            // centerTitle: ",
+                            actions: [
+                              GetBuilder<FavouriteController>(
+                                  builder: (favouriteController) {
+                                bool isWished = favouriteController
+                                    .wishStoreIdList
+                                    .contains(store!.id);
+                                return InkWell(
+                                  overlayColor: WidgetStateProperty.all(
+                                      Colors.transparent),
+                                  onTap: () {
+                                    if (AuthHelper.isLoggedIn()) {
+                                      isWished
+                                          ? favouriteController
+                                              .removeFromFavouriteList(
+                                                  store!.id, true)
+                                          : favouriteController
+                                              .addToFavouriteList(
+                                                  null, store?.id, true);
+                                    } else {
+                                      showCustomSnackBar(
+                                          'you_are_not_logged_in'.tr);
+                                    }
+                                  },
+                                  child: Icon(
+                                    isWished
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: isWished
+                                        ? Colors.redAccent
+                                        : Theme.of(context).primaryColor,
+                                    size: 25,
+                                  ),
+                                );
+                              }),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: AppConstants.webHostedUrl.isNotEmpty
+                                    ? InkWell(
+                                        overlayColor: WidgetStateProperty.all(
+                                            Colors.transparent),
+                                        onTap: () {
+                                          storeController.shareStore();
+                                        },
+                                        child: SvgPicture.asset(
+                                            'assets/image/icons/Vector.svg',
+                                            height: 20),
+                                      )
+                                    : const SizedBox(),
                               ),
-                            );
-                          }),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AppConstants.webHostedUrl.isNotEmpty
-                                ? InkWell(
-                                    overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                    onTap: () {
-                                      storeController.shareStore();
-                                    },
-                                    child: SvgPicture.asset('assets/image/icons/Vector.svg', height: 20),
-                                  )
-                                : const SizedBox(),
+                            ],
                           ),
-                        ],
-                      ),
-                      SliverToBoxAdapter(
-                          child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 00),
-                                child: Container(
-                                                      width: Dimensions.webMaxWidth,
-                                                      // padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                                           
-                                                      decoration: 
-                                                      // _buildBackgroundDecoration(
-                                                      //   false
-                                                      // ),
-                                                      
-                                                      BoxDecoration(
-                                          //  color: Theme.of(context).primaryColor,
-        //                                        image: DecorationImage(image: AssetImage("assets/image/static_banner/WhatsApp Image 2025-01-22 at 22.11.49_212d2639.jpg"),
-        //   fit: BoxFit.cover,  // Adjust as needed (cover, contain, fill, etc.)
-        // // ),
-                                           borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20),
-                                           )
+                          SliverToBoxAdapter(
+                              child: Center(
+                                  child: Padding(
+                            padding: const EdgeInsets.only(bottom: 00),
+                            child: Container(
+                              width: Dimensions.webMaxWidth,
+                              // padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+
+                              decoration:
+                                  // _buildBackgroundDecoration(
+                                  //   false
+                                  // ),
+
+                                  BoxDecoration(
+                                      //  color: Theme.of(context).primaryColor,
+                                      //                                        image: DecorationImage(image: AssetImage("assets/image/static_banner/WhatsApp Image 2025-01-22 at 22.11.49_212d2639.jpg"),
+                                      //   fit: BoxFit.cover,  // Adjust as needed (cover, contain, fill, etc.)
+                                      // // ),
+                                      borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20),
+                              )),
+                              child: Column(children: [
+                                StoreDescriptionViewWidget(store: store),
+                                // const SizedBox(height: Dimensions.paddingSizeSmall),
+
+                                store!.open == 1 && store!.active!
+                                    ? const SizedBox()
+                                    : Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height:
+                                              80, // Slightly taller for better visual balance
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(
+                                                    255, 237, 121, 11)
+                                                .withOpacity(0.2),
+                                            borderRadius: BorderRadius.circular(
+                                                12), // Smoother border radius
+                                            // border: Border.all(
+                                            //   color: Theme.of(context).primaryColor.withOpacity(0.2),
+                                            //   width: 1.5, // Slightly thicker border
+                                            // ),
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //     color: Colors.black.withOpacity(0.1),
+                                            //     blurRadius: 6,
+                                            //     offset: const Offset(0, 3), // Subtle shadow for depth
+                                            //   ),
+                                            // ],
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16.0,
+                                              vertical: 12.0), // Better padding
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  "This restaurant is currently not available for delivery"
+                                                      .tr,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontWeight: FontWeight
+                                                            .w500, // Slightly bolder text
                                                       ),
-                                                      child: Column(children: [
-                                                        StoreDescriptionViewWidget(store: store),
-                                                        // const SizedBox(height: Dimensions.paddingSizeSmall),
-      
-                                                 store!.open == 1 && store!.active!
-      ? const SizedBox()
-      : Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: 80, // Slightly taller for better visual balance
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 237, 121, 11).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12), // Smoother border radius
-              // border: Border.all(
-              //   color: Theme.of(context).primaryColor.withOpacity(0.2),
-              //   width: 1.5, // Slightly thicker border
-              // ),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.black.withOpacity(0.1),
-              //     blurRadius: 6,
-              //     offset: const Offset(0, 3), // Subtle shadow for depth
-              //   ),
-              // ],
-            ),
-            padding: const EdgeInsets.symmetric(
-                horizontal: 16.0, vertical: 12.0), // Better padding
-            child: Row(
-              children: [
-              
-            
-                Expanded(
-                  child: Text(
-                    "This restaurant is currently not available for delivery".tr,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w500, // Slightly bolder text
-                        ),
-                    maxLines: 2, // Prevent text overflow
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-         const SizedBox(width: 12),
-                Image.asset(
-                  "assets/image/icons/icons8-disconnect-94.png"
-                )
-              ],
-            ),
-          ),
-        ),
-                                                        StoreBannerWidget(storeController: storeController),
-                                                      
-      CouponCarousel(storeid: store!.id,),
-      
-                                               // SizedBox(height: 40,),             StoreBannerWidget(storeController: storeController)
-                                                      ]),
+                                                  maxLines:
+                                                      2, // Prevent text overflow
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Image.asset(
+                                                  "assets/image/icons/icons8-disconnect-94.png")
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                StoreBannerWidget(
+                                    storeController: storeController),
+
+                                CouponCarousel(
+                                  storeid: store!.id,
+                                ),
+
+                                // SizedBox(height: 40,),             StoreBannerWidget(storeController: storeController)
+                              ]),
+                            ),
+                          ))),
+
+                          (storeController.categoryList!.isNotEmpty)
+                              ? SliverPersistentHeader(
+                                  pinned: true,
+                                  delegate: SliverDelegate(
+                                      height: 70,
+                                      child: Center(
+                                          child: Container(
+                                        width: Dimensions.webMaxWidth,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).cardColor,
+                                          // boxShadow: const [
+                                          //   BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)
+                                          // ],
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: Dimensions
+                                                .paddingSizeExtraSmall),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                storeController.type.isNotEmpty
+                                                    ? Expanded(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left: 15,
+                                                                  right: 0,
+                                                                  bottom: 0),
+                                                          child: InkWell(
+                                                            onTap: () => Get
+                                                                .toNamed(RouteHelper
+                                                                    .getSearchStoreItemRoute(
+                                                                        store!
+                                                                            .id)),
+                                                            child: Container(
+                                                              height: 40,
+                                                              // width: MediaQuery.of(context).size.width,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15),
+                                                                  color: const Color
+                                                                      .fromARGB(
+                                                                      255,
+                                                                      244,
+                                                                      243,
+                                                                      243),
+                                                                  border: Border.all(
+                                                                      width: .3,
+                                                                      color: Colors
+                                                                          .grey)),
+
+                                                              child: Stack(
+                                                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Positioned(
+                                                                      top: 10,
+                                                                      left: 20,
+                                                                      child:
+                                                                          SizedBox(
+                                                                        width:
+                                                                            200,
+                                                                        child:
+                                                                            Text(
+                                                                          "Search in ${store!.name != null ? store.name : "Uolo"}",
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          maxLines:
+                                                                              1,
+                                                                        ),
+                                                                      )),
+                                                                  const Positioned(
+                                                                      right: 10,
+                                                                      top: 5,
+                                                                      child:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .search,
+                                                                        size:
+                                                                            30,
+                                                                        color: Colors
+                                                                            .red,
+                                                                      ))
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
+                                                storeController.type.isNotEmpty
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                bottom: 0,
+                                                                right: 5),
+                                                        child: VegFilterWidget(
+                                                          type: storeController
+                                                              .type,
+                                                          onSelected:
+                                                              (String type) {
+                                                            storeController
+                                                                .getStoreItemList(
+                                                                    storeController
+                                                                        .store!
+                                                                        .id,
+                                                                    1,
+                                                                    type,
+                                                                    true);
+                                                          },
+                                                        ),
+                                                      )
+                                                    : const SizedBox()
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ))),
+                                )
+                              : const SliverToBoxAdapter(child: SizedBox()),
+
+                          (storeController.categoryList!.isNotEmpty)
+                              ? SliverPersistentHeader(
+                                  pinned: true,
+                                  delegate: SliverDelegate(
+                                      height: 50,
+                                      child: Center(
+                                          child: Container(
+                                        width: Dimensions.webMaxWidth,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).cardColor,
+                                          boxShadow: const [
+                                            BoxShadow(
+                                                color: Colors.black12,
+                                                blurRadius: 5,
+                                                spreadRadius: 1)
+                                          ],
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: Dimensions
+                                                .paddingSizeExtraSmall),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 30,
+                                              child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: storeController
+                                                    .categoryList!.length,
+                                                padding: const EdgeInsets.only(
+                                                    left: Dimensions
+                                                        .paddingSizeSmall),
+                                                physics:
+                                                    const BouncingScrollPhysics(),
+                                                itemBuilder: (context, index) {
+                                                  return InkWell(
+                                                    onTap: () => storeController
+                                                        .setCategoryIndex(
+                                                            index),
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: Dimensions
+                                                              .paddingSizeDefault,
+                                                          vertical: Dimensions
+                                                              .paddingSizeExtraSmall),
+                                                      margin: const EdgeInsets
+                                                          .only(
+                                                          right: Dimensions
+                                                              .paddingSizeSmall),
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor
+                                                                .withOpacity(
+                                                                    0.2)),
+                                                        borderRadius: BorderRadius
+                                                            .circular(Dimensions
+                                                                .radiusDefault),
+                                                        color: index ==
+                                                                storeController
+                                                                    .categoryIndex
+                                                            ? Colors.black
+                                                            : Colors
+                                                                .transparent,
+                                                      ),
+                                                      child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              storeController
+                                                                  .categoryList![
+                                                                      index]
+                                                                  .name!,
+                                                              style: index ==
+                                                                      storeController
+                                                                          .categoryIndex
+                                                                  ? robotoMedium.copyWith(
+                                                                      fontSize:
+                                                                          Dimensions
+                                                                              .fontSizeSmall,
+                                                                      color: Colors
+                                                                          .white)
+                                                                  : robotoRegular.copyWith(
+                                                                      fontSize:
+                                                                          Dimensions
+                                                                              .fontSizeSmall,
+                                                                      color: Colors
+                                                                          .black),
+                                                            ),
+                                                          ]),
                                                     ),
-                              ))),
-      
-                      (storeController.categoryList!.isNotEmpty)
-                          ? SliverPersistentHeader(
-                            
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ))),
+                                )
+                              : const SliverToBoxAdapter(child: SizedBox()),
+
+                          ResponsiveHelper.isDesktop(context)
+                              ? const SliverToBoxAdapter(child: SizedBox())
+                              : SliverToBoxAdapter(
+                                  child: Container(
+                                  width: Dimensions.webMaxWidth,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: Dimensions.paddingSizeLarge),
+                                    child: PaginatedListView(
+                                      scrollController: scrollController,
+                                      onPaginate: (int? offset) =>
+                                          storeController.getStoreItemList(
+                                              widget.store!.id ??
+                                                  storeController.store!.id,
+                                              offset!,
+                                              storeController.type,
+                                              false),
+                                      totalSize: storeController
+                                          .storeItemModel?.totalSize,
+                                      offset: storeController
+                                          .storeItemModel?.offset,
+                                      itemView: ItemsView(
+                                        // notinStore: true,
+                                        isStore: false, stores: null,
+                                        items: (storeController
+                                                    .categoryList!.isNotEmpty &&
+                                                storeController
+                                                        .storeItemModel !=
+                                                    null)
+                                            ? storeController
+                                                .storeItemModel!.items
+                                            : null,
+                                        inStorePage: true,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal:
+                                              Dimensions.paddingSizeSmall,
+                                          vertical: Dimensions.paddingSizeSmall,
+                                        ),
+                                        //  isfashion: isShop,
+                                      ),
+                                    ),
+                                  ),
+                                )),
+
+                          SliverToBoxAdapter(
+                              child: SizedBox(
+                            height: 50,
+                          )),
+                          SliverToBoxAdapter(
+                            child: _buildPaginationFooter(context),
+                          ),
+                          // SliverToBoxAdapter(
+                          //         child: EndScreenDialog(
+
+                          //         ),
+                          //       ),
+                        ],
+                      )
+                    : CustomScrollView(
+                        slivers: [
+                          SliverAppBar(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (widget.store != null) ...[
+                                  Text(
+                                    widget.store!.name ?? 'Store Name',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    '${widget.store!.itemCount ?? 0} Products',
+                                    style: const TextStyle(fontSize: 11),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            floating: true,
+                            pinned: true,
+                            snap: false,
+                            actions: <Widget>[
+                              IconButton(
+                                icon: const Icon(Icons.search), // Search icon
+                                onPressed: () {
+                                  // Handle the search action
+                                },
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.favorite), // Favorite icon
+                                onPressed: () {
+                                  // Handle the favorite action
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.shopping_bag),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                          if (ResponsiveHelper.isDesktop(context))
+                            const SliverToBoxAdapter(child: SizedBox(height: 0))
+                          else if (storeController.categoryList != null &&
+                              storeController.categoryList!.isNotEmpty)
+                            SliverPersistentHeader(
                               pinned: true,
                               delegate: SliverDelegate(
-                                  height: 70,
-                                  child: Center(
-                                      child: Container(
-                                    width: Dimensions.webMaxWidth,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).cardColor,
-                                      // boxShadow: const [
-                                      //   BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)
-                                      // ],
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 
-                                    Dimensions.paddingSizeExtraSmall
-                                    ),
-                                    child: Column(
-                                      children: [
-                                     
-                                         Row(
-                                           children: [
-                                         storeController.type.isNotEmpty ?     Expanded(
-                                           child: Padding(
-                                             padding: const EdgeInsets.only(left: 15,right: 0,bottom: 0),
-                                             child: InkWell(
-                                              onTap: ()=> Get.toNamed(RouteHelper.getSearchStoreItemRoute(store!.id)),
-                                               child: Container(
-                                                height: 40,
-                                                // width: MediaQuery.of(context).size.width,
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(15),
-                                                  color:const Color.fromARGB(255, 244, 243, 243),
-                                                  border: Border.all(
-                width: .3,
-                color: Colors.grey
-              )
-      
-                                                  
-      
-                                                ),
-      
-                                                child: Stack(
-                                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Positioned(
-                                                      top: 10,
-                                                      left: 20,
-                                                      child: SizedBox(
-                                                        width: 200,
-                                                        child: Text("Search in ${store!.name != null ?  store.name : "Uolo"}",
-                                                        overflow: TextOverflow.ellipsis,maxLines: 1 ,),
-                                                      )),
-                                                    
-                                                    const Positioned(
-                                                      right: 10,
-                                                      top: 5,
-                                                      child: Icon(Icons.search,size: 30,color: Colors.red, ))
-                                                  ],
-                                                ),
-                                               ),
-                                             ),
-                                           ),
-                                         ) : const SizedBox(),
-      
-                                              storeController.type.isNotEmpty ? Padding(
-                                                padding: const EdgeInsets.only(bottom: 0,right: 5),
-                                                child: VegFilterWidget(
-                                                                              type: storeController.type,
-                                                                              onSelected: (String type) {
-                                                                                storeController.getStoreItemList(storeController.store!.id, 1, type, true);
-                                                                              },
-                                                                          ),
-                                              ) : const SizedBox()
-                                           ],
-                                         ),
-                                       
-                                  
-                                   
-                                      ],
-                                    ),
-                                  ))),
-                            )
-                          : const SliverToBoxAdapter(child: SizedBox()),
-      
-      
-      
-              
-      
-                            (storeController.categoryList!.isNotEmpty)
-                          ? SliverPersistentHeader(
-                            
-                              pinned: true,
-                              delegate: SliverDelegate(
-                                  height: 50,
-                                  child: Center(
-                                      child: Container(
+                                height: 60,
+                                child: Center(
+                                  child: Container(
                                     width: Dimensions.webMaxWidth,
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).cardColor,
                                       boxShadow: const [
-                                        BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)
+                                        BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 5,
+                                            spreadRadius: 1),
                                       ],
                                     ),
-                                    padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical:
+                                            Dimensions.paddingSizeExtraSmall),
                                     child: Column(
                                       children: [
-      
-         
+                                        const SizedBox(height: 10),
                                         SizedBox(
                                           height: 30,
                                           child: ListView.builder(
                                             scrollDirection: Axis.horizontal,
-                                            itemCount: storeController.categoryList!.length,
-                                            padding:
-                                                const EdgeInsets.only(left: Dimensions.paddingSizeSmall),
-                                            physics: const BouncingScrollPhysics(),
+                                            itemCount: storeController
+                                                .categoryList!.length,
+                                            padding: const EdgeInsets.only(
+                                                left: Dimensions
+                                                    .paddingSizeSmall),
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             itemBuilder: (context, index) {
                                               return InkWell(
-                                                onTap: () => storeController.setCategoryIndex(index),
+                                                onTap: () => storeController
+                                                    .setCategoryIndex(index),
                                                 child: Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: Dimensions.paddingSizeDefault,
-                                                      vertical: Dimensions.paddingSizeExtraSmall),
-                                                  margin: const EdgeInsets.only(right: Dimensions.paddingSizeSmall),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    horizontal: Dimensions
+                                                        .paddingSizeDefault,
+                                                    vertical: Dimensions
+                                                        .paddingSizeExtraSmall,
+                                                  ),
+                                                  margin: const EdgeInsets.only(
+                                                      right: Dimensions
+                                                          .paddingSizeSmall),
                                                   decoration: BoxDecoration(
                                                     border: Border.all(
-                                                        color: Theme.of(context)
-                                                            .primaryColor
-                                                            .withOpacity(0.2)),
-                                                    borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                                    color: index == storeController.categoryIndex
+                                                      color: Theme.of(context)
+                                                          .primaryColor
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            Dimensions
+                                                                .radiusDefault),
+                                                    color: index ==
+                                                            storeController
+                                                                .categoryIndex
                                                         ? Colors.black
                                                         : Colors.transparent,
                                                   ),
                                                   child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Text(
-                                                          storeController
-                                                              .categoryList![index].name!,
-                                                          style: index ==
-                                                                  storeController
-                                                                      .categoryIndex
-                                                              ? robotoMedium.copyWith(
-                                                                  fontSize: Dimensions
-                                                                      .fontSizeSmall,
-                                                                  color: Colors
-                                                                      .white)
-                                                              : robotoRegular.copyWith(
-                                                                  fontSize: Dimensions
-                                                                      .fontSizeSmall,
-                                                                  color: Colors
-                                                                      .black),
-                                                        ),
-                                                      ]),
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        storeController
+                                                                .categoryList![
+                                                                    index]
+                                                                .name ??
+                                                            'Category',
+                                                        style: index ==
+                                                                storeController
+                                                                    .categoryIndex
+                                                            ? robotoMedium
+                                                                .copyWith(
+                                                                fontSize: Dimensions
+                                                                    .fontSizeSmall,
+                                                                color: Colors
+                                                                    .white,
+                                                              )
+                                                            : robotoRegular
+                                                                .copyWith(
+                                                                fontSize: Dimensions
+                                                                    .fontSizeSmall,
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               );
                                             },
                                           ),
                                         ),
-                                        
                                       ],
                                     ),
-                                  ))),
-                            )
-                          : const SliverToBoxAdapter(child: SizedBox()),
-      
-         
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-                      ResponsiveHelper.isDesktop(context) ? const SliverToBoxAdapter(child:SizedBox()) :
-                SliverToBoxAdapter(
-                  child: Container(
-                  width: Dimensions.webMaxWidth,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: Dimensions.paddingSizeLarge),
-                    child: PaginatedListView(
-                      scrollController: scrollController,
-                      onPaginate: (int? offset) => storeController.getStoreItemList(widget.store!.id ?? storeController.store!.id, offset!, storeController.type, false),
-                      totalSize: storeController.storeItemModel?.totalSize,
-                      offset: storeController.storeItemModel?.offset,
-                      itemView: ItemsView(
-                        
-                        // notinStore: true,
-                        isStore: false, stores: null,
-                        items: (storeController.categoryList!.isNotEmpty && storeController.storeItemModel != null)
-                            ? storeController.storeItemModel!.items : null,
-                        inStorePage: true,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Dimensions.paddingSizeSmall,
-                          vertical: Dimensions.paddingSizeSmall,
-                        ),
-                        //  isfashion: isShop,
-                      ),
-                    ),
-                  ),
-                )),
-      
-      
-         SliverToBoxAdapter(child: SizedBox(height: 50,)),
-           SliverToBoxAdapter(
-            child: _buildPaginationFooter(context),
-          ),
-        // SliverToBoxAdapter(
-        //         child: EndScreenDialog(
-              
-        //         ),
-        //       ),
-              ],
-            ) :
-            CustomScrollView(
-        slivers: [
-      SliverAppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.store != null) ...[
-              Text(
-                widget.store!.name ?? 'Store Name',
-                style: const TextStyle(fontSize: 14),
-              ),
-              Text(
-                '${widget.store!.itemCount ?? 0} Products',
-                style: const TextStyle(fontSize: 11),
-              ),
-            ],
-          ],
-        ),
-        floating: true,
-        pinned: true,
-        snap: false,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.search), // Search icon
-            onPressed: () {
-              // Handle the search action
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.favorite), // Favorite icon
-            onPressed: () {
-              // Handle the favorite action
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.shopping_bag),
-            onPressed: () {
-              
-            },
-          ),
-        ],
-      ),
-      if (ResponsiveHelper.isDesktop(context))
-        const SliverToBoxAdapter(child: SizedBox(height: 0))
-      else if (storeController.categoryList != null && storeController.categoryList!.isNotEmpty)
-        SliverPersistentHeader(
-          pinned: true,
-          delegate: SliverDelegate(
-            height: 60,
-            child: Center(
-              child: Container(
-                width: Dimensions.webMaxWidth,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1),
-                  ],
-                ),
-                padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 30,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: storeController.categoryList!.length,
-                        padding: const EdgeInsets.only(left: Dimensions.paddingSizeSmall),
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () => storeController.setCategoryIndex(index),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: Dimensions.paddingSizeDefault,
-                                vertical: Dimensions.paddingSizeExtraSmall,
-                              ),
-                              margin: const EdgeInsets.only(right: Dimensions.paddingSizeSmall),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.2),
-                                ),
-                                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                                color: index == storeController.categoryIndex
-                                    ? Colors.black
-                                    : Colors.transparent,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    storeController.categoryList![index].name ?? 'Category',
-                                    style: index == storeController.categoryIndex
-                                        ? robotoMedium.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall,
-                                            color: Colors.white,
-                                          )
-                                        : robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall,
-                                            color: Colors.black,
-                                          ),
                                   ),
-                                ],
+                                ),
+                              ),
+                            )
+                          else
+                            const SliverToBoxAdapter(child: SizedBox()),
+
+                          // SliverGrid(
+                          //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          //     crossAxisCount: 2,
+                          //     mainAxisSpacing: 20,
+                          //     crossAxisSpacing: 10,
+                          //     childAspectRatio: 0.54,
+                          //   ),
+                          //   delegate: SliverChildBuilderDelegate(
+                          //     (context, index) {
+
+                          //       if (storeController.storeItemModel == null ||
+                          //           storeController.storeItemModel!.items == null ||
+                          //           index >= storeController.storeItemModel!.items!.length) {
+                          //         return SizedBox.shrink();
+                          //       }
+                          //       return Ecomerceitem(
+                          //         item: storeController.storeItemModel!.items![index],
+                          //         isStore: true,
+                          //         isCampaign: false,
+                          //       );
+                          //     },
+                          //     childCount: 4,
+                          //   ),
+                          // ),
+
+                          // SliverToBoxAdapter(
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                          //     child: LayoutBuilder(
+                          //       builder: (context, constraints) {
+                          //         return  BannerView(isFeatured: false,);
+                          //         // StoreBannerWidget(storeController: storeController);
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
+
+                          // SliverGrid(
+                          //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          //     crossAxisCount: 2,
+                          //     mainAxisSpacing: 20,
+                          //     crossAxisSpacing: 10,
+                          //     childAspectRatio: 0.54,
+                          //   ),
+                          //   delegate: SliverChildBuilderDelegate(
+                          //     (context, index) {
+                          //       // Null and range check
+                          //       if (storeController.storeItemModel == null ||
+                          //           storeController.storeItemModel!.items == null ||
+                          //           index + 4 >= storeController.storeItemModel!.items!.length) {
+                          //         return
+                          //         Container(); // Return an empty container or a placeholder widget
+                          //       }
+                          //       return Ecomerceitem(
+                          //         item: storeController.storeItemModel!.items![index + 4], // Skipping first 4
+                          //         isStore: true,
+                          //         isCampaign: false,
+                          //       );
+                          //     },
+                          //     childCount: storeController.storeItemModel != null &&
+                          //             storeController.storeItemModel!.items != null
+                          //         ? storeController.storeItemModel!.items!.length - 4
+                          //         : 0, // Ensure childCount is not negative
+                          //   ),
+                          // ),
+
+                          SliverGrid(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio:
+                                  storeController.storeItemModel == null ||
+                                          storeController
+                                                  .storeItemModel!.items ==
+                                              null
+                                      ? 0.74
+                                      : 0.54,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                if (storeController.storeItemModel == null ||
+                                    storeController.storeItemModel!.items ==
+                                        null ||
+                                    index >=
+                                        storeController
+                                            .storeItemModel!.items!.length) {
+                                  return Shimmer(
+                                    colorOpacity: 1,
+                                    enabled: true,
+                                    duration: Duration(seconds: 1),
+                                    color: Colors.white,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.04),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      height: 200,
+                                      width: 200,
+                                    ),
+                                  );
+                                }
+                                return Ecomerceitem(
+                                  item: storeController
+                                      .storeItemModel!.items![index],
+                                  isStore: true,
+                                  isCampaign: false,
+                                );
+                              },
+                              childCount: storeController.storeItemModel == null
+                                  ? 4
+                                  : storeController
+                                      .storeItemModel!.items!.length,
+                            ),
+                          ),
+
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 0),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  if (storeController.storeItemModel == null) {
+                                    return Shimmer(
+                                      colorOpacity: 1,
+                                      enabled: true,
+                                      duration: Duration(seconds: 1),
+                                      color: Colors.white,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color:
+                                                Colors.black.withOpacity(0.04),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        height: 200,
+                                        width: 200,
+                                      ),
+                                    );
+                                  }
+                                  return BannerView(isFeatured: false);
+                                },
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        )
-      else
-        const SliverToBoxAdapter(child: SizedBox()),
-      
-        
-      // SliverGrid(
-      //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      //     crossAxisCount: 2, 
-      //     mainAxisSpacing: 20,
-      //     crossAxisSpacing: 10,
-      //     childAspectRatio: 0.54,
-      //   ),
-      //   delegate: SliverChildBuilderDelegate(
-      //     (context, index) {
-        
-      //       if (storeController.storeItemModel == null ||
-      //           storeController.storeItemModel!.items == null ||
-      //           index >= storeController.storeItemModel!.items!.length) {
-      //         return SizedBox.shrink(); 
-      //       }
-      //       return Ecomerceitem(
-      //         item: storeController.storeItemModel!.items![index],
-      //         isStore: true,
-      //         isCampaign: false,
-      //       );
-      //     },
-      //     childCount: 4, 
-      //   ),
-      // ),
-      
-      
-      // SliverToBoxAdapter(
-      //   child: Padding(
-      //     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-      //     child: LayoutBuilder(
-      //       builder: (context, constraints) {
-      //         return  BannerView(isFeatured: false,);
-      //         // StoreBannerWidget(storeController: storeController);
-      //       },
-      //     ),
-      //   ),
-      // ),
-      
-      
-      // SliverGrid(
-      //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      //     crossAxisCount: 2,
-      //     mainAxisSpacing: 20,
-      //     crossAxisSpacing: 10,
-      //     childAspectRatio: 0.54,
-      //   ),
-      //   delegate: SliverChildBuilderDelegate(
-      //     (context, index) {
-      //       // Null and range check
-      //       if (storeController.storeItemModel == null ||
-      //           storeController.storeItemModel!.items == null ||
-      //           index + 4 >= storeController.storeItemModel!.items!.length) {
-      //         return 
-      //         Container(); // Return an empty container or a placeholder widget
-      //       }
-      //       return Ecomerceitem(
-      //         item: storeController.storeItemModel!.items![index + 4], // Skipping first 4
-      //         isStore: true,
-      //         isCampaign: false,
-      //       );
-      //     },
-      //     childCount: storeController.storeItemModel != null &&
-      //             storeController.storeItemModel!.items != null
-      //         ? storeController.storeItemModel!.items!.length - 4
-      //         : 0, // Ensure childCount is not negative
-      //   ),
-      // ),
-       
-       
-      
-          SliverGrid(
-            gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio:   storeController.storeItemModel == null ||
-                    storeController.storeItemModel!.items == null 
-                     ? 0.74 : 0.54,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-          
-                if (storeController.storeItemModel == null ||
-                    storeController.storeItemModel!.items == null ||
-                    index >= storeController.storeItemModel!.items!.length) {
-                  return Shimmer(
-        colorOpacity: 1,
-         
-        enabled: true,
-                duration: Duration(seconds: 1),
-                color: Colors.white,
-                child: Container(
-                  decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(10)
-                  ),
-                  height: 200,
-                  width: 200,
-                
-                ),
-              );
-                }
-                return Ecomerceitem(
-                  item: storeController.storeItemModel!.items![index],
-                  isStore: true,
-                  isCampaign: false,
-                );
-              },
-              childCount: storeController.storeItemModel == null ? 4 : storeController.storeItemModel!.items!.length,
-            ),
-          ),
-      
-         
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-           
-                  if (storeController.storeItemModel == null) {
-                    return Shimmer(
-        colorOpacity: 1,
-      
-        enabled: true,
-                duration: Duration(seconds: 1),
-                color: Colors.white,
-                child: Container(
-                  decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(10)
-                  ),
-                  height: 200,
-                  width: 200,
-                
-                ),
-              );
-                  }
-                  return BannerView(isFeatured: false);
-                },
-              ),
-            ),
-          ),
-      
-         
-          SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 20,
-              crossAxisSpacing: 10,
-              childAspectRatio: 0.54,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-               
-                if (storeController.storeItemModel == null ||
-                    storeController.storeItemModel!.items == null ||
-                    index + 4 >= storeController.storeItemModel!.items!.length) {
-                  return Shimmer(
-        colorOpacity: 1,
-        
-        enabled: true,
-                duration: Duration(seconds: 1),
-                color: Colors.white,
-                child: Container(
-                  decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(10)
-                  ),
-                  height: 200,
-                  width: 200,
-                
-                ),
-              );
-                }
-                return Ecomerceitem(
-                  item: storeController.storeItemModel!.items![index + 4], 
-                  isStore: true,
-                  isCampaign: false,
-                );
-              },
-              childCount: storeController.storeItemModel == null
-                  ? 4 
-                  : (storeController.storeItemModel!.items!.length - 4).clamp(0, storeController.storeItemModel!.items!.length),
-            ),
-          ),
-      
-          SliverToBoxAdapter(
-            child: _buildPaginationFooter(context),
-          ),
-        ],
-      ) : 
-      //            CustomScrollView(
-      //             slivers: [
-      //   SliverAppBar(
-      //             title: Column(
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [
-      //                 Text('${widget.store!.name}',style: TextStyle(
-      //                   fontSize: 14
-      //                 ),),
-      //                 Text('${widget.store!.itemCount} Products',style: TextStyle(
-      //                   fontSize: 11
-      //                 ),),
-      //                 // Text("${widget.store!.itemCount}"),
-      //               ],
-      //             ), // Title of the AppBar
-      //             floating: true,
-      //             pinned: true,
-      //             snap: false,
-      //             actions: <Widget>[
-      //                IconButton(
-      //                 icon: Icon(Icons.search), // Search icon
-      //                 onPressed: () {
-      //                   // Handle the search action
-      //                 },
-      //               ),
-      //               IconButton(
-      //                 icon: Icon(Icons.favorite), // Favorite icon
-      //                 onPressed: () {
-      //                   // Handle the favorite action
-      //                 },
-      //               ),
-               
-      //               IconButton(
-      //                 icon: Icon(Icons.shopping_bag), // Cart icon
-      //                 onPressed: () {
-      //                   // Handle the cart action
-      //                 },
-      //               ),
-      //             ],
-      //           ),
-      //               //  SliverToBoxAdapter(child:SizedBox(height: 100,)),
-      // ResponsiveHelper.isDesktop(context) ? const SliverToBoxAdapter(child:SizedBox(height: 0,)) :
-      //                     (storeController.categoryList!.isNotEmpty)
-      //                         ? SliverPersistentHeader(
-                            
-      //                             pinned: true,
-      //                             delegate: SliverDelegate(
-      //                                 height: 60,
-      //                                 child: Center(
-      //                                     child: Container(
-      //                                   width: Dimensions.webMaxWidth,
-      //                                   decoration: BoxDecoration(
-      //                                     color: Theme.of(context).cardColor,
-      //                                     boxShadow: const [
-      //                                       BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)
-      //                                     ],
-      //                                   ),
-      //                                   padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
-      //                                   child: Column(
-      //                                     children: [
-      
-      //             //                
-      //             SizedBox(height: 10,),
-      //                                       SizedBox(
-      //                                         height: 30,
-      //                                         child: ListView.builder(
-      //                                           scrollDirection: Axis.horizontal,
-      //                                           itemCount: storeController.categoryList!.length,
-      //                                           padding:
-      //                                               const EdgeInsets.only(left: Dimensions.paddingSizeSmall),
-      //                                           physics: const BouncingScrollPhysics(),
-      //                                           itemBuilder: (context, index) {
-      //                                             return InkWell(
-      //                                               onTap: () => storeController.setCategoryIndex(index),
-      //                                               child: Container(
-      //                                                 padding: const EdgeInsets.symmetric(
-      //                                                     horizontal: Dimensions.paddingSizeDefault,
-      //                                                     vertical: Dimensions.paddingSizeExtraSmall),
-      //                                                 margin: const EdgeInsets.only(right: Dimensions.paddingSizeSmall),
-      //                                                 decoration: BoxDecoration(
-      //                                                   border: Border.all(
-      //                                                       color: Theme.of(context)
-      //                                                           .primaryColor
-      //                                                           .withOpacity(0.2)),
-      //                                                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-      //                                                   color: index == storeController.categoryIndex
-      //                                                       ? Colors.black
-      //                                                       : Colors.transparent,
-      //                                                 ),
-      //                                                 child: Column(
-      //                                                     mainAxisAlignment: MainAxisAlignment.center,
-      //                                                     children: [
-      //                                                       Text(
-      //                                                         storeController
-      //                                                             .categoryList![index].name!,
-      //                                                         style: index ==
-      //                                                                 storeController
-      //                                                                     .categoryIndex
-      //                                                             ? robotoMedium.copyWith(
-      //                                                                 fontSize: Dimensions
-      //                                                                     .fontSizeSmall,
-      //                                                                 color: Colors
-      //                                                                     .white)
-      //                                                             : robotoRegular.copyWith(
-      //                                                                 fontSize: Dimensions
-      //                                                                     .fontSizeSmall,
-      //                                                                 color: Colors
-      //                                                                     .black),
-      //                                                       ),
-      //                                                     ]),
-      //                                               ),
-      //                                             );
-      //                                           },
-      //                                         ),
-      //                                       ),
-      //                                     ],
-      //                                   ),
-      //                                 ))),
-      //                           )
-      //                         : const SliverToBoxAdapter(child: SizedBox()),
-      
-      //             ResponsiveHelper.isDesktop(context) ? const SliverToBoxAdapter(child:SizedBox()) :
-      //               SliverToBoxAdapter(
-      //                 child: Container(
-      //                 width: Dimensions.webMaxWidth,
-      //                 decoration: BoxDecoration(
-      //                   color: Theme.of(context).colorScheme.surface,
-      //                 ),
-      //                 child: Padding(
-      //                   padding: const EdgeInsets.only(top: 0),
-      //                   child: 
-      //                   Column(
-      //                     children: [
-      
-       
-      //              Padding(
-      //                padding: const EdgeInsets.all(10),
-      //                child: Container(
-      //                  height: MediaQuery.of(context).size.height, // Set a fixed height
-      //                  child: GridView.builder(
-      //                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      //                      crossAxisCount: 2, // Number of columns
-      //                      mainAxisSpacing: 20, // Spacing between rows
-      //                      crossAxisSpacing: 10, // Spacing between columns
-      //                      childAspectRatio: .54, // Aspect ratio of each item
-      //                    ),
-      //                    itemBuilder: (context, index) {
-      //                      return    Ecomerceitem(
-      //                      item:
-      //                       storeController.storeItemModel!.items ![index], isStore: true, isCampaign: false,
-      //                     //  imageHeight: 150, // Set a fixed height for the image
-      //                     //  imageWidth: 200, // Set a fixed width for the image
-      //                    );
-      //                    },
-      //                    itemCount: storeController.storeItemModel!.items!.length, // Number of items in the grid
-      //                  ),
-      //                ),
-      //              )  
-                 
-      //                   ]),
-      //                   // PaginatedListView(
-      //                   //   scrollController: scrollController,
-      //                   //   onPaginate: (int? offset) => storeController.getStoreItemList(widget.store!.id ?? storeController.store!.id, offset!, storeController.type, false),
-      //                   //   totalSize: storeController.storeItemModel?.totalSize,
-      //                   //   offset: storeController.storeItemModel?.offset,
-      //                   //   itemView: ItemsView2(
-      //                   //     // notinStore: true,
-      //                   //     isStore: false, stores: null,
-      //                   //     items: (storeController.categoryList!.isNotEmpty && storeController.storeItemModel != null)
-      //                   //         ? storeController.storeItemModel!.items : null,
-      //                   //     inStorePage: true,
-      //                   //     padding: const EdgeInsets.symmetric(
-      //                   //       horizontal: Dimensions.paddingSizeSmall,
-      //                   //       vertical: Dimensions.paddingSizeSmall,
-      //                   //     ), isfashion: isShop,
-      //                   //   ),
-      //                   // ),
-                 
-      //                 ),
-      //               )),
-      //             ],
-      //           ) :
-           
-           
-              MyStoreShimmer(
-                isloader: true,
-              );
-            
-            //  const CustomLoaderWidget();
-            
-            // const StoreDetailsScreenShimmerWidget();
-               
-      
-         
-                
-               
-          });
-      
-         
-      
-        }),
-      
-      
-        
-      resizeToAvoidBottomInset: true,
-           bottomSheet:  GetBuilder<StoreController>(
-                               builder: (storeController) {
-                         return (storeController.store != null &&
-                     storeController.store!.name != null) ? GetBuilder<CartController>(
-                               builder: (cartController){
-                                 return  !isShop ? cartController.cartList.isNotEmpty && !ResponsiveHelper.isDesktop(context)
-                                  ?  BottomCartWidget(
-                                   fromgroccery: false,
-                                  )
-                                  : const SizedBox() : const SizedBox();
-                               },
-                             ) : const SizedBox();
-                       }
-                     ),
-      
-           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat  ,
-         
-          //  floatingActionButton:  IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart_outlined,color: Theme.of(context).primaryColor,)) ,
-          floatingActionButton:
-         
-       !isShop ?    Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 32, 31, 31),
-        borderRadius: BorderRadius.circular(100),
-      ),
-      
-      child: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 32, 31, 31),
-        onPressed: (){
-                  showGridMenu(
-                     context,
+                          ),
+
+                          SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 0.54,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                if (storeController.storeItemModel == null ||
+                                    storeController.storeItemModel!.items ==
+                                        null ||
+                                    index + 4 >=
+                                        storeController
+                                            .storeItemModel!.items!.length) {
+                                  return Shimmer(
+                                    colorOpacity: 1,
+                                    enabled: true,
+                                    duration: Duration(seconds: 1),
+                                    color: Colors.white,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.04),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      height: 200,
+                                      width: 200,
+                                    ),
+                                  );
+                                }
+                                return Ecomerceitem(
+                                  item: storeController
+                                      .storeItemModel!.items![index + 4],
+                                  isStore: true,
+                                  isCampaign: false,
+                                );
+                              },
+                              childCount: storeController.storeItemModel == null
+                                  ? 4
+                                  : (storeController
+                                              .storeItemModel!.items!.length -
+                                          4)
+                                      .clamp(
+                                          0,
+                                          storeController
+                                              .storeItemModel!.items!.length),
+                            ),
+                          ),
+
+                          SliverToBoxAdapter(
+                            child: _buildPaginationFooter(context),
+                          ),
+                        ],
+                      )
+                :
+                //            CustomScrollView(
+                //             slivers: [
+                //   SliverAppBar(
+                //             title: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: [
+                //                 Text('${widget.store!.name}',style: TextStyle(
+                //                   fontSize: 14
+                //                 ),),
+                //                 Text('${widget.store!.itemCount} Products',style: TextStyle(
+                //                   fontSize: 11
+                //                 ),),
+                //                 // Text("${widget.store!.itemCount}"),
+                //               ],
+                //             ), // Title of the AppBar
+                //             floating: true,
+                //             pinned: true,
+                //             snap: false,
+                //             actions: <Widget>[
+                //                IconButton(
+                //                 icon: Icon(Icons.search), // Search icon
+                //                 onPressed: () {
+                //                   // Handle the search action
+                //                 },
+                //               ),
+                //               IconButton(
+                //                 icon: Icon(Icons.favorite), // Favorite icon
+                //                 onPressed: () {
+                //                   // Handle the favorite action
+                //                 },
+                //               ),
+
+                //               IconButton(
+                //                 icon: Icon(Icons.shopping_bag), // Cart icon
+                //                 onPressed: () {
+                //                   // Handle the cart action
+                //                 },
+                //               ),
+                //             ],
+                //           ),
+                //               //  SliverToBoxAdapter(child:SizedBox(height: 100,)),
+                // ResponsiveHelper.isDesktop(context) ? const SliverToBoxAdapter(child:SizedBox(height: 0,)) :
+                //                     (storeController.categoryList!.isNotEmpty)
+                //                         ? SliverPersistentHeader(
+
+                //                             pinned: true,
+                //                             delegate: SliverDelegate(
+                //                                 height: 60,
+                //                                 child: Center(
+                //                                     child: Container(
+                //                                   width: Dimensions.webMaxWidth,
+                //                                   decoration: BoxDecoration(
+                //                                     color: Theme.of(context).cardColor,
+                //                                     boxShadow: const [
+                //                                       BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1)
+                //                                     ],
+                //                                   ),
+                //                                   padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeExtraSmall),
+                //                                   child: Column(
+                //                                     children: [
+
+                //             //
+                //             SizedBox(height: 10,),
+                //                                       SizedBox(
+                //                                         height: 30,
+                //                                         child: ListView.builder(
+                //                                           scrollDirection: Axis.horizontal,
+                //                                           itemCount: storeController.categoryList!.length,
+                //                                           padding:
+                //                                               const EdgeInsets.only(left: Dimensions.paddingSizeSmall),
+                //                                           physics: const BouncingScrollPhysics(),
+                //                                           itemBuilder: (context, index) {
+                //                                             return InkWell(
+                //                                               onTap: () => storeController.setCategoryIndex(index),
+                //                                               child: Container(
+                //                                                 padding: const EdgeInsets.symmetric(
+                //                                                     horizontal: Dimensions.paddingSizeDefault,
+                //                                                     vertical: Dimensions.paddingSizeExtraSmall),
+                //                                                 margin: const EdgeInsets.only(right: Dimensions.paddingSizeSmall),
+                //                                                 decoration: BoxDecoration(
+                //                                                   border: Border.all(
+                //                                                       color: Theme.of(context)
+                //                                                           .primaryColor
+                //                                                           .withOpacity(0.2)),
+                //                                                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                //                                                   color: index == storeController.categoryIndex
+                //                                                       ? Colors.black
+                //                                                       : Colors.transparent,
+                //                                                 ),
+                //                                                 child: Column(
+                //                                                     mainAxisAlignment: MainAxisAlignment.center,
+                //                                                     children: [
+                //                                                       Text(
+                //                                                         storeController
+                //                                                             .categoryList![index].name!,
+                //                                                         style: index ==
+                //                                                                 storeController
+                //                                                                     .categoryIndex
+                //                                                             ? robotoMedium.copyWith(
+                //                                                                 fontSize: Dimensions
+                //                                                                     .fontSizeSmall,
+                //                                                                 color: Colors
+                //                                                                     .white)
+                //                                                             : robotoRegular.copyWith(
+                //                                                                 fontSize: Dimensions
+                //                                                                     .fontSizeSmall,
+                //                                                                 color: Colors
+                //                                                                     .black),
+                //                                                       ),
+                //                                                     ]),
+                //                                               ),
+                //                                             );
+                //                                           },
+                //                                         ),
+                //                                       ),
+                //                                     ],
+                //                                   ),
+                //                                 ))),
+                //                           )
+                //                         : const SliverToBoxAdapter(child: SizedBox()),
+
+                //             ResponsiveHelper.isDesktop(context) ? const SliverToBoxAdapter(child:SizedBox()) :
+                //               SliverToBoxAdapter(
+                //                 child: Container(
+                //                 width: Dimensions.webMaxWidth,
+                //                 decoration: BoxDecoration(
+                //                   color: Theme.of(context).colorScheme.surface,
+                //                 ),
+                //                 child: Padding(
+                //                   padding: const EdgeInsets.only(top: 0),
+                //                   child:
+                //                   Column(
+                //                     children: [
+
+                //              Padding(
+                //                padding: const EdgeInsets.all(10),
+                //                child: Container(
+                //                  height: MediaQuery.of(context).size.height, // Set a fixed height
+                //                  child: GridView.builder(
+                //                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //                      crossAxisCount: 2, // Number of columns
+                //                      mainAxisSpacing: 20, // Spacing between rows
+                //                      crossAxisSpacing: 10, // Spacing between columns
+                //                      childAspectRatio: .54, // Aspect ratio of each item
+                //                    ),
+                //                    itemBuilder: (context, index) {
+                //                      return    Ecomerceitem(
+                //                      item:
+                //                       storeController.storeItemModel!.items ![index], isStore: true, isCampaign: false,
+                //                     //  imageHeight: 150, // Set a fixed height for the image
+                //                     //  imageWidth: 200, // Set a fixed width for the image
+                //                    );
+                //                    },
+                //                    itemCount: storeController.storeItemModel!.items!.length, // Number of items in the grid
+                //                  ),
+                //                ),
+                //              )
+
+                //                   ]),
+                //                   // PaginatedListView(
+                //                   //   scrollController: scrollController,
+                //                   //   onPaginate: (int? offset) => storeController.getStoreItemList(widget.store!.id ?? storeController.store!.id, offset!, storeController.type, false),
+                //                   //   totalSize: storeController.storeItemModel?.totalSize,
+                //                   //   offset: storeController.storeItemModel?.offset,
+                //                   //   itemView: ItemsView2(
+                //                   //     // notinStore: true,
+                //                   //     isStore: false, stores: null,
+                //                   //     items: (storeController.categoryList!.isNotEmpty && storeController.storeItemModel != null)
+                //                   //         ? storeController.storeItemModel!.items : null,
+                //                   //     inStorePage: true,
+                //                   //     padding: const EdgeInsets.symmetric(
+                //                   //       horizontal: Dimensions.paddingSizeSmall,
+                //                   //       vertical: Dimensions.paddingSizeSmall,
+                //                   //     ), isfashion: isShop,
+                //                   //   ),
+                //                   // ),
+
+                //                 ),
+                //               )),
+                //             ],
+                //           ) :
+
+                MyStoreShimmer(
+                    isloader: true,
                   );
-        
-      },
-      isExtended: true, 
-       child: const Icon(Icons.menu_book_sharp,color: Colors.white,size: 30,),
-      
-      ),
-          ) : SizedBox() ,
+
+            //  const CustomLoaderWidget();
+
+            // const StoreDetailsScreenShimmerWidget();
+          });
+        }),
+
+        resizeToAvoidBottomInset: true,
+        bottomSheet: GetBuilder<StoreController>(builder: (storeController) {
+          return (storeController.store != null &&
+                  storeController.store!.name != null)
+              ? GetBuilder<CartController>(
+                  builder: (cartController) {
+                    return !isShop
+                        ? cartController.cartList.isNotEmpty &&
+                                !ResponsiveHelper.isDesktop(context)
+                            ? BottomCartWidget(
+                                fromgroccery: false,
+                              )
+                            : const SizedBox()
+                        : const SizedBox();
+                  },
+                )
+              : const SizedBox();
+        }),
+
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+        //  floatingActionButton:  IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart_outlined,color: Theme.of(context).primaryColor,)) ,
+        floatingActionButton: !isShop
+            ? Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 32, 31, 31),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: FloatingActionButton(
+                  backgroundColor: const Color.fromARGB(255, 32, 31, 31),
+                  onPressed: () {
+                    showGridMenu(
+                      context,
+                    );
+                  },
+                  isExtended: true,
+                  child: const Icon(
+                    Icons.menu_book_sharp,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              )
+            : SizedBox(),
       ),
     );
   }
 }
-
 
 class SliverDelegate extends SliverPersistentHeaderDelegate {
   Widget child;
@@ -2062,7 +2215,8 @@ class SliverDelegate extends SliverPersistentHeaderDelegate {
   SliverDelegate({required this.child, this.height = 100});
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return child;
   }
 
@@ -2074,7 +2228,9 @@ class SliverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverDelegate oldDelegate) {
-    return oldDelegate.maxExtent != height || oldDelegate.minExtent != height || child != oldDelegate.child;
+    return oldDelegate.maxExtent != height ||
+        oldDelegate.minExtent != height ||
+        child != oldDelegate.child;
   }
 }
 
@@ -2083,8 +2239,6 @@ class CategoryProduct {
   List<Item> products;
   CategoryProduct(this.category, this.products);
 }
-
-
 
 // void showGridMenu(BuildContext context) {
 //   showDialog(
@@ -2099,7 +2253,7 @@ class CategoryProduct {
 //           child: SingleChildScrollView(
 //             child: Column(
 //               children: [
-//                 ListView.builder(itemBuilder: 
+//                 ListView.builder(itemBuilder:
 //                 (context, index) {
 //                   return ListTile(
 //                     title: Text('Menu Item $index'),
@@ -2118,17 +2272,14 @@ class CategoryProduct {
 //   );
 // }
 
-
 void showGridMenu(BuildContext context) {
-  
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 90,right: 1 / .9909/2),
-        child:Dialog(
-          
-                 elevation: 0, 
+        padding: const EdgeInsets.only(bottom: 90, right: 1 / .9909 / 2),
+        child: Dialog(
+          elevation: 0,
           backgroundColor: const Color.fromARGB(255, 32, 31, 31),
           alignment: Alignment.bottomRight,
           //  elevation: 0,
@@ -2136,28 +2287,30 @@ void showGridMenu(BuildContext context) {
             width: 200,
             height: 300,
             child: GetBuilder<StoreController>(builder: (storeController) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: storeController.categoryList!.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        splashColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        
-                        title: Text('${storeController.categoryList![index].name}',style: const TextStyle(color: Colors.white,fontSize: 17),),
-                        onTap: () {
-                          // Handle menu item tap
-                          Navigator.pop(context);
-                          storeController.setCategoryIndex(index);
-                        },
-                      );
-                    },
-                  ),
-                );
-              }
-            ),
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                  itemCount: storeController.categoryList!.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      title: Text(
+                        '${storeController.categoryList![index].name}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 17),
+                      ),
+                      onTap: () {
+                        // Handle menu item tap
+                        Navigator.pop(context);
+                        storeController.setCategoryIndex(index);
+                      },
+                    );
+                  },
+                ),
+              );
+            }),
           ),
         ),
       );
@@ -2169,155 +2322,151 @@ Widget _buildPaginationFooter(BuildContext context) {
   final storeController = Get.find<StoreController>();
   final storeModel = storeController.storeItemModel;
 
-
   if (storeModel == null || storeModel.items == null) {
-    return const SizedBox(); 
+    return const SizedBox();
   }
 
   final totalSize = storeModel.totalSize ?? 0;
   final currentItems = storeModel.items!.length + 1;
   final isLastPage = currentItems >= totalSize;
-  print("totalSize: $totalSize  currentItems: $currentItems" " isLastPage: $isLastPage");
-  return !isLastPage
-      ? const SizedBox() 
-      : EndScreenDialog(); 
+  print("totalSize: $totalSize  currentItems: $currentItems"
+      " isLastPage: $isLastPage");
+  return !isLastPage ? const SizedBox() : EndScreenDialog();
 }
 
 class MyStoreShimmer extends StatefulWidget {
-final bool  isloader;
+  final bool isloader;
   const MyStoreShimmer({super.key, required this.isloader});
 
   @override
   State<MyStoreShimmer> createState() => _MyStoreShimmerState();
 }
 
-class _MyStoreShimmerState extends State<MyStoreShimmer> with SingleTickerProviderStateMixin {
-
-
+class _MyStoreShimmerState extends State<MyStoreShimmer>
+    with SingleTickerProviderStateMixin {
   //  late AnimationController _controller;
- @override
+  @override
   // void initState() {
   //   super.initState();
   //   _controller = AnimationController(
-  //     duration: const Duration(seconds: 2), 
+  //     duration: const Duration(seconds: 2),
   //     vsync: this,
-  //   )..repeat(); 
+  //   )..repeat();
 
- 
-  //   _controller.value = 2.0; 
-  //   _controller.forward(); 
+  //   _controller.value = 2.0;
+  //   _controller.forward();
   //   _controller.duration = const Duration(seconds: 3);
-  //   _controller.repeat(); 
+  //   _controller.repeat();
   // }
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.isloader ?  Center(child: Padding(
-        padding: const EdgeInsets.only(bottom: 00),
-        child: Container(
-          height: 200,
-          width: 200,
-          child: Lottie.asset('assets/animations/Animation - 1740696483528 (4).json', repeat: true,
-        fit: BoxFit.cover,
-        height: 100,
-        width: 100
-             ),
-        ),
-      ))  : Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-              SizedBox(height: 50,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ShimmerSkeleton(height: 30, width: 150),
-                    SizedBox(
-                      height: 5,
-                    ),
-                     ShimmerSkeleton(height: 20, width: 250),
-                  ],
-                ),
-
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ShimmerSkeleton(height: 30, width: 80),
-                    SizedBox(
-                      height: 5,
-                    ),
-                     ShimmerSkeleton(height: 20, width: 60),
-                  ],
-                ),
-               
-              ],
-            ),
-            SizedBox(height: 50,),
-         Row(
-          // crossAxisAlignment: ,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-          children: [
-            
-             ShimmerSkeleton(height: 35, width: 260),
-             SizedBox(width: 10,),
-              ShimmerSkeleton(height: 35, width: 80),
-
-          ],
-         ),
-            SizedBox(height: 20,),
-          SizedBox(
-            height: 45,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: 
-            (context, index) {
-                
-              return Padding(
-                  
-                padding: const EdgeInsets.all(8.0),
-                child: ShimmerSkeleton(
-                  height: 20,
-                  width: 85,
-                ),
-              );
-            
-                 
-            
-            },
-            ),
-          ),
-            
-                SizedBox(height: 20,),
-              // ShimmerSkeleton(height: 200, width: double.infinity), 
-              Container(
+      body: widget.isloader
+          ? Center(
+              child: Padding(
+              padding: const EdgeInsets.only(bottom: 00),
+              child: Container(
                 height: 200,
-                child: ItemShimmer()),
-               SizedBox(height: 20,),
-              // ShimmerSkeleton(height: 200, width:double.infinity), 
-              Container(
-                height: 200,
-                child: ItemShimmer()),
-               SizedBox(height: 20,),
-              // Flexible(child: ShimmerSkeleton(height: 200, width: double.infinity)), 
-            // Container(
-            //     height: 200,
-            //     child: ItemShimmer()),
-            
-          ],
-        ),
-      ),
+                width: 200,
+                child: Lottie.asset(
+                    'assets/animations/Animation - 1740696483528 (4).json',
+                    repeat: true,
+                    fit: BoxFit.cover,
+                    height: 100,
+                    width: 100),
+              ),
+            ))
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShimmerSkeleton(height: 30, width: 150),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          ShimmerSkeleton(height: 20, width: 250),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ShimmerSkeleton(height: 30, width: 80),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          ShimmerSkeleton(height: 20, width: 60),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    // crossAxisAlignment: ,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+                    children: [
+                      ShimmerSkeleton(height: 35, width: 260),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      ShimmerSkeleton(height: 35, width: 80),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 45,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ShimmerSkeleton(
+                            height: 20,
+                            width: 85,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // ShimmerSkeleton(height: 200, width: double.infinity),
+                  Container(height: 200, child: ItemShimmer()),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // ShimmerSkeleton(height: 200, width:double.infinity),
+                  Container(height: 200, child: ItemShimmer()),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Flexible(child: ShimmerSkeleton(height: 200, width: double.infinity)),
+                  // Container(
+                  //     height: 200,
+                  //     child: ItemShimmer()),
+                ],
+              ),
+            ),
     );
   }
 }
-
-
 
 class ItemShimmer extends StatelessWidget {
   const ItemShimmer({super.key});
@@ -2342,7 +2491,7 @@ class ItemShimmer extends StatelessWidget {
         child: Row(
           children: [
             // Image placeholder
-            
+
             // Content placeholder
             Expanded(
               child: Column(
@@ -2350,11 +2499,13 @@ class ItemShimmer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title placeholder
-                  const SizedBox(height: 26,),
+                  const SizedBox(
+                    height: 26,
+                  ),
                   Container(
                     width: 180,
                     height: 20,
-                    margin: const EdgeInsets.only(bottom: 10,left: 10),
+                    margin: const EdgeInsets.only(bottom: 10, left: 10),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(3),
@@ -2365,7 +2516,7 @@ class ItemShimmer extends StatelessWidget {
                   Container(
                     width: 50,
                     height: 20,
-                    margin: const EdgeInsets.only(bottom: 10,left: 10),
+                    margin: const EdgeInsets.only(bottom: 10, left: 10),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(3),
@@ -2376,7 +2527,7 @@ class ItemShimmer extends StatelessWidget {
                   Container(
                     width: 150,
                     height: 30,
-                    margin: const EdgeInsets.only(bottom: 10,left: 10),
+                    margin: const EdgeInsets.only(bottom: 10, left: 10),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(3),
@@ -2386,7 +2537,7 @@ class ItemShimmer extends StatelessWidget {
                   Container(
                     width: 80,
                     height: 20,
-                    margin: const EdgeInsets.only(bottom: 10,left: 10),
+                    margin: const EdgeInsets.only(bottom: 10, left: 10),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(3),
@@ -2405,37 +2556,12 @@ class ItemShimmer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class ShimmerSkeleton extends StatelessWidget {
   const ShimmerSkeleton({Key? key, this.height, this.width}) : super(key: key);
@@ -2448,21 +2574,18 @@ class ShimmerSkeleton extends StatelessWidget {
       colorOpacity: 1,
       //  interval: Durations.extralong4,
       enabled: true,
-              duration: Duration(seconds: 1),
-              color: Colors.white,
-              child: Container(
-                decoration: BoxDecoration(
-  color: Colors.black.withOpacity(0.04),
-  borderRadius: BorderRadius.circular(10)
-                ),
-                height: height,
-                width: width,
-              
-              ),
-            );
+      duration: Duration(seconds: 1),
+      color: Colors.white,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.04),
+            borderRadius: BorderRadius.circular(10)),
+        height: height,
+        width: width,
+      ),
+    );
   }
 }
-
 
 class Shimmerskelton extends StatelessWidget {
   final double? height, width;
@@ -2473,6 +2596,3 @@ class Shimmerskelton extends StatelessWidget {
     return Container();
   }
 }
-
-
-

@@ -26,98 +26,98 @@ import 'package:sixam_mart/features/item/domain/services/item_service_interface.
 class ItemController extends GetxController implements GetxService {
   final ItemServiceInterface itemServiceInterface;
   ItemController({required this.itemServiceInterface});
-  
+
   List<Item>? _popularItemList;
   List<Item>? get popularItemList => _popularItemList;
-  
+
   List<Item>? _reviewedItemList;
   List<Item>? get reviewedItemList => _reviewedItemList;
-  
+
   List<Item>? _recommendedItemList;
   List<Item>? get recommendedItemList => _recommendedItemList;
-  
+
   List<Item>? _discountedItemList;
   List<Item>? get discountedItemList => _discountedItemList;
-  
+
   List<Categories>? _reviewedCategoriesList;
   List<Categories>? get reviewedCategoriesList => _reviewedCategoriesList;
-  
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-    bool _isAdding = false;
+  bool _isAdding = false;
   bool get isAdding => _isAdding;
-  
+
   List<int>? _variationIndex;
   List<int>? get variationIndex => _variationIndex;
-  
+
   List<List<bool?>> _selectedVariations = [];
   List<List<bool?>> get selectedVariations => _selectedVariations;
   set selectedVariations(List<List<bool?>> variations) {
     _selectedVariations = variations;
     update();
   }
-  
+
   int? _quantity = 1;
   int? get quantity => _quantity;
-  
+
   List<bool> _addOnActiveList = [];
   List<bool> get addOnActiveList => _addOnActiveList;
-  
+
   List<int?> _addOnQtyList = [];
   List<int?> get addOnQtyList => _addOnQtyList;
-  
+
   String _popularType = 'all';
   String get popularType => _popularType;
-  
+
   String _reviewedType = 'all';
   String get reviewType => _reviewedType;
 
   String _discountedType = 'all';
   String get discountedType => _discountedType;
-  
+
   static final List<String> _itemTypeList = ['all', 'veg', 'non_veg'];
   List<String> get itemTypeList => _itemTypeList;
-  
+
   int _imageIndex = 0;
   int get imageIndex => _imageIndex;
-  
+
   int _cartIndex = -1;
   int get cartIndex => _cartIndex;
-  
+
   Item? _item;
   Item? get item => _item;
-  
+
   int _productSelect = 0;
   int get productSelect => _productSelect;
-  
+
   int _imageSliderIndex = 0;
   int get imageSliderIndex => _imageSliderIndex;
-  
+
   List<bool> _collapseVariation = [];
   List<bool> get collapseVariation => _collapseVariation;
-  
+
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
-  
+
   bool _isReadMore = false;
   bool get isReadMore => _isReadMore;
-  
+
   BasicMedicineModel? _basicMedicineModel;
   BasicMedicineModel? get basicMedicineModel => _basicMedicineModel;
-  
+
   List<CommonConditionModel>? _commonConditions;
   List<CommonConditionModel>? get commonConditions => _commonConditions;
-  
+
   int _selectedCommonCondition = 0;
   int get selectedCommonCondition => _selectedCommonCondition;
-  
+
   List<Item>? _conditionWiseProduct;
   List<Item>? get conditionWiseProduct => _conditionWiseProduct;
-  
+
   ItemModel? _featuredCategoriesItem;
   ItemModel? get featuredCategoriesItem => _featuredCategoriesItem;
-  
+
   int _selectedCategory = 0;
   int get selectedCategory => _selectedCategory;
 
@@ -139,7 +139,7 @@ class ItemController extends GetxController implements GetxService {
 
   void setCurrentIndex(int index, bool notify) {
     _currentIndex = index;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
@@ -152,27 +152,29 @@ class ItemController extends GetxController implements GetxService {
     _recommendedItemList = null;
   }
 
-  Future<void> getPopularItemList(bool reload, String type, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
+  Future<void> getPopularItemList(bool reload, String type, bool notify,
+      {DataSourceEnum dataSource = DataSourceEnum.local,
+      bool fromRecall = false}) async {
     _popularType = type;
-    if(reload) {
+    if (reload) {
       _popularItemList = null;
     }
-    if(notify) {
+    if (notify) {
       update();
     }
-    if(_popularItemList == null || reload || fromRecall) {
+    if (_popularItemList == null || reload || fromRecall) {
       List<Item>? items;
-      if(dataSource == DataSourceEnum.local) {
+      if (dataSource == DataSourceEnum.local) {
         items = await itemServiceInterface.getPopularItemList(type, dataSource);
         // items!.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
         _preparePopularItems(items);
-        getPopularItemList(false, type, notify, dataSource: DataSourceEnum.client, fromRecall: true);
+        getPopularItemList(false, type, notify,
+            dataSource: DataSourceEnum.client, fromRecall: true);
       } else {
         items = await itemServiceInterface.getPopularItemList(type, dataSource);
         // items!.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
         _preparePopularItems(items);
       }
-
     }
   }
 
@@ -185,50 +187,56 @@ class ItemController extends GetxController implements GetxService {
   //   }
   //   update();
   // }
-void _preparePopularItems(List<Item>? items) {
-  // Initialize _popularItemList if null
-  _popularItemList ??= [];
+  void _preparePopularItems(List<Item>? items) {
+    // Initialize _popularItemList if null
+    _popularItemList ??= [];
 
-  // Clear previous items
-  _popularItemList!.clear();
+    // Clear previous items
+    _popularItemList!.clear();
 
-  if (items != null && items.isNotEmpty) {
-    // Filter items without modifying the input list
-    final filteredItems = items.where((item) {
-      // Safely check if store is non-null and conditions are met
-      if (item.store == null) return false;
-      return !(item.store!.noservicerestriction == 0 && item.store!.distancelimit == 0);
-    }).toList();
+    if (items != null && items.isNotEmpty) {
+      // Filter items without modifying the input list
+      final filteredItems = items.where((item) {
+        // Safely check if store is non-null and conditions are met
+        if (item.store == null) return false;
+        return !(item.store!.noservicerestriction == 0 &&
+            item.store!.distancelimit == 0);
+      }).toList();
 
-    // Add filtered items to _popularItemList
-    _popularItemList!.addAll(filteredItems);
+      // Add filtered items to _popularItemList
+      _popularItemList!.addAll(filteredItems);
+    }
+
+    // Always set loading state
+    _isLoading = false;
+
+    // Notify listeners
+    update();
   }
 
-  // Always set loading state
-  _isLoading = false;
-
-  // Notify listeners
-  update();
-}
-  Future<void> getReviewedItemList(bool reload, String type, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
+  Future<void> getReviewedItemList(bool reload, String type, bool notify,
+      {DataSourceEnum dataSource = DataSourceEnum.local,
+      bool fromRecall = false}) async {
     _reviewedType = type;
-    if(reload) {
+    if (reload) {
       _reviewedItemList = null;
     }
-    if(notify) {
+    if (notify) {
       update();
     }
-    if(_reviewedItemList == null || reload || fromRecall) {
+    if (_reviewedItemList == null || reload || fromRecall) {
       ItemModel? itemModel;
-      if(dataSource == DataSourceEnum.local) {
-        itemModel = await itemServiceInterface.getReviewedItemList(type, dataSource);
+      if (dataSource == DataSourceEnum.local) {
+        itemModel =
+            await itemServiceInterface.getReviewedItemList(type, dataSource);
         _preparedReviewedItems(itemModel);
-        getReviewedItemList(false, type, notify, dataSource: DataSourceEnum.client, fromRecall: true);
+        getReviewedItemList(false, type, notify,
+            dataSource: DataSourceEnum.client, fromRecall: true);
       } else {
-        itemModel = await itemServiceInterface.getReviewedItemList(type, dataSource);
+        itemModel =
+            await itemServiceInterface.getReviewedItemList(type, dataSource);
         _preparedReviewedItems(itemModel);
       }
-
     }
   }
 
@@ -243,32 +251,40 @@ void _preparePopularItems(List<Item>? items) {
     update();
   }
 
-  Future<void> getDiscountedItemList(bool reload, bool notify, String type, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
+  Future<void> getDiscountedItemList(bool reload, bool notify, String type,
+      {DataSourceEnum dataSource = DataSourceEnum.local,
+      bool fromRecall = false}) async {
     _discountedType = type;
-    if(reload) {
+    if (reload) {
       _discountedItemList = null;
     }
-    if(notify) {
+    if (notify) {
       update();
     }
-    if(_discountedItemList == null || reload || fromRecall) {
-
+    if (_discountedItemList == null || reload || fromRecall) {
       List<Item>? items;
-      if(dataSource == DataSourceEnum.local) {
-        items = await itemServiceInterface.getDiscountedItemList(type, dataSource);
+      if (dataSource == DataSourceEnum.local) {
+        items =
+            await itemServiceInterface.getDiscountedItemList(type, dataSource);
         if (items != null) {
           _discountedItemList = [];
-          items.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
+          items.removeWhere((item) =>
+              item.store!.noservicerestriction == 0 &&
+              item.store!.distancelimit == 0);
           _discountedItemList!.addAll(items);
           _isLoading = false;
         }
         update();
-        getDiscountedItemList(false, notify, type, dataSource: DataSourceEnum.client, fromRecall: true);
+        getDiscountedItemList(false, notify, type,
+            dataSource: DataSourceEnum.client, fromRecall: true);
       } else {
-        items = await itemServiceInterface.getDiscountedItemList(type, dataSource);
+        items =
+            await itemServiceInterface.getDiscountedItemList(type, dataSource);
         if (items != null) {
           _discountedItemList = [];
-          items.removeWhere((item) => item.store!.noservicerestriction == 0 &&  item.store!.distancelimit == 0);
+          items.removeWhere((item) =>
+              item.store!.noservicerestriction == 0 &&
+              item.store!.distancelimit == 0);
           _discountedItemList!.addAll(items);
           _isLoading = false;
         }
@@ -277,44 +293,53 @@ void _preparePopularItems(List<Item>? items) {
     }
   }
 
-  Future<void> getFeaturedCategoriesItemList(bool reload, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
-    if(reload) {
+  Future<void> getFeaturedCategoriesItemList(bool reload, bool notify,
+      {DataSourceEnum dataSource = DataSourceEnum.local,
+      bool fromRecall = false}) async {
+    if (reload) {
       _featuredCategoriesItem = null;
     }
-    if(notify) {
+    if (notify) {
       update();
     }
-    if(_featuredCategoriesItem == null || reload || fromRecall) {
-      if(dataSource == DataSourceEnum.local) {
-        _featuredCategoriesItem = await itemServiceInterface.getFeaturedCategoriesItemList(dataSource);
+    if (_featuredCategoriesItem == null || reload || fromRecall) {
+      if (dataSource == DataSourceEnum.local) {
+        _featuredCategoriesItem = await itemServiceInterface
+            .getFeaturedCategoriesItemList(dataSource);
         update();
-        getFeaturedCategoriesItemList(false, notify, dataSource: DataSourceEnum.client, fromRecall: true);
+        getFeaturedCategoriesItemList(false, notify,
+            dataSource: DataSourceEnum.client, fromRecall: true);
       } else {
-        _featuredCategoriesItem = await itemServiceInterface.getFeaturedCategoriesItemList(dataSource);
+        _featuredCategoriesItem = await itemServiceInterface
+            .getFeaturedCategoriesItemList(dataSource);
         update();
       }
     }
   }
 
-  Future<void> getRecommendedItemList(bool reload, String type, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
-    if(reload) {
+  Future<void> getRecommendedItemList(bool reload, String type, bool notify,
+      {DataSourceEnum dataSource = DataSourceEnum.local,
+      bool fromRecall = false}) async {
+    if (reload) {
       _recommendedItemList = null;
     }
-    if(notify) {
+    if (notify) {
       update();
     }
-    if(_recommendedItemList == null || reload || fromRecall) {
+    if (_recommendedItemList == null || reload || fromRecall) {
       List<Item>? items;
-      if(dataSource == DataSourceEnum.local) {
-        items = await itemServiceInterface.getRecommendedItemList(type, dataSource);
+      if (dataSource == DataSourceEnum.local) {
+        items =
+            await itemServiceInterface.getRecommendedItemList(type, dataSource);
         _prepareRecommendedItems(items);
 
-        getRecommendedItemList(false, type, notify, dataSource: DataSourceEnum.client, fromRecall: true);
+        getRecommendedItemList(false, type, notify,
+            dataSource: DataSourceEnum.client, fromRecall: true);
       } else {
-        items = await itemServiceInterface.getRecommendedItemList(type, dataSource);
+        items =
+            await itemServiceInterface.getRecommendedItemList(type, dataSource);
         _prepareRecommendedItems(items);
       }
-
     }
   }
 
@@ -327,21 +352,26 @@ void _preparePopularItems(List<Item>? items) {
     update();
   }
 
-  Future<void> getBasicMedicine(bool reload, bool notify, {DataSourceEnum dataSource = DataSourceEnum.local, bool fromRecall = false}) async {
-    if(reload) {
+  Future<void> getBasicMedicine(bool reload, bool notify,
+      {DataSourceEnum dataSource = DataSourceEnum.local,
+      bool fromRecall = false}) async {
+    if (reload) {
       _basicMedicineModel = null;
     }
-    if(notify) {
+    if (notify) {
       update();
     }
-    if(_basicMedicineModel == null || reload || fromRecall) {
-      if(dataSource == DataSourceEnum.local) {
-        _basicMedicineModel = await itemServiceInterface.getBasicMedicine(DataSourceEnum.local);
+    if (_basicMedicineModel == null || reload || fromRecall) {
+      if (dataSource == DataSourceEnum.local) {
+        _basicMedicineModel =
+            await itemServiceInterface.getBasicMedicine(DataSourceEnum.local);
         _isLoading = false;
         update();
-        getBasicMedicine(false, notify, fromRecall: true, dataSource: DataSourceEnum.client);
+        getBasicMedicine(false, notify,
+            fromRecall: true, dataSource: DataSourceEnum.client);
       } else {
-        _basicMedicineModel = await itemServiceInterface.getBasicMedicine(DataSourceEnum.client);
+        _basicMedicineModel =
+            await itemServiceInterface.getBasicMedicine(DataSourceEnum.client);
         _isLoading = false;
         update();
       }
@@ -350,7 +380,7 @@ void _preparePopularItems(List<Item>? items) {
 
   Future<void> getConditionsWiseItem(int id, bool notify) async {
     _conditionWiseProduct = null;
-    if(notify) {
+    if (notify) {
       update();
     }
     List<Item>? items = await itemServiceInterface.getConditionsWiseItems(id);
@@ -364,10 +394,11 @@ void _preparePopularItems(List<Item>? items) {
 
   Future<void> getCommonConditions(bool notify) async {
     _commonConditions = [];
-    if(notify) {
+    if (notify) {
       update();
     }
-    List<CommonConditionModel>? conditions = await itemServiceInterface.getCommonConditions();
+    List<CommonConditionModel>? conditions =
+        await itemServiceInterface.getCommonConditions();
     if (conditions != null) {
       _commonConditions!.addAll(conditions);
       _isLoading = false;
@@ -377,14 +408,17 @@ void _preparePopularItems(List<Item>? items) {
 
   Future<void> getProductDetails(Item item) async {
     _item = null;
-    if(item.name != null) {
+    if (item.name != null) {
       _item = item;
-    }else {
+    } else {
       _item = null;
       _item = await itemServiceInterface.getItemDetails(item.id);
     }
     initData(_item, null);
-    setExistInCart(_item, _selectedVariations, /*notify: !ResponsiveHelper.isDesktop(Get.context)*/);
+    setExistInCart(
+      _item,
+      _selectedVariations,
+    );
   }
 
   void showBottomLoader() {
@@ -398,66 +432,96 @@ void _preparePopularItems(List<Item>? items) {
     _addOnActiveList = [];
     _selectedVariations = [];
     _collapseVariation = [];
-    if(cart != null) {
+    if (cart != null) {
       _quantity = cart.quantity;
-      _addOnActiveList.addAll(itemServiceInterface.initializeCartAddonActiveList(cart.addOnIds, item!.addOns));
-      _addOnQtyList.addAll(itemServiceInterface.initializeCartAddonsQtyList(cart.addOnIds, item.addOns));
+      _addOnActiveList.addAll(itemServiceInterface
+          .initializeCartAddonActiveList(cart.addOnIds, item!.addOns));
+      _addOnQtyList.addAll(itemServiceInterface.initializeCartAddonsQtyList(
+          cart.addOnIds, item.addOns));
 
-      if(ModuleHelper.getModuleConfig(item.moduleType).newVariation!) {
+      if (ModuleHelper.getModuleConfig(item.moduleType).newVariation!) {
         _selectedVariations.addAll(cart.foodVariations!);
-        _collapseVariation.addAll(itemServiceInterface.collapseVariation(item.foodVariations!));
-      }else {
-        _variationIndex = itemServiceInterface.initializeCartVariationIndexes(cart.variation, item.choiceOptions);
+        _collapseVariation.addAll(
+            itemServiceInterface.collapseVariation(item.foodVariations!));
+      } else {
+        _variationIndex = itemServiceInterface.initializeCartVariationIndexes(
+            cart.variation, item.choiceOptions);
       }
     } else {
-      if(ModuleHelper.getModuleConfig(item!.moduleType).newVariation!) {
-        _selectedVariations.addAll(itemServiceInterface.initializeSelectedVariation(item.foodVariations));
-        _collapseVariation.addAll(itemServiceInterface.initializeCollapseVariation(item.foodVariations));
+      if (ModuleHelper.getModuleConfig(item!.moduleType).newVariation!) {
+        _selectedVariations.addAll(itemServiceInterface
+            .initializeSelectedVariation(item.foodVariations));
+        _collapseVariation.addAll(itemServiceInterface
+            .initializeCollapseVariation(item.foodVariations));
       } else {
-        _variationIndex = itemServiceInterface.initializeVariationIndexes(item.choiceOptions);
+        _variationIndex =
+            itemServiceInterface.initializeVariationIndexes(item.choiceOptions);
       }
       _quantity = 1;
-      _addOnActiveList.addAll(itemServiceInterface.initializeAddonActiveList(item.addOns));
-      _addOnQtyList.addAll(itemServiceInterface.initializeAddonQtyList(item.addOns));
+      _addOnActiveList
+          .addAll(itemServiceInterface.initializeAddonActiveList(item.addOns));
+      _addOnQtyList
+          .addAll(itemServiceInterface.initializeAddonQtyList(item.addOns));
 
       setExistInCart(item, _selectedVariations, notify: true);
     }
-
   }
 
   void cartIndexSet() {
     _cartIndex = -1;
   }
 
-  Future<int> setExistInCart(Item? item, List<List<bool?>>? selectedVariations, {bool notify = false}) async {
-    String variationType = await itemServiceInterface.prepareVariationType(item!.choiceOptions, _variationIndex);
+  Future<int> setExistInCart(Item? item, List<List<bool?>>? selectedVariations,
+      {bool notify = false}) async {
+    String variationType = await itemServiceInterface.prepareVariationType(
+        item!.choiceOptions, _variationIndex);
 
-    if(ModuleHelper.getModuleConfig(ModuleHelper.getModule() != null ? ModuleHelper.getModule()!.moduleType : ModuleHelper.getCacheModule()!.moduleType).newVariation!) {
-      _cartIndex = await itemServiceInterface.isExistInCartForBottomSheet(Get.find<CartController>().cartList, item.id, null, selectedVariations);
+    if (ModuleHelper.getModuleConfig(ModuleHelper.getModule() != null
+            ? ModuleHelper.getModule()!.moduleType
+            : ModuleHelper.getCacheModule()!.moduleType)
+        .newVariation!) {
+      _cartIndex = await itemServiceInterface.isExistInCartForBottomSheet(
+          Get.find<CartController>().cartList,
+          item.id,
+          null,
+          selectedVariations);
     } else {
-      _cartIndex = Get.find<CartController>().isExistInCart(item.id, variationType, false, null);
+      _cartIndex = Get.find<CartController>()
+          .isExistInCart(item.id, variationType, false, null);
     }
 
-    if(_cartIndex != -1) {
+    if (_cartIndex != -1) {
       _quantity = Get.find<CartController>().cartList[_cartIndex].quantity;
-      _addOnActiveList = itemServiceInterface.initializeCartAddonActiveList(Get.find<CartController>().cartList[_cartIndex].addOnIds, item.addOns);
-      _addOnQtyList = itemServiceInterface.initializeCartAddonsQtyList(Get.find<CartController>().cartList[_cartIndex].addOnIds, item.addOns);
+      _addOnActiveList = itemServiceInterface.initializeCartAddonActiveList(
+          Get.find<CartController>().cartList[_cartIndex].addOnIds,
+          item.addOns);
+      _addOnQtyList = itemServiceInterface.initializeCartAddonsQtyList(
+          Get.find<CartController>().cartList[_cartIndex].addOnIds,
+          item.addOns);
     } else {
       _quantity = 1;
     }
-    if(notify) {
+    if (notify) {
       update();
     }
     return _cartIndex;
   }
 
   void setAddOnQuantity(bool isIncrement, int index) {
-    _addOnQtyList[index] = itemServiceInterface.setAddOnQuantity(isIncrement, _addOnQtyList[index]!);
+    _addOnQtyList[index] = itemServiceInterface.setAddOnQuantity(
+        isIncrement, _addOnQtyList[index]!);
     update();
   }
 
-  Future<void> setQuantity(bool isIncrement, int? stock,  int? quantityLimit, {bool getxSnackBar = false}) async {
-    _quantity = await itemServiceInterface.setQuantity(isIncrement, Get.find<SplashController>().configModel!.moduleConfig!.module!.stock!, stock, _quantity!, quantityLimit, getxSnackBar: getxSnackBar);
+  Future<void> setQuantity(bool isIncrement, int? stock, int? quantityLimit,
+      {bool getxSnackBar = false}) async {
+    _quantity = await itemServiceInterface.setQuantity(
+        isIncrement,
+        Get.find<SplashController>().configModel!.moduleConfig!.module!.stock!,
+        stock,
+        _quantity!,
+        quantityLimit,
+        getxSnackBar: getxSnackBar);
     update();
   }
 
@@ -468,44 +532,26 @@ void _preparePopularItems(List<Item>? items) {
     update();
   }
 
-  void showMoreSpecificSection(int index){
+  void showMoreSpecificSection(int index) {
     _collapseVariation[index] = !_collapseVariation[index];
     update();
   }
 
-  void setNewCartVariationIndex(int index, int i, Item item, {bool notify = false}) {
-    _selectedVariations = itemServiceInterface.setNewCartVariationIndex(index, i, item.foodVariations!, _selectedVariations);
+  void setNewCartVariationIndex(int index, int i, Item item,
+      {bool notify = false}) {
+    _selectedVariations = itemServiceInterface.setNewCartVariationIndex(
+        index, i, item.foodVariations!, _selectedVariations);
     setExistInCart(item, _selectedVariations);
-    // if(!item.foodVariations![index].multiSelect!) {
-    //   for(int j = 0; j < _selectedVariations[index].length; j++) {
-    //     if(item.foodVariations![index].required!){
-    //       _selectedVariations[index][j] = j == i;
-    //     }else{
-    //       if(_selectedVariations[index][j]!){
-    //         _selectedVariations[index][j] = false;
-    //       }else{
-    //         _selectedVariations[index][j] = j == i;
-    //       }
-    //     }
-    //   }
-    // } else {
-    //   if(!_selectedVariations[index][i]! && selectedVariationLength(_selectedVariations, index) >= item.foodVariations![index].max!) {
-    //     showCustomSnackBar(
-    //       '${'maximum_variation_for'.tr} ${item.foodVariations![index].name} ${'is'.tr} ${item.foodVariations![index].max}',
-    //       getXSnackBar: true,
-    //     );
-    //   }else {
-    //     _selectedVariations[index][i] = !_selectedVariations[index][i]!;
-    //   }
-    // }
-    if(notify) {
+
+    if (notify) {
       update();
     }
     // update();
   }
 
   int selectedVariationLength(List<List<bool?>> selectedVariations, int index) {
-    return itemServiceInterface.selectedVariationLength(selectedVariations, index);
+    return itemServiceInterface.selectedVariationLength(
+        selectedVariations, index);
   }
 
   void addAddOn(bool isAdd, int index) {
@@ -515,14 +561,14 @@ void _preparePopularItems(List<Item>? items) {
 
   void setImageIndex(int index, bool notify) {
     _imageIndex = index;
-    if(notify) {
+    if (notify) {
       update();
     }
   }
 
-  void setSelect(int select, bool notify){
+  void setSelect(int select, bool notify) {
     _productSelect = select;
-    if(notify){
+    if (notify) {
       update();
     }
   }
@@ -537,112 +583,165 @@ void _preparePopularItems(List<Item>? items) {
   }
 
   bool isAvailable(Item item) {
-    return DateConverter.isAvailable(item.availableTimeStarts, item.availableTimeEnds);
+    return DateConverter.isAvailable(
+        item.availableTimeStarts, item.availableTimeEnds);
   }
 
-  double? getDiscount(Item item) => item.storeDiscount == 0 ? item.discount : item.storeDiscount;
+  double? getDiscount(Item item) =>
+      item.storeDiscount == 0 ? item.discount : item.storeDiscount;
 
-  String? getDiscountType(Item item) => item.storeDiscount == 0 ? item.discountType : 'percent';
+  String? getDiscountType(Item item) =>
+      item.storeDiscount == 0 ? item.discountType : 'percent';
 
-  void navigateToItemPage(Item? item, BuildContext context, {bool inStore = false, bool isCampaign = false}) {
-    if(Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! || item!.moduleType == 'food') {
-      ResponsiveHelper.isMobile(context) ? Get.bottomSheet(
-        ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign),
-        backgroundColor: Colors.transparent, isScrollControlled: true,
-      ) : Get.dialog(
-        Dialog(child: ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign)),
-      );
-    }else {
-      Get.toNamed(RouteHelper.getItemDetailsRoute(item.id, inStore), arguments: ItemDetailsScreen(item: item, inStorePage: inStore, isCampaign: isCampaign));
+  void navigateToItemPage(Item? item, BuildContext context,
+      {bool inStore = false, bool isCampaign = false}) {
+    if (Get.find<SplashController>()
+            .configModel!
+            .moduleConfig!
+            .module!
+            .showRestaurantText! ||
+        item!.moduleType == 'food') {
+      ResponsiveHelper.isMobile(context)
+          ? Get.bottomSheet(
+              ItemBottomSheet(
+                  item: item, inStorePage: inStore, isCampaign: isCampaign),
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true,
+            )
+          : Get.dialog(
+              Dialog(
+                  child: ItemBottomSheet(
+                      item: item,
+                      inStorePage: inStore,
+                      isCampaign: isCampaign)),
+            );
+    } else {
+      Get.toNamed(RouteHelper.getItemDetailsRoute(item.id, inStore),
+          arguments: ItemDetailsScreen(
+              item: item, inStorePage: inStore, isCampaign: isCampaign));
     }
   }
 
-  void itemDirectlyAddToCart(Item? item, BuildContext context, {bool inStore = false, bool isCampaign = false}) {
-     
-    if (((item!.foodVariations != null && item.foodVariations!.isEmpty) && item.moduleType == AppConstants.food) || (item.variations != null && item.variations!.isEmpty && item.moduleType != AppConstants.food)) {
+  void itemDirectlyAddToCart(Item? item, BuildContext context,
+      {bool inStore = false, bool isCampaign = false}) {
+    if (((item!.foodVariations != null && item.foodVariations!.isEmpty) &&
+            item.moduleType == AppConstants.food) ||
+        (item.variations != null &&
+            item.variations!.isEmpty &&
+            item.moduleType != AppConstants.food)) {
       double price = item.price!;
       double discount = item.discount!;
-      double discountPrice = PriceConverter.convertWithDiscount(price, discount, item.discountType)!;
+      double discountPrice = PriceConverter.convertWithDiscount(
+          price, discount, item.discountType)!;
 
       CartModel cartModel = CartModel(
-        null, price, discount, [], [], (price - discountPrice), 1, [], [], isCampaign,
-        item.stock, item, item.quantityLimit,
+        null,
+        price,
+        discount,
+        [],
+        [],
+        (price - discountPrice),
+        1,
+        [],
+        [],
+        isCampaign,
+        item.stock,
+        item,
+        item.quantityLimit,
       );
 
       OnlineCart onlineCart = OnlineCart(
-        null, isCampaign ? null : item.id, isCampaign ? item.id : null, price.toString(),
-        '', null, ModuleHelper.getModuleConfig(item.moduleType).newVariation! ? [] : null,
-        1, [], [], [], 'Item',
+        null,
+        isCampaign ? null : item.id,
+        isCampaign ? item.id : null,
+        price.toString(),
+        '',
+        null,
+        ModuleHelper.getModuleConfig(item.moduleType).newVariation! ? [] : null,
+        1,
+        [],
+        [],
+        [],
+        'Item',
       );
-      if(
-        // Get.find<SplashController>().configModel!.moduleConfig!.module!.stock! &&
-         item.stock! < 0){
-
-  print('${item.stock} stock');
-  print("${Get.find<SplashController>().configModel!.moduleConfig!.module!.stock!}");
+      if (
+          // Get.find<SplashController>().configModel!.moduleConfig!.module!.stock! &&
+          item.stock! < 0) {
+        print('${item.stock} stock');
+        print(
+            "${Get.find<SplashController>().configModel!.moduleConfig!.module!.stock!}");
 
         showCustomSnackBar('out_of_stock'.tr);
-
       }
       //   if(item.stock! <= 0){
       //     print('${item.stock} stock');
       //   showCustomSnackBar('out_of_stock'.tr);
       // }
 
-      else if (Get.find<CartController>().existAnotherStoreItem(cartModel.item!.storeId, ModuleHelper.getModule() != null
-          ? ModuleHelper.getModule()?.id : ModuleHelper.getCacheModule()?.id)) {
-
-
+      else if (Get.find<CartController>().existAnotherStoreItem(
+          cartModel.item!.storeId,
+          ModuleHelper.getModule() != null
+              ? ModuleHelper.getModule()?.id
+              : ModuleHelper.getCacheModule()?.id)) {
         Get.dialog(
-          
-          ConfirmationDialog(
+            ConfirmationDialog(
+              icon: Images.warning,
+              title: 'are_you_sure_to_reset'.tr,
+              description: Get.find<SplashController>()
+                      .configModel!
+                      .moduleConfig!
+                      .module!
+                      .showRestaurantText!
+                  ? 'if_you_continue'.tr
+                  : 'if_you_continue_without_another_store'.tr,
+              onYesPressed: () {
+                Get.find<CartController>()
+                    .clearCartOnline()
+                    .then((success) async {
+                  Get.back();
+                  if (success) {
+                    await Get.find<CartController>()
+                        .addToCartOnline(onlineCart);
 
-          icon: Images.warning,
-          title: 'are_you_sure_to_reset'.tr,
-          description: 
-          Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! 
-             
-              ? 'if_you_continue'.tr : 'if_you_continue_without_another_store'.tr,
-                 
-          onYesPressed: () {
-            Get.find<CartController>().clearCartOnline().then((success) async {
-                 Get.back();
-              if (success) {
-                await Get.find<CartController>().addToCartOnline(onlineCart);
-             
-                showCartSnackBar();
-              }
-            });
-          },
-        ),
-        
-         barrierDismissible: false);
-
-
+                    showCartSnackBar();
+                  }
+                });
+              },
+            ),
+            barrierDismissible: false);
       } else {
-         _isAdding = true;
+        _isAdding = true;
         Get.find<CartController>().addToCartOnline(onlineCart);
         showCartSnackBar();
-         _isAdding = false;
+        _isAdding = false;
       }
-    } else if(Get.find<SplashController>().configModel!.moduleConfig!.module!.showRestaurantText! || item.moduleType == AppConstants.food){
-      ResponsiveHelper.isMobile(context) ? Get.bottomSheet(
-        ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign),
-        backgroundColor: Colors.transparent, isScrollControlled: true,
-      ) : Get.dialog(
-        Dialog(child: ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign)),
-      );
+    } else if (Get.find<SplashController>()
+            .configModel!
+            .moduleConfig!
+            .module!
+            .showRestaurantText! ||
+        item.moduleType == AppConstants.food) {
+      ResponsiveHelper.isMobile(context)
+          ? Get.bottomSheet(
+              ItemBottomSheet(
+                  item: item, inStorePage: inStore, isCampaign: isCampaign),
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true,
+            )
+          : Get.dialog(
+              Dialog(
+                  child: ItemBottomSheet(
+                      item: item,
+                      inStorePage: inStore,
+                      isCampaign: isCampaign)),
+            );
     } else {
       // Get.toNamed(RouteHelper.getItemDetailsRoute(item.id, inStore), arguments: ItemDetailsScreen(item: item, inStorePage: inStore));
-       showGroceryItemBottomSheet(
-        context,
-        item,inStore
-      );
+      showGroceryItemBottomSheet(context, item, inStore);
     }
-
-    
   }
-void setItem(Item? item) {
+
+  void setItem(Item? item) {
     _item = item;
     if (_item != null && _item!.foodVariations != null) {
       // Initialize selectedVariations with first option selected for each variation
@@ -660,17 +759,16 @@ void setItem(Item? item) {
   }
 }
 
-
-void showGroceryItemBottomSheet(BuildContext context , item,inStorePage) {
+void showGroceryItemBottomSheet(BuildContext context, item, inStorePage) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true, // Allows the bottom sheet to take full height
     backgroundColor: Colors.transparent, // Make the background transparent
     builder: (BuildContext context) {
-      return  GrocceryItemBottomSheet(inStorePage: inStorePage ,item: item,);
+      return GrocceryItemBottomSheet(
+        inStorePage: inStorePage,
+        item: item,
+      );
     },
   );
-
-
-  
 }

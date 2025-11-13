@@ -77,8 +77,6 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 //   }
 // }
 
-
-
 import 'package:sixam_mart/features/order/controllers/order_controller.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
@@ -89,9 +87,13 @@ import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String? icon;
+  final bool? isimage;
+  final IconData? icondata;
   final String? title;
   final String description;
   final Function onYesPressed;
+  final String Yesbuttontext;
+  final String Nobuttontext;
   final bool isLogOut;
   final Function? onNoPressed;
 
@@ -101,8 +103,12 @@ class ConfirmationDialog extends StatelessWidget {
     this.title,
     required this.description,
     required this.onYesPressed,
+    this.Yesbuttontext = "yes",
+    this.Nobuttontext = "no",
     this.isLogOut = false,
+    this.isimage = true,
     this.onNoPressed,
+    this.icondata,
   });
 
   @override
@@ -124,32 +130,51 @@ class ConfirmationDialog extends StatelessWidget {
                 padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start, // Left-align content
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Left-align content
                   children: [
-                    if (icon != null) Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Center(
-                        child: Image.asset(
+                    if (icon != null)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Center(
+                            child: Image.asset(
                           icon!,
                           width: 60,
                           height: 60,
                           color: Theme.of(context).primaryColor,
+                        )),
+                      ),
+                    if (!isimage! && icondata != null)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Center(
+                            child: Icon(
+                          icondata,
+                          size: 60,
+                          // color: Theme.of(context).primaryColor,
+                        )
+                            // Image.asset(
+                            //     icon!,
+                            //     width: 60,
+                            //     height: 60,
+                            //     color: Theme.of(context).primaryColor,
+                            //   )
+
+                            ),
+                      ),
+                    if (title != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(
+                          title!,
+                          style: robotoBold.copyWith(
+                            // Increased font weight and bold style
+                            fontSize: Dimensions.fontSizeExtraLarge,
+                            color: Colors.black, // Title color set to black
+                          ),
+                          textAlign: TextAlign.left, // Left-aligned title
                         ),
                       ),
-                    ),
-
-                    if (title != null) Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Text(
-                        title!,
-                        style: robotoBold.copyWith( // Increased font weight and bold style
-                          fontSize: Dimensions.fontSizeExtraLarge,
-                          color: Colors.black, // Title color set to black
-                        ),
-                        textAlign: TextAlign.left, // Left-aligned title
-                      ),
-                    ),
-
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Text(
@@ -161,55 +186,59 @@ class ConfirmationDialog extends StatelessWidget {
                         textAlign: TextAlign.start,
                       ),
                     ),
-
                     const SizedBox(height: Dimensions.paddingSizeLarge),
-
                     GetBuilder<OrderController>(
                       builder: (orderController) {
                         return GetBuilder<CartController>(
-                      builder: (cartcontroller) {
-                            return !orderController.isLoading
-                                ? Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextButton(
-                                          onPressed: () => isLogOut
-                                              ? onYesPressed()
-                                              : onNoPressed != null
-                                                  ? onNoPressed!()
-                                                  : Get.back(),
-                                          style: TextButton.styleFrom(
-                                            backgroundColor: Colors.grey[200],
-                                            minimumSize: const Size(50, 50),
-                                            padding: EdgeInsets.zero,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
+                            builder: (cartcontroller) {
+                          return !orderController.isLoading
+                              ? Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextButton(
+                                        onPressed: () => isLogOut
+                                            ? onYesPressed()
+                                            : onNoPressed != null
+                                                ? onNoPressed!()
+                                                : Get.back(),
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: Colors.grey[200],
+                                          minimumSize: const Size(50, 50),
+                                          padding: EdgeInsets.zero,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                           ),
-                                          child: Text(
-                                            isLogOut ? 'yes'.tr : 'no'.tr,
-                                            style: robotoBold.copyWith(
-                                              color: Colors.grey[800],
-                                            ),
+                                        ),
+                                        child: Text(
+                                          isLogOut
+                                              ? '$Yesbuttontext'.tr
+                                              : '$Nobuttontext'.tr,
+                                          style: robotoBold.copyWith(
+                                            color: Colors.grey[800],
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 12),
-                            
-                                      Expanded(
-                                        child: CustomButton(
-                                           isLoading: cartcontroller.isLoading,
-                                          buttonText: isLogOut ? 'no'.tr : 'yes'.tr,
-                                          onPressed: () => isLogOut ? Get.back() : onYesPressed(),
-                                          radius: 12,
-                                          height: 50,
-                                        ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: CustomButton(
+                                        isLoading: cartcontroller.isLoading,
+                                        buttonText: isLogOut
+                                            ? '$Nobuttontext'.tr
+                                            : '$Yesbuttontext'.tr,
+                                        onPressed: () => isLogOut
+                                            ? Get.back()
+                                            : onYesPressed(),
+                                        radius: 12,
+                                        height: 50,
                                       ),
-                                    ],
-                                  )
-                                : const Center(child: CircularProgressIndicator());
-                          }
-                        );
+                                    ),
+                                  ],
+                                )
+                              : const Center(
+                                  child: CircularProgressIndicator());
+                        });
                       },
                     ),
                   ],
@@ -235,7 +264,8 @@ class ConfirmationDialog extends StatelessWidget {
                   // ],
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.black), // Black close icon
+                  icon: const Icon(Icons.close,
+                      color: Colors.black), // Black close icon
                   onPressed: () => Get.back(), // Close dialog action
                 ),
               ),

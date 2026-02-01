@@ -270,17 +270,17 @@ class CustomTextFieldState extends State<CustomTextField> {
                           margin: const EdgeInsets.only(right: 0),
                           padding: const EdgeInsets.only(left: 5),
                           child: Center(
-                            child: CodePickerWidget(
+                            child: IndiaCodeWidget(
                               flagWidth: 25,
                               padding: EdgeInsets.zero,
-                              onChanged: widget.onCountryChanged,
-                              initialSelection: widget.countryDialCode,
-                              favorite: [widget.countryDialCode ?? ''],
-                              enabled: Get.find<SplashController>()
-                                  .configModel
-                                  ?.countryPickerStatus,
-                              dialogBackgroundColor:
-                                  Theme.of(context).cardColor,
+                              // onChanged: widget.onCountryChanged,
+                              // initialSelection: widget.countryDialCode,
+                              // favorite: [widget.countryDialCode ?? ''],
+                              // enabled: Get.find<SplashController>()
+                              //     .configModel
+                              //     ?.countryPickerStatus,
+                              // dialogBackgroundColor:
+                              //     Theme.of(context).cardColor,
                               textStyle: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 color: Theme.of(context)
